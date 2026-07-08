@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MEIKKU Cybernetics Storyboard Outline</title>
+  <style>
+    :root {
+      --page: #eeeeee;
+      --sheet: #efefef;
+      --panel-shadow: rgba(0, 0, 0, 0.12);
+      --text-muted: rgba(0, 0, 0, 0.48);
+      --meikku-paper: #F4F3EF;
+      --meikku-ink: #000000;
+      --meikku-lime: #A3FF00;
+      --meikku-pink: #FF0055;
+      --meikku-clay: #E6E4DA;
+      --meikku-grid: #D5D3C9;
+      --meikku-ghost-line: #C6C3B6;
+      --meikku-clay-shadow: #DCD9CB;
+      --meikku-contour: #C9C5B4;
+      --meikku-card-hover: #E9E6D8;
+      --frame-two-left: #1d56a5;
+      --frame-two-right: #aee6ff;
+      --frame-two-copy: rgba(255, 255, 255, 0.76);
+      --frame-two-copy-dark: rgba(4, 41, 75, 0.72);
+      --interface: #05090b;
+      --interface-copy: rgba(205, 255, 150, 0.62);
+      --interface-label: rgba(205, 255, 150, 0.32);
+      --image-label-bg: rgba(0, 0, 0, 0.66);
+      --image-label-fg: rgba(244, 243, 239, 0.92);
+      --image-border: rgba(0, 0, 0, 0.18);
+      --meikku-amber: #FFAA00;
+      --meikku-slate: #4A4A4A;
+      --role-human: #FF7A1A;
+      --role-ai: var(--meikku-lime);
+      --role-robot: #1E9BF0;
+      --role-material: #FFCB2B;
+      --role-sensor: var(--meikku-paper);
+      --role-dataset: var(--meikku-paper);
+      --role-flow: var(--meikku-ink);
+      --dark-panel: #080a07;
+      --dark-panel-soft: #14180f;
+      --dark-grid: rgba(163, 255, 0, 0.12);
+      --dark-dot-grid: rgba(163, 255, 0, 0.18);
+      --paper-dot-size: 1.3px;
+      --paper-dot-grid-size: 28px;
+      --dark-dot-size: 1.4px;
+      --dark-dot-grid-size: 30px;
+      --lime-soft: rgba(163, 255, 0, 0.18);
+      --pink-soft: rgba(255, 0, 85, 0.16);
+      --amber-soft: rgba(255, 170, 0, 0.20);
+      --paper-soft: rgba(244, 243, 239, 0.92);
+      --paper-dim: rgba(244, 243, 239, 0.76);
+      --dark-glass: rgba(8, 10, 7, 0.78);
+      --ink-soft: rgba(0, 0, 0, 0.68);
+      --warning-mark: #FF0055;
+      --warning-soft: rgba(255, 0, 85, 0.16);
+      --blackbox-highlight: var(--meikku-lime);
+      --blackbox-glass: rgba(244, 243, 239, 0.18);
+      --annotation-paper: rgba(244, 243, 239, 0.92);
+      --font-display: 'Bungee', Impact, sans-serif;
+      --font-sans: 'Space Grotesk', Inter, Arial, sans-serif;
+      --font-mono: 'Space Grotesk', Inter, Arial, sans-serif;
+      --text-micro: 12px;
+      --text-small: 13px;
+      --text-label: 15px;
+      --text-body: 18px;
+      --text-title: 24px;
+      --text-hero: clamp(54px, 7.4vw, 112px);
+      --text-intro-subtitle: clamp(17px, 1.65vw, 25px);
+      --text-intro-note: clamp(14px, 1.05vw, 18px);
+      --text-statement-heading: clamp(34px, 4.6vw, 70px);
+      --text-statement-body: clamp(18px, 1.9vw, 28px);
+      --text-diagram-heading: clamp(42px, 4.8vw, 76px);
+      --text-section-heading: clamp(42px, 5.4vw, 88px);
+      --text-section-body: clamp(17px, 1.35vw, 23px);
+      --text-map-title: 18px;
+      --text-map-body: 13px;
+      --text-detail-heading: 30px;
+      --text-detail-body: 18px;
+      --text-mobile-heading: 42px;
+      --text-mobile-body: 16px;
+      --text-mobile-map-title: 14px;
+      --text-mobile-map-body: 11px;
+      --text-mobile-detail-heading: 24px;
+      --text-mobile-detail-body: 15px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: var(--page);
+      padding: 0;
+      color: var(--meikku-ink);
+      font-family: var(--font-sans);
+    }
+
+    .storyboard {
+      width: 100vw;
+      margin: 0;
+      background: var(--sheet);
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .board {
+      border: 3px solid #000;
+      position: relative;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    body.solo-frame .board {
+      display: none;
+    }
+
+    body.solo-frame .board.active-solo {
+      display: grid;
+    }
+
+    body.solo-frame .band1-board.active-solo {
+      display: block;
+    }
+
+    @supports (height: 100dvh) {
+      .board {
+        height: 100dvh;
+      }
+    }
+
+    .band1-board {
+      background:
+        radial-gradient(var(--meikku-grid) var(--paper-dot-size), transparent var(--paper-dot-size));
+      background-size: var(--paper-dot-grid-size) var(--paper-dot-grid-size);
+      background-color: var(--meikku-paper);
+    }
+
+    .band1-board svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #cards {
+      display: none;
+      font-family: var(--font-sans);
+    }
+
+    .intro-title {
+      position: absolute;
+      z-index: 3;
+      left: 6.4vw;
+      top: 11vh;
+      width: min(470px, 38vw);
+      pointer-events: none;
+    }
+
+    .intro-kicker,
+    .frame-tag,
+    .system-label {
+      font-family: var(--font-sans);
+      font-size: var(--text-small);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .intro-kicker {
+      border: 3px solid #000;
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 12px 12px 8px;
+      background: var(--meikku-paper);
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    .intro-title h1,
+    .diagram-copy h2,
+    .blackbox-copy h2,
+    .node-detail-copy h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      line-height: 0.98;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .intro-title h1 {
+      font-size: var(--text-hero);
+      max-width: 5.8em;
+    }
+
+    .intro-title .subtitle {
+      margin-top: 16px;
+      max-width: 28em;
+      font-size: var(--text-intro-subtitle);
+      font-weight: 800;
+      line-height: 1.22;
+    }
+
+    .intro-title .thesis-line {
+      margin-top: 16px;
+      max-width: 28em;
+      color: var(--meikku-slate);
+      font-size: var(--text-intro-note);
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .split-board {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .visual-panel {
+      position: relative;
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      background: var(--interface);
+    }
+
+    .visual-panel img,
+    .interface-board img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .visual-panel img {
+      border: 3px solid #000;
+    }
+
+    .split-left { background: var(--frame-two-left); }
+    .split-right { background: var(--frame-two-right); color: var(--frame-two-copy-dark); }
+
+    .interface-board {
+      background: var(--interface);
+      color: var(--interface-copy);
+      font-family: var(--font-sans);
+      letter-spacing: 0.04em;
+    }
+
+    .frame-tag {
+      border: 3px solid #000;
+      position: absolute;
+      z-index: 5;
+      left: 40px;
+      top: 32px;
+      padding: 8px 12px 8px;
+      background: var(--meikku-paper);
+      color: var(--meikku-ink);
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    .statement-board .visual-panel::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 32px;
+      bottom: 28px;
+      z-index: 2;
+      padding: 8px 12px 8px;
+      background: var(--image-label-bg);
+      color: var(--image-label-fg);
+      font-size: var(--text-small);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .statement-panel {
+      border: 3px solid #000;
+      position: absolute;
+      z-index: 4;
+      left: 50%;
+      top: 50%;
+      width: min(760px, 72vw);
+      transform: translate(-50%, -50%);
+      padding: 36px 40px 36px;
+      background: var(--meikku-paper);
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    .statement-panel h2 {
+      margin: 0 0 16px;
+      font-family: var(--font-display);
+      font-size: var(--text-statement-heading);
+      line-height: 1;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .statement-panel p {
+      margin: 0;
+      max-width: 32em;
+      font-size: var(--text-statement-body);
+      font-weight: 800;
+      line-height: 1.28;
+    }
+
+    .diagram-board,
+    .blackbox-board,
+    .node-detail-board {
+      display: grid;
+      min-height: 100vh;
+      padding: 96px 72px 64px;
+      background:
+        radial-gradient(var(--meikku-grid) var(--paper-dot-size), transparent var(--paper-dot-size)),
+        var(--meikku-paper);
+      background-size: var(--paper-dot-grid-size) var(--paper-dot-grid-size);
+    }
+
+    .diagram-board {
+      grid-template-columns: minmax(460px, 0.4fr) minmax(660px, 0.6fr);
+      gap: 44px;
+    }
+
+    .diagram-copy,
+    .blackbox-copy,
+    .node-detail-copy {
+      align-self: center;
+    }
+
+    .diagram-copy h2,
+    .blackbox-copy h2,
+    .node-detail-copy h2 {
+      font-size: var(--text-section-heading);
+    }
+
+    .diagram-copy h2 {
+      font-size: var(--text-diagram-heading);
+    }
+
+    .diagram-copy p,
+    .blackbox-copy p,
+    .node-detail-copy p {
+      max-width: 32em;
+      margin: 24px 0 0;
+      color: #000;
+      font-size: var(--text-section-body);
+      font-weight: 700;
+      line-height: 1.42;
+    }
+
+    .map-panel {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 32px 24px;
+      align-self: center;
+      height: calc(100vh - 180px);
+      min-height: 480px;
+      max-height: 650px;
+      padding: 52px 32px 48px;
+      background:
+        radial-gradient(var(--dark-dot-grid) var(--dark-dot-size), transparent var(--dark-dot-size)),
+        var(--dark-panel);
+      background-size: var(--dark-dot-grid-size) var(--dark-dot-grid-size);
+      box-shadow: 6px 6px 0 #000;
+      overflow: hidden;
+    }
+
+    .map-lines {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .map-node {
+      position: relative;
+      z-index: 2;
+      width: auto;
+      min-height: 112px;
+      padding: 16px 16px 12px;
+      background: var(--dark-panel-soft);
+      color: var(--meikku-paper);
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    .map-node strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--meikku-lime);
+      font-size: var(--text-map-title);
+      line-height: 1.05;
+      text-transform: uppercase;
+    }
+
+    .map-node span {
+      display: block;
+      color: var(--interface-copy);
+      font-size: var(--text-map-body);
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .node-human { grid-column: 1; grid-row: 1; border-color: var(--meikku-amber); box-shadow: 6px 6px 0 #000; }
+    .node-human strong { color: var(--meikku-amber); }
+    .node-interpret { grid-column: 2; grid-row: 1; }
+    .node-perceive { grid-column: 3; grid-row: 1; }
+    .node-strategy { grid-column: 3; grid-row: 2; }
+    .node-path { grid-column: 2; grid-row: 2; }
+    .node-robot { grid-column: 1; grid-row: 2; }
+    .node-material { grid-column: 1; grid-row: 3; border-color: var(--warning-mark); box-shadow: 6px 6px 0 #000; }
+    .node-material strong { color: var(--warning-mark); }
+    .node-memory { grid-column: 2; grid-row: 3; }
+    .node-display { grid-column: 3; grid-row: 3; border-color: var(--meikku-paper); box-shadow: 6px 6px 0 #000; }
+    .node-display strong { color: var(--meikku-paper); }
+
+    .blackbox-board {
+      grid-template-columns: 0.34fr 0.66fr;
+      gap: 56px;
+      --blackbox-shot-height: min(calc(37.125vw - 74px), calc(100vh - 160px));
+      --blackbox-left-lift: clamp(200px, 12vw, 260px);
+      background:
+        radial-gradient(var(--meikku-grid) var(--paper-dot-size), transparent var(--paper-dot-size)),
+        var(--meikku-paper);
+      background-size: var(--paper-dot-grid-size) var(--paper-dot-grid-size);
+      color: var(--meikku-ink);
+    }
+
+    .blackbox-copy p {
+      color: #000;
+    }
+
+    .blackbox-copy {
+      display: flex;
+      height: var(--blackbox-shot-height);
+      flex-direction: column;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .detail-list div,
+    .detail-note {
+      padding: 16px 16px 12px;
+      font-size: var(--text-mobile-body);
+      font-weight: 750;
+      line-height: 1.34;
+    }
+
+    .too-path-evidence {
+      border: 3px solid #000;
+      width: 100%;
+      height: clamp(500px, 24vw, 820px);
+      margin: auto 0 0;
+      background: #fff;
+      box-shadow: 6px 6px 0 #000;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .too-path-evidence img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .blender-shot {
+      border: 3px solid #000;
+      position: relative;
+      align-self: center;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      min-height: 0;
+      margin: 0;
+      background: var(--meikku-paper);
+      box-shadow: 6px 6px 0 #000;
+      overflow: hidden;
+    }
+
+    .blender-shot > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .shot-blur {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      filter: blur(3px);
+      opacity: 0.55;
+      transform: scale(1.012);
+      transform-origin: center;
+    }
+
+    .shot-glass {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: var(--blackbox-glass);
+      mix-blend-mode: screen;
+    }
+
+    .focus-cutout {
+      position: absolute;
+      z-index: 4;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .focus-cutout img {
+      position: absolute;
+      left: calc(var(--x) / var(--w) * -100%);
+      top: calc(var(--y) / var(--h) * -100%);
+      width: calc(100% / var(--w));
+      height: calc(100% / var(--h));
+      max-width: none;
+      object-fit: fill;
+    }
+
+    .cut-plan { --x: 0.445; --y: 0.365; --w: 0.15; --h: 0.36; left: 44.5%; top: 36.5%; width: 15%; height: 36%; }
+    .cut-confirm { --x: 0.30; --y: 0.48; --w: 0.13; --h: 0.21; left: 30%; top: 48%; width: 13%; height: 21%; }
+    .cut-result { --x: 0.42; --y: 0.89; --w: 0.47; --h: 0.06; left: 42%; top: 89%; width: 47%; height: 6%; }
+
+    .redline-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .redline-layer .focus-box {
+      fill: transparent;
+      stroke: var(--blackbox-highlight);
+      stroke-width: 4;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .redline-layer .focus-line,
+    .redline-layer .focus-head {
+      fill: none;
+      stroke: var(--blackbox-highlight);
+      stroke-width: 3;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .shot-annotation {
+      position: absolute;
+      z-index: 4;
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 8px;
+      align-items: start;
+      width: min(288px, 28%);
+      padding: 12px 16px 12px 12px;
+      border: 3px solid var(--blackbox-highlight);
+      background: var(--annotation-paper);
+      color: var(--meikku-ink);
+      box-shadow: 6px 6px 0 var(--meikku-ink);
+      font-size: var(--text-small);
+      font-weight: 850;
+      line-height: 1.22;
+    }
+
+    .shot-annotation b {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      background: var(--blackbox-highlight);
+      color: var(--meikku-ink);
+      font-size: var(--text-label);
+      line-height: 1;
+    }
+
+    .ann-plan { left: 5%; top: 16%; }
+    .ann-confirm { left: 5%; top: 42%; }
+    .ann-result { left: 5%; bottom: 16%; }
+
+    .shot-caption {
+      position: absolute;
+      left: 24px;
+      bottom: 20px;
+      max-width: 680px;
+      padding: 12px 16px 12px;
+      background: var(--dark-glass);
+      color: var(--meikku-paper);
+      font-size: var(--text-map-body);
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    @media (max-height: 1120px) and (min-width: 1200px) {
+      .blackbox-copy h2 {
+        font-size: clamp(60px, 4vw, 76px);
+      }
+
+      .blackbox-copy p {
+        margin-top: 18px;
+        font-size: clamp(16px, 1.15vw, 21px);
+        line-height: 1.32;
+      }
+
+      .too-path-evidence {
+        height: clamp(360px, 42vh, 420px);
+      }
+    }
+
+    .node-detail-board {
+      grid-template-columns: 0.34fr 0.66fr;
+      gap: 44px;
+    }
+
+    .detail-grid {
+      align-self: center;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .detail-card {
+      min-height: 214px;
+      padding: 28px 28px 24px;
+      background: var(--meikku-paper);
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    .detail-card h3 {
+      margin: 0 0 12px;
+      font-family: var(--font-display);
+      font-size: var(--text-detail-heading);
+      line-height: 1.03;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .detail-card p {
+      margin: 0;
+      color: #000;
+      font-size: var(--text-detail-body);
+      font-weight: 700;
+      line-height: 1.38;
+    }
+
+    .detail-note {
+      grid-column: 1 / -1;
+      color: var(--meikku-slate);
+      background: var(--meikku-paper);
+    }
+
+    .detail-human .detail-card:first-child,
+    .detail-action .detail-card:first-child {
+      background: var(--amber-soft);
+    }
+
+    .detail-perception .detail-card:first-child,
+    .detail-strategy .detail-card:first-child {
+      background: var(--lime-soft);
+    }
+
+    .detail-feedback .detail-card:first-child {
+      background: var(--warning-soft);
+    }
+
+    /* --- cybernetics loop (frame 03) + node zoom (frames 05-08) --- */
+    .cyb-node { position: relative; z-index: 2; align-self: stretch; padding: 14px 16px 12px; background: var(--dark-panel-soft); color: var(--meikku-paper); box-shadow: 6px 6px 0 #000; }
+    .cyb-node .role { display: block; margin-bottom: 6px; font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--interface-label); }
+    .cyb-node strong { display: block; margin-bottom: 6px; color: var(--meikku-lime); font-size: var(--text-map-title); line-height: 1.04; text-transform: uppercase; }
+    .cyb-node > span:last-child { display: block; color: var(--interface-copy); font-size: var(--text-map-body); font-weight: 700; line-height: 1.32; }
+    .cyb-human { grid-column: 1; grid-row: 1; border-color: var(--meikku-amber); box-shadow: 6px 6px 0 #000; }
+    .cyb-human strong { color: var(--meikku-amber); }
+    .cyb-ai { grid-column: 3; grid-row: 1; }
+    .cyb-sensor { grid-column: 1; grid-row: 2; align-self: center; border-color: var(--meikku-paper); box-shadow: 6px 6px 0 #000; }
+    .cyb-sensor strong { color: var(--meikku-paper); }
+    .cyb-center { grid-column: 2; grid-row: 2; align-self: center; text-align: center; border-style: dashed; box-shadow: 6px 6px 0 #000; }
+    .cyb-center strong { color: var(--meikku-paper); }
+    .cyb-center > span:last-child { color: var(--meikku-paper); }
+    .cyb-arm { grid-column: 3; grid-row: 3; border-color: var(--meikku-paper); box-shadow: 6px 6px 0 #000; }
+    .cyb-arm strong { color: var(--meikku-paper); }
+    .cyb-material { grid-column: 1; grid-row: 3; border-color: var(--warning-mark); box-shadow: 6px 6px 0 #000; }
+    .cyb-material strong { color: var(--warning-mark); }
+    .map-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 22px; }
+    .map-legend span { display: inline-flex; align-items: center; font-size: var(--text-small); font-weight: 750; color: #000; }
+    .map-legend i { width: 24px; height: 4px; margin-right: 8px; display: inline-block; vertical-align: middle; }
+    .locator-loop { margin-top: 22px; }
+    .locator-loop text { font-family: var(--font-sans); }
+
+    /* full-bleed diagram frames: keep the art style, drop the two-column layout */
+    .cyb-frame { display: flex; align-items: stretch; justify-content: center; overflow: hidden; padding: 4.5vh 4vw; }
+    body.solo-frame .cyb-frame.active-solo { display: flex; }
+    .cyb-figure { flex: 1; min-width: 0; margin: 0; display: flex; }
+    .cyb-figure svg { width: 100%; height: 100%; display: block; font-family: var(--font-sans); }
+    .cyb-figure svg .disp { font-family: var(--font-display); letter-spacing: 0.02em; }
+
+    @media (max-width: 760px) {
+      body { padding: 0; }
+      .storyboard { width: 100vw; }
+      .split-board {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+      }
+      .visual-panel { min-height: 0; }
+      .intro-title {
+        left: 6vw;
+        top: 8vh;
+        width: 68vw;
+      }
+      .diagram-board,
+      .blackbox-board,
+      .node-detail-board {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 80px 24px 32px;
+        overflow-y: auto;
+      }
+      .diagram-copy h2,
+      .blackbox-copy h2,
+      .node-detail-copy h2 {
+        font-size: var(--text-mobile-heading);
+      }
+      .diagram-copy p,
+      .blackbox-copy p,
+      .node-detail-copy p {
+        font-size: var(--text-mobile-body);
+      }
+      .blackbox-copy {
+        height: auto;
+      }
+      .too-path-evidence {
+        height: auto;
+        aspect-ratio: 6 / 5;
+        margin-top: 20px;
+      }
+      .map-panel {
+        height: 520px;
+        min-height: 520px;
+      }
+      .map-node {
+        width: auto;
+        min-height: 100px;
+        padding: 12px 12px 8px;
+      }
+      .map-node strong { font-size: var(--text-mobile-map-title); }
+      .map-node span { font-size: var(--text-mobile-map-body); }
+      .detail-grid { grid-template-columns: 1fr; }
+      .detail-card {
+        min-height: 0;
+        padding: 16px 20px 16px;
+      }
+      .detail-card h3 { font-size: var(--text-mobile-detail-heading); }
+      .detail-card p { font-size: var(--text-mobile-detail-body); }
+      .statement-panel {
+        width: 84vw;
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!--
+    Codex handoff notes:
+    Codex handoff notes:
+    - This is a new copy based on ui/meikku_storyboard_draft.html.
+    - Frame 01 hides the original five animal buttons and skips the hand-click selection beat.
+    - Frames 03-08 are an outline draft for the cybernetics map and node explanations.
+    - Placeholder notes are intentionally visible where thesis wording or evidence should be refined later.
+    - Keep the story collaborative: human and robot act together on one material, not command/execution.
+  -->
+  <main class="storyboard" aria-label="MEIKKU cybernetics storyboard outline">
+    <section id="frame-01" class="board band1-board" aria-label="Frame 01 Band 01 co-shaping animation">
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="crayon" x="-25%" y="-25%" width="150%" height="150%">
+            <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.032" numOctaves="3" seed="2" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="5.5"/>
+          </filter>
+
+          <filter id="crayonStill" x="-15%" y="-15%" width="130%" height="130%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="9" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+          </filter>
+
+          <!-- contours may only exist inside the dough -->
+          <clipPath id="doughClip">
+            <path id="doughClipPath" d=""/>
+          </clipPath>
+        </defs>
+
+
+        <g id="cards" filter="url(#crayonStill)"></g>
+
+        <g filter="url(#crayon)">
+
+
+          <circle cx="720" cy="430" r="170" fill="none" stroke="var(--meikku-ghost-line)"
+                  stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round"/>
+
+
+          <path id="doughShadow" d="" fill="var(--meikku-clay-shadow)" transform="translate(10,12)"/>
+
+
+          <path id="dough" d="" fill="var(--meikku-clay)" stroke="var(--meikku-ink)"
+                stroke-width="5.5" stroke-linejoin="round"/>
+
+
+          <g clip-path="url(#doughClip)" stroke="var(--meikku-contour)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.85">
+            <path id="iso0" d=""/>
+            <path id="iso1" d=""/>
+            <path id="iso2" d=""/>
+            <path id="iso3" d=""/>
+            <path id="iso4" d=""/>
+            <path id="iso5" d=""/>
+          </g>
+
+          <!-- ink boundary of every raised / sunken feature (简笔画 edge) -->
+          <g id="featEdges" clip-path="url(#doughClip)" fill="none"
+             stroke="var(--meikku-ink)" stroke-width="4" stroke-linecap="round"></g>
+
+
+          <circle id="holeC" cx="720" cy="430" r="0" opacity="0"
+                  fill="var(--meikku-paper)" stroke="var(--meikku-ink)"
+                  stroke-width="5" stroke-linejoin="round"/>
+
+
+          <g id="ghost1" opacity="0">
+            <path id="ghost1Line" d="" fill="none" stroke="var(--meikku-lime)"
+                  stroke-width="5" stroke-dasharray="12 14" stroke-linecap="round"/>
+            <circle id="ghost1Circ" cx="0" cy="0" r="28" fill="none" stroke="var(--meikku-lime)"
+                    stroke-width="5" stroke-dasharray="10 9"/>
+          </g>
+
+
+          <g id="toolpathG" opacity="0">
+            <path id="tpFull" d="" fill="none" stroke="var(--meikku-lime)" stroke-width="3"
+                  stroke-dasharray="5 9" stroke-linecap="round" opacity="0.3"/>
+            <path id="tpAhead" d="" fill="none" stroke="var(--meikku-lime)" stroke-width="5"
+                  stroke-dasharray="12 10" stroke-linecap="round"/>
+            <g id="tpTargets" fill="none" stroke="var(--meikku-lime)" stroke-width="4"></g>
+          </g>
+
+
+          <g id="sparks"></g>
+
+
+          <!-- LEFT HAND: mirrored, the steadying hand — holds what the right hand has shaped -->
+          <g id="handL">
+            <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                  stroke-linecap="round" stroke-linejoin="round" transform="scale(-1,1)" d="
+              M -54 760
+              C -62 600 -54 430 -48 300
+              C -52 250 -50 175 -46 138
+              Q -56 122 -68 108
+              Q -95 88 -96 68
+              Q -96 52 -84 52
+              Q -72 54 -66 70
+              Q -58 86 -48 94
+              Q -44 72 -42 50
+              L -40 18
+              Q -40 4 -30 4
+              Q -20 5 -20 18
+              L -16 54
+              Q -12 64 -9 52
+              L -6 8
+              Q -5 -6 4 -5
+              Q 12 -4 11 10
+              L 14 54
+              Q 17 66 21 54
+              L 27 16
+              Q 30 4 39 7
+              Q 47 10 44 22
+              L 38 62
+              Q 40 74 45 64
+              L 55 38
+              Q 60 27 68 32
+              Q 75 37 71 47
+              L 58 92
+              Q 55 108 48 118
+              Q 46 150 44 170
+              C 46 195 50 250 47 300
+              C 52 430 58 600 52 760
+              Z"/>
+          </g>
+
+          <!-- RIGHT HAND: the shaping hand — clicks, presses, pushes, pinches, pulls, rubs -->
+          <g id="hand">
+            <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                  stroke-linecap="round" stroke-linejoin="round" d="
+              M -54 760
+              C -62 600 -54 430 -48 300
+              C -52 250 -50 175 -46 138
+              Q -56 122 -68 108
+              Q -95 88 -96 68
+              Q -96 52 -84 52
+              Q -72 54 -66 70
+              Q -58 86 -48 94
+              Q -44 72 -42 50
+              L -40 18
+              Q -40 4 -30 4
+              Q -20 5 -20 18
+              L -16 54
+              Q -12 64 -9 52
+              L -6 8
+              Q -5 -6 4 -5
+              Q 12 -4 11 10
+              L 14 54
+              Q 17 66 21 54
+              L 27 16
+              Q 30 4 39 7
+              Q 47 10 44 22
+              L 38 62
+              Q 40 74 45 64
+              L 55 38
+              Q 60 27 68 32
+              Q 75 37 71 47
+              L 58 92
+              Q 55 108 48 118
+              Q 46 150 44 170
+              C 46 195 50 250 47 300
+              C 52 430 58 600 52 760
+              Z"/>
+          </g>
+
+
+          <g id="bot">
+            <g fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+               stroke-linecap="round" stroke-linejoin="round">
+
+              <path d="M -1 -156 C -10 -330 8 -540 -2 -860 L 36 -860 C 28 -540 44 -330 35 -150 Z"/>
+              <circle cx="16" cy="-148" r="25"/>
+              <circle cx="16" cy="-148" r="10" fill="none" stroke="var(--meikku-lime)" stroke-width="6"/>
+              <path d="M 2 -152 L 30 -150 L 24 -64 L -4 -66 Z"/>
+              <rect x="-2" y="-108" width="15" height="15" fill="var(--meikku-lime)"
+                    stroke="var(--meikku-ink)" stroke-width="3" transform="rotate(8 5 -100)"/>
+              <path d="M -46 -68 L 54 -64 L 52 -44 L -48 -48 Z"/>
+              <g id="prongL">
+                <path d="M -42 -50 L -36 -4 Q -35 6 -25 3 L -25 -48 Z"/>
+              </g>
+              <g id="prongR">
+                <path d="M 31 -48 L 32 -2 Q 33 8 43 4 L 48 -46 Z"/>
+              </g>
+              <circle cx="-32" cy="-57" r="4.5" fill="var(--meikku-ink)" stroke="none"/>
+              <circle cx="40" cy="-55" r="4.5" fill="var(--meikku-ink)" stroke="none"/>
+            </g>
+          </g>
+
+        </g>
+      </svg>
+
+      <div class="intro-title" aria-label="Project title">
+        <h1>MEIKKU</h1>
+        <div class="subtitle">Plain typed language drives the robot arm.</div>
+        <div class="thesis-line">A constructive cooperative toy: plain typed language drives a real robot arm &#8212; no paths to program, no code.</div>
+      </div>
+    </section>
+
+    <section id="frame-02" class="board split-board statement-board" aria-label="Frame 02 project statement">
+      <figure class="visual-panel split-left" data-label="Robot arm as playmate">
+        <img src="assets/storyboard/storyboard_robot_yellow_anchor.jpg" alt="Tabletop robot arm close-up on a warm anchored field" />
+      </figure>
+      <figure class="visual-panel split-right" data-label="Material as playground">
+        <img src="assets/storyboard/storyboard_clay_yellow_anchor.jpg" alt="Close-up clay material showing compressed texture and response" />
+      </figure>
+      <div class="statement-panel">
+        <p>Playing with a robot arm should not require programming one. Meikku is a constructive cooperative toy: plain typed language &#8212; no waypoints, no code &#8212; drives a real robot arm.</p>
+      </div>
+    </section>
+
+    <section id="frame-03" class="board diagram-board cyb-frame" aria-label="Frame 03 cybernetics map diagram">
+      <figure class="cyb-figure">
+        <svg viewBox="0 0 1200 655" role="img" aria-label="A cybernetics map: natural language enters the AI, the AI generates a tool path, the robot executes the tool path, material is sensed by RGB and depth cameras, the dataset updates, and the dataset returns context to the AI.">
+          <defs>
+            <marker id="ahInk" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L5.5,3 L0,6 z" fill="#000"/></marker>
+          </defs>
+          <text class="disp" x="600" y="50" text-anchor="middle" font-size="40" fill="#000">CYBERNETICS MAP</text>
+          <text x="600" y="78" text-anchor="middle" font-size="16" font-weight="700" fill="var(--meikku-slate)">Natural Language &#8594; Tool Path &#8594; Execution &#8594; Sensed Dataset &#8594; AI Context</text>
+
+          <path d="M 320 196 H 880" fill="none" stroke="var(--role-flow)" stroke-width="4" marker-end="url(#ahInk)"/>
+          <path d="M 1005 252 V 304 H 1142 V 476 H 1130" fill="none" stroke="var(--role-flow)" stroke-width="4" marker-end="url(#ahInk)"/>
+          <path d="M 880 476 H 320" fill="none" stroke="var(--role-flow)" stroke-width="4" marker-end="url(#ahInk)"/>
+          <path d="M 195 420 V 374" fill="none" stroke="var(--role-flow)" stroke-width="4" marker-end="url(#ahInk)"/>
+          <path d="M 295 337 H 420" fill="none" stroke="var(--role-flow)" stroke-width="4" marker-end="url(#ahInk)"/>
+          <path d="M 780 337 H 840 V 224 H 880" fill="none" stroke="var(--role-flow)" stroke-width="4" marker-end="url(#ahInk)"/>
+
+          <text x="600" y="185" text-anchor="middle" font-size="14" font-weight="800" fill="#000">Natural Language</text>
+          <text x="1124" y="352" text-anchor="end" font-size="14" font-weight="800" fill="#000">Tool Path</text>
+          <text x="600" y="510" text-anchor="middle" font-size="14" font-weight="800" fill="#000">Execute Tool Path</text>
+          <text x="214" y="402" font-size="12.5" font-weight="700" fill="#000">Material State</text>
+          <text x="346" y="326" text-anchor="middle" font-size="12.5" font-weight="700" fill="#000">Sensor Data</text>
+          <text x="792" y="360" font-size="12.5" font-weight="700" fill="#000">Dataset Context</text>
+
+          <rect x="76" y="146" width="250" height="112" fill="#000"/><rect x="70" y="140" width="250" height="112" fill="var(--role-human)" stroke="#000" stroke-width="3"/>
+          <text x="88" y="170" font-size="12" font-weight="800" letter-spacing="0.5" fill="#000">COMPARATOR</text>
+          <text class="disp" x="88" y="206" font-size="23" fill="#000">HUMAN</text>
+          <text x="88" y="232" font-size="13" font-weight="700" fill="#000">Types Natural Language</text>
+          <rect x="886" y="146" width="250" height="112" fill="#000"/><rect x="880" y="140" width="250" height="112" fill="var(--role-ai)" stroke="#000" stroke-width="3"/>
+          <text x="898" y="170" font-size="12" font-weight="800" letter-spacing="0.5" fill="#000">REGULATOR</text>
+          <text class="disp" x="898" y="206" font-size="23" fill="#000">AI</text>
+          <text x="898" y="232" font-size="13" font-weight="700" fill="#000">Generates Tool Path</text>
+          <rect x="886" y="426" width="250" height="112" fill="#000"/><rect x="880" y="420" width="250" height="112" fill="var(--role-robot)" stroke="#000" stroke-width="3"/>
+          <text x="898" y="450" font-size="12" font-weight="800" letter-spacing="0.5" fill="var(--meikku-paper)">EFFECTOR</text>
+          <text class="disp" x="898" y="486" font-size="22" fill="var(--meikku-paper)">ROBOT ARM</text>
+          <text x="898" y="512" font-size="13" font-weight="700" fill="var(--meikku-paper)">Executes Tool Path</text>
+          <rect x="76" y="426" width="250" height="112" fill="#000"/><rect x="70" y="420" width="250" height="112" fill="var(--role-material)" stroke="#000" stroke-width="3"/>
+          <text x="88" y="450" font-size="12" font-weight="800" letter-spacing="0.5" fill="#000">REGULATED VARIABLE</text>
+          <text class="disp" x="88" y="486" font-size="23" fill="#000">MATERIAL</text>
+          <text x="88" y="512" font-size="13" font-weight="700" fill="#000">Clay State + Marks</text>
+          <rect x="101" y="306" width="200" height="74" fill="#000"/><rect x="95" y="300" width="200" height="74" fill="var(--role-sensor)" stroke="#000" stroke-width="3"/>
+          <text class="disp" x="112" y="335" font-size="19" fill="#000">SENSOR</text>
+          <text x="112" y="358" font-size="12" font-weight="700" fill="var(--meikku-slate)">RGB Cam + Depth Cam</text>
+          <rect x="426" y="274" width="360" height="150" fill="#000"/><rect x="420" y="268" width="360" height="150" fill="var(--role-dataset)" stroke="#000" stroke-width="3"/>
+          <text x="440" y="296" font-size="12" font-weight="800" letter-spacing="0.5" fill="var(--meikku-slate)">MEMORY NODE</text>
+          <text class="disp" x="600" y="334" text-anchor="middle" font-size="28" fill="#000">DATASET</text>
+          <text x="600" y="364" text-anchor="middle" font-size="13" font-weight="700" fill="var(--meikku-slate)">Language Logs + Tool Paths</text>
+          <text x="600" y="390" text-anchor="middle" font-size="13" font-weight="700" fill="var(--meikku-slate)">Observed Clay Mesh + Depth Frames</text>
+        </svg>
+      </figure>
+    </section>
+
+    <section id="frame-04" class="board blackbox-board" aria-label="Frame 04 technical implementation view of the blackbox with Blender screenshot">
+      <div class="blackbox-copy">
+        <h2>Open the Black Box</h2>
+        <p>Behind the constructive cooperative toy, this page marks the actual implementation stack: Blender IK, live clay extraction, and imported tool paths baked into timeline keyframes.</p>
+        <figure class="too-path-evidence" aria-label="Tool path reasoning projection evidence">
+          <img src="assets/storyboard/storyboard_too_path_latest.png" alt="Tool path reasoning proof sheet with XZ, YZ, XY, and perspective projections showing the observed mesh, goal outline, and selected path segments." />
+        </figure>
+      </div>
+      <figure class="blender-shot">
+        <img src="assets/storyboard/storyboard_blender_blackbox_evidence.png" alt="Direct Blender interface screenshot in orthographic viewport showing the Meikku robot arm, clay target, path evidence, and Blender side panels" />
+        <img class="shot-blur" src="assets/storyboard/storyboard_blender_blackbox_evidence.png" alt="" aria-hidden="true" />
+        <div class="shot-glass" aria-hidden="true"></div>
+        <div class="focus-cutout cut-plan" aria-hidden="true"><img src="assets/storyboard/storyboard_blender_blackbox_evidence.png" alt="" /></div>
+        <div class="focus-cutout cut-confirm" aria-hidden="true"><img src="assets/storyboard/storyboard_blender_blackbox_evidence.png" alt="" /></div>
+        <div class="focus-cutout cut-result" aria-hidden="true"><img src="assets/storyboard/storyboard_blender_blackbox_evidence.png" alt="" /></div>
+        <svg class="redline-layer" viewBox="0 0 1000 562.5" preserveAspectRatio="none" aria-hidden="true">
+          <rect class="focus-box" x="445" y="205" width="150" height="202"/>
+          <rect class="focus-box" x="300" y="270" width="130" height="118"/>
+          <rect class="focus-box" x="420" y="501" width="470" height="34"/>
+          <path class="focus-line" d="M 188 104 H 360 V 188 H 445 V 205"/>
+          <path class="focus-head" d="M 433 193 H 445 V 205"/>
+          <path class="focus-line" d="M 188 292 H 270 V 329 H 300"/>
+          <path class="focus-head" d="M 288 317 H 300 V 329"/>
+          <path class="focus-line" d="M 188 466 H 340 V 518 H 420"/>
+          <path class="focus-head" d="M 408 506 H 420 V 518"/>
+        </svg>
+        <div class="shot-annotation ann-plan"><b>1</b><span>Blender IK drives the mechanical arm model.</span></div>
+        <div class="shot-annotation ann-confirm"><b>2</b><span>Webcam + depth cam extract the clay proxy.</span></div>
+        <div class="shot-annotation ann-result"><b>3</b><span>Imported tool path is baked as keyframes.</span></div>
+      </figure>
+    </section>
+
+    <section id="frame-05" class="board node-detail-board cyb-frame" aria-label="Inside the loop, part one: the human comparator and the AI regulator that converts typed language into motion.">
+      <figure class="cyb-figure">
+        <svg viewBox="0 0 1200 620" role="img" aria-label="Inside the loop, part one: the human comparator and the AI regulator that converts typed language into motion.">
+          <defs><marker id="nd5" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="#000"/></marker></defs>
+          <text x="40" y="52" font-size="19" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">INSIDE THE LOOP</text>
+          <text x="320" y="52" font-size="16" font-weight="700" fill="var(--meikku-slate)">What Happens Inside Each Node</text>
+          <line x1="40" y1="70" x2="1160" y2="70" stroke="#000" stroke-width="3"/>
+          <text x="44" y="122" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">COMPARATOR</text>
+          <text class="disp" x="44" y="166" font-size="32" fill="#000">HUMAN</text>
+          <text x="44" y="200" font-size="15" font-weight="700" fill="var(--meikku-slate)">observes the new state, judges it,</text>
+          <text x="44" y="222" font-size="15" font-weight="700" fill="var(--meikku-slate)">and types the next thing</text>
+          <text x="44" y="258" font-size="12.5" font-weight="700" fill="var(--meikku-slate)">a loose, moving goal (2nd-order)</text>
+          <circle cx="286" cy="118" r="15" fill="var(--role-human)" stroke="#000" stroke-width="3"/><text x="286" y="123" text-anchor="middle" font-size="14" font-weight="800" fill="#000">H</text>
+          <rect x="346" y="138" width="195" height="150" fill="#000"/><rect x="340" y="132" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+          <text x="356" y="160" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">IN</text>
+          <text x="437" y="204" text-anchor="middle" font-size="18" font-weight="700" fill="#000">what is shown</text>
+          <text x="437" y="230" text-anchor="middle" font-size="14" font-weight="700" fill="var(--meikku-slate)">the new state</text>
+          <line x1="540" y1="207" x2="568" y2="207" stroke="#000" stroke-width="5" marker-end="url(#nd5)"/>
+          <rect x="578" y="123" width="250" height="176" fill="#000"/><rect x="572" y="117" width="250" height="176" fill="var(--role-human)" stroke="#000" stroke-width="3"/>
+          <text x="588" y="144" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="#000">PROCESS</text>
+          <text class="disp" x="697" y="190" text-anchor="middle" font-size="30" fill="#000">COMPARE</text>
+          <text x="697" y="226" text-anchor="middle" font-size="16" font-weight="700" fill="#000">a fit, or not?</text>
+          <text x="697" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#000">more? softer?</text>
+          <line x1="826" y1="207" x2="854" y2="207" stroke="#000" stroke-width="5" marker-end="url(#nd5)"/>
+          <rect x="866" y="138" width="195" height="150" fill="#000"/><rect x="860" y="132" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+          <text x="876" y="160" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">OUT</text>
+          <text x="957" y="204" text-anchor="middle" font-size="18" font-weight="700" fill="#000">next words</text>
+          <text x="957" y="230" text-anchor="middle" font-size="18" font-weight="800" fill="#FF0055">"no, softer"</text>
+          <line x1="40" y1="342" x2="1160" y2="342" stroke="var(--meikku-grid)" stroke-width="2"/>
+          <text x="44" y="402" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">REGULATOR</text>
+          <text class="disp" x="44" y="446" font-size="32" fill="#000">AI</text>
+          <text x="44" y="480" font-size="15" font-weight="700" fill="var(--meikku-slate)">converts typed language into</text>
+          <text x="44" y="502" font-size="15" font-weight="700" fill="var(--meikku-slate)">motion &#8212; no path to author</text>
+          <text x="44" y="538" font-size="12.5" font-weight="700" fill="var(--meikku-slate)">many words in, one act (Ashby)</text>
+          <circle cx="286" cy="398" r="15" fill="var(--role-ai)" stroke="#000" stroke-width="3"/><text x="286" y="403" text-anchor="middle" font-size="14" font-weight="800" fill="#000">A</text>
+          <rect x="346" y="418" width="195" height="150" fill="#000"/><rect x="340" y="412" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+          <text x="356" y="440" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">IN</text>
+          <text x="437" y="484" text-anchor="middle" font-size="18" font-weight="700" fill="#000">typed words</text>
+          <text x="437" y="510" text-anchor="middle" font-size="14" font-weight="700" fill="var(--meikku-slate)">+ the table</text>
+          <line x1="540" y1="487" x2="568" y2="487" stroke="#000" stroke-width="5" marker-end="url(#nd5)"/>
+          <rect x="578" y="403" width="250" height="176" fill="#000"/><rect x="572" y="397" width="250" height="176" fill="var(--role-ai)" stroke="#000" stroke-width="3"/>
+          <text x="588" y="424" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="#000">PROCESS</text>
+          <text class="disp" x="697" y="470" text-anchor="middle" font-size="30" fill="#000">NARROW</text>
+          <text x="697" y="506" text-anchor="middle" font-size="16" font-weight="700" fill="#000">one bounded move</text>
+          <text x="697" y="530" text-anchor="middle" font-size="16" font-weight="700" fill="#000">kept within limits</text>
+          <line x1="826" y1="487" x2="854" y2="487" stroke="#000" stroke-width="5" marker-end="url(#nd5)"/>
+          <rect x="866" y="418" width="195" height="150" fill="#000"/><rect x="860" y="412" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+          <text x="876" y="440" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">OUT</text>
+          <text x="957" y="484" text-anchor="middle" font-size="18" font-weight="700" fill="#000">one bounded,</text>
+          <text x="957" y="510" text-anchor="middle" font-size="18" font-weight="800" fill="#000">safe move</text>
+        </svg>
+      </figure>
+    </section>
+
+    <section id="frame-06" class="board node-detail-board cyb-frame" aria-label="Inside the loop, part two: the robot arm effector and the material.">
+      <figure class="cyb-figure">
+        <svg viewBox="0 0 1200 620" role="img" aria-label="Inside the loop, part two: the robot arm effector and the material.">
+          <defs><marker id="nd6" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="#000"/></marker></defs>
+          <text x="40" y="52" font-size="19" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">INSIDE THE LOOP</text>
+          <text x="320" y="52" font-size="16" font-weight="700" fill="var(--meikku-slate)">What Happens Inside Each Node</text>
+          <line x1="40" y1="70" x2="1160" y2="70" stroke="#000" stroke-width="3"/>
+          <text x="44" y="122" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">EFFECTOR</text>
+          <text class="disp" x="44" y="166" font-size="26" fill="#000">ROBOT ARM</text>
+          <text x="44" y="200" font-size="15" font-weight="700" fill="var(--meikku-slate)">turns the move into slow,</text>
+          <text x="44" y="222" font-size="15" font-weight="700" fill="var(--meikku-slate)">readable motion</text>
+          <text x="44" y="258" font-size="12.5" font-weight="700" fill="var(--meikku-slate)">signal becomes physical energy</text>
+          <circle cx="286" cy="118" r="15" fill="var(--role-robot)" stroke="#000" stroke-width="3"/><text x="286" y="123" text-anchor="middle" font-size="14" font-weight="800" fill="var(--meikku-paper)">R</text>
+          <rect x="346" y="138" width="195" height="150" fill="#000"/><rect x="340" y="132" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+          <text x="356" y="160" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">IN</text>
+          <text x="437" y="214" text-anchor="middle" font-size="18" font-weight="700" fill="#000">one safe move</text>
+          <line x1="540" y1="207" x2="568" y2="207" stroke="#000" stroke-width="5" marker-end="url(#nd6)"/>
+          <rect x="578" y="123" width="250" height="176" fill="#000"/><rect x="572" y="117" width="250" height="176" fill="var(--role-robot)" stroke="#000" stroke-width="3"/>
+          <text x="588" y="144" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="var(--meikku-paper)">PROCESS</text>
+          <text class="disp" x="697" y="190" text-anchor="middle" font-size="34" fill="var(--meikku-paper)">ACT</text>
+          <text x="697" y="226" text-anchor="middle" font-size="16" font-weight="700" fill="var(--meikku-paper)">hover &#8594; touch &#8594; act</text>
+          <text x="697" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="var(--meikku-paper)">slow and readable</text>
+          <line x1="826" y1="207" x2="854" y2="207" stroke="#000" stroke-width="5" marker-end="url(#nd6)"/>
+          <rect x="866" y="138" width="195" height="150" fill="#000"/><rect x="860" y="132" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+          <text x="876" y="160" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">OUT</text>
+          <text x="957" y="204" text-anchor="middle" font-size="18" font-weight="700" fill="#000">a real mark</text>
+          <text x="957" y="230" text-anchor="middle" font-size="18" font-weight="800" fill="#000">in the material</text>
+          <line x1="40" y1="342" x2="1160" y2="342" stroke="var(--meikku-grid)" stroke-width="2"/>
+          <text x="44" y="402" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">REGULATED VARIABLE</text>
+          <text class="disp" x="44" y="446" font-size="28" fill="#000">MATERIAL</text>
+          <text x="44" y="480" font-size="15" font-weight="700" fill="var(--meikku-slate)">changes, keeps the mark,</text>
+          <text x="44" y="502" font-size="15" font-weight="700" fill="var(--meikku-slate)">and can surprise</text>
+          <text x="44" y="538" font-size="12.5" font-weight="700" fill="var(--meikku-slate)">the medium both sides read (Pask)</text>
+          <circle cx="286" cy="398" r="15" fill="var(--role-material)" stroke="#000" stroke-width="3"/><text x="286" y="403" text-anchor="middle" font-size="14" font-weight="800" fill="#000">M</text>
+          <rect x="346" y="418" width="195" height="150" fill="#000"/><rect x="340" y="412" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+          <text x="356" y="440" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">IN</text>
+          <text x="437" y="494" text-anchor="middle" font-size="18" font-weight="700" fill="#000">the arm's action</text>
+          <line x1="540" y1="487" x2="568" y2="487" stroke="#000" stroke-width="5" marker-end="url(#nd6)"/>
+          <rect x="578" y="403" width="250" height="176" fill="#000"/><rect x="572" y="397" width="250" height="176" fill="var(--role-material)" stroke="#000" stroke-width="3"/>
+          <text x="588" y="424" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="#000">PROCESS</text>
+          <text class="disp" x="697" y="470" text-anchor="middle" font-size="24" fill="#000">CHANGE + KEEP</text>
+          <text x="697" y="506" text-anchor="middle" font-size="16" font-weight="700" fill="#000">the mark stays</text>
+          <text x="697" y="530" text-anchor="middle" font-size="16" font-weight="700" fill="#000">it surprises</text>
+          <line x1="826" y1="487" x2="854" y2="487" stroke="#000" stroke-width="5" marker-end="url(#nd6)"/>
+          <rect x="866" y="418" width="195" height="150" fill="#000"/><rect x="860" y="412" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+          <text x="876" y="440" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">OUT</text>
+          <text x="957" y="484" text-anchor="middle" font-size="18" font-weight="700" fill="#000">a new state</text>
+          <text x="957" y="510" text-anchor="middle" font-size="18" font-weight="800" fill="#000">to read</text>
+        </svg>
+      </figure>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      const soloParams = new URLSearchParams(window.location.search);
+      if (soloParams.has('solo') && window.location.hash) {
+        const targetFrame = document.querySelector(window.location.hash);
+        if (targetFrame) {
+          document.body.classList.add('solo-frame');
+          document.querySelectorAll('.board').forEach(board => {
+            board.classList.toggle('active-solo', board === targetFrame);
+          });
+        }
+      }
+
+      const NSVG = 'http://www.w3.org/2000/svg';
+      const T = 18;
+      const T_RESET = 15.5;
+      const CX = 720, CY = 430, R = 170;   // dough sits right of centre to balance the card column
+      const N = 22;
+      const TAU = Math.PI*2;
+
+
+      const ease = u => u*u*(3-2*u);
+      const clamp = (v,a,b)=> Math.max(a,Math.min(b,v));
+      const wrapA = a => { while(a> Math.PI) a-=2*Math.PI; while(a<-Math.PI) a+=2*Math.PI; return a; };
+      const inWin = (wins,t)=> wins.some(w=> t>=w[0] && t<=w[1]);
+
+      function track(keys, t){
+        if (t <= keys[0][0]) return keys[0].slice(1);
+        for (let i=0;i<keys.length-1;i++){
+          const a=keys[i], b=keys[i+1];
+          if (t>=a[0] && t<=b[0]){
+            const u = ease((t-a[0]) / ((b[0]-a[0])||1e-9));
+            return [a[1]+(b[1]-a[1])*u, a[2]+(b[2]-a[2])*u, a[3]+(b[3]-a[3])*u];
+          }
+        }
+        return keys[keys.length-1].slice(1);
+      }
+
+
+      const theta = [], D = new Array(N).fill(0), jitter = new Array(N).fill(0);
+      const readToken = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      const INK = readToken('--meikku-ink');
+      const LIME = readToken('--meikku-lime');
+      const CARD_HOVER = readToken('--meikku-card-hover');
+      for (let i=0;i<N;i++) theta.push(i/N*TAU);
+
+      function blobPath(pts){
+        const n = pts.length;
+        let d = `M ${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)} `;
+        for (let i=0;i<n;i++){
+          const p0=pts[(i-1+n)%n], p1=pts[i], p2=pts[(i+1)%n], p3=pts[(i+2)%n];
+          const c1=[p1[0]+(p2[0]-p0[0])/6, p1[1]+(p2[1]-p0[1])/6];
+          const c2=[p2[0]-(p3[0]-p1[0])/6, p2[1]-(p3[1]-p1[1])/6];
+          d += `C ${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)} `;
+        }
+        return d + 'Z';
+      }
+
+
+      function heartRadii(){
+        const buckets = new Array(N).fill(0);
+        for (let m=0;m<1440;m++){
+          const tt = m/1440*TAU;
+          const xm = 16*Math.pow(Math.sin(tt),3);
+          const ym = 13*Math.cos(tt)-5*Math.cos(2*tt)-2*Math.cos(3*tt)-Math.cos(4*tt);
+          const sx = xm, sy = -ym + 2;
+          let phi = Math.atan2(sy,sx); if (phi<0) phi += TAU;
+          const b = Math.floor(phi/TAU*N)%N;
+          const r = Math.hypot(sx,sy);
+          if (r>buckets[b]) buckets[b]=r;
+        }
+        for (let i=0;i<N;i++) if (buckets[i]===0)
+          buckets[i]=(buckets[(i-1+N)%N]+buckets[(i+1)%N])/2 || 10;
+        const mx = Math.max(...buckets);
+        return buckets.map(r=> r/mx * R*1.02);
+      }
+      const circleR = mul => theta.map(()=> R*mul);
+
+
+
+      // radial lobe helper: a soft bump on the outline at centreDeg
+      const lobe = (a, cDeg, w, amp) =>
+        amp*Math.exp(-Math.pow(wrapA(a - cDeg*Math.PI/180)/w, 2));
+
+      // five animals: outline lobes give ears/fins/flippers,
+      // relief actions give eyes/shells/backs
+      const SHAPES = [
+        {name:'CAT',     mode:'edge',               // round face, two ears, two pressed eyes
+         radii: theta.map(a=> R*(0.92 + lobe(a,245,0.22,0.34) + lobe(a,295,0.22,0.34))),
+         actions:[
+          {t0:11.8, t1:12.4, dx:-35, dy:-25, s:-1, max:0.32, sig:16, who:'h', v:'press'},
+          {t0:12.7, t1:13.3, dx:35,  dy:-25, s:-1, max:0.32, sig:16, who:'r', v:'press'}
+         ]},
+        {name:'PIG',     mode:'edge',               // round face, floppy ears, the snout is the soul
+         radii: theta.map(a=> R*(0.94 + lobe(a,240,0.18,0.24) + lobe(a,300,0.18,0.24))),
+         actions:[
+          {t0:11.6, t1:12.2,  dx:0,   dy:8, s: 1, max:0.45, sig:30, who:'h', v:'pull'},   // snout, properly raised
+          {t0:12.5, t1:12.85, dx:12,  dy:9, s:-1, max:0.30, sig:13, who:'r', v:'press'},  // nostril, properly sunk
+          {t0:12.9, t1:13.25, dx:-12, dy:9, s:-1, max:0.30, sig:13, who:'h', v:'press'}   // nostril
+         ]},
+        {name:'FISH',    mode:'edge',               // pointed nose east, slim waist, big fan tail with V notch
+         radii: theta.map(a=> R*(0.66 + 0.70*Math.pow(Math.max(Math.cos(a),0),3)
+                 + lobe(a,162,0.16,0.63) + lobe(a,198,0.16,0.63))),
+         actions:[
+          {t0:10.4, t1:10.9,  dx:30,  dy:0,   s: 1, max:0.18, sig:44, who:'h', v:'pull'},  // soft volume, no ink ring
+          {t0:12.5, t1:12.75, dx:125, dy:-20, s:-1, max:0.28, sig:12, who:'r', v:'press'}  // eye up near the nose
+         ]},
+        {name:'BIRD',    mode:'edge',               // flying bird from above: head east, wings spread, fan tail west
+         radii: theta.map(a=> R*(0.55 + lobe(a,0,0.14,0.42)
+                 + lobe(a,90,0.30,0.50) + lobe(a,270,0.30,0.50)
+                 + lobe(a,180,0.24,0.38))),
+         actions:[
+          {t0:10.4, t1:10.9,  dx:-10, dy:0,   s: 1, max:0.18, sig:46, who:'h', v:'pull'},  // body volume
+          {t0:11.5, t1:11.8,  dx:0,   dy:85,  s: 1, max:0.16, sig:38, who:'h', v:'pull'},  // south wing
+          {t0:12.5, t1:12.75, dx:105, dy:-15, s:-1, max:0.26, sig:11, who:'r', v:'press'}, // eye on the head
+          {t0:13.35,t1:13.55, dx:0,   dy:-85, s: 1, max:0.16, sig:38, who:'r', v:'pinch'}  // north wing
+         ]},
+        {name:'STARFISH', mode:'edge',              // five arms, centre domed up
+         radii: theta.map(a=> R*(0.80 + 0.32*Math.cos(5*a))),
+         actions:[
+          {t0:11.8, t1:12.4, dx:0, dy:2,  s: 1, max:0.30, sig:58, who:'h', v:'pull'},
+          {t0:12.7, t1:13.3, dx:6, dy:-4, s: 1, max:0.28, sig:58, who:'r', v:'pinch'}
+         ]}
+      ];
+      function shapeR(radii, phi){
+        phi = ((phi%TAU)+TAU)%TAU;
+        const f = phi/TAU*N, i0 = Math.floor(f)%N, fr = f-Math.floor(f);
+        return radii[i0]*(1-fr) + radii[(i0+1)%N]*fr;
+      }
+
+
+      const $ = id => document.getElementById(id);
+      const dough=$('dough'), doughShadow=$('doughShadow'), doughClipPath=$('doughClipPath');
+      const hand=$('hand'), handL=$('handL'), bot=$('bot'), prongL=$('prongL'), prongR=$('prongR');
+      const ghost1=$('ghost1'), sparksG=$('sparks'), turb=$('turb');
+      const g1L=$('ghost1Line'), g1C=$('ghost1Circ');
+      const holeC=$('holeC');
+      const toolpathG=$('toolpathG'), tpFull=$('tpFull'), tpAhead=$('tpAhead'), tpTargets=$('tpTargets');
+      const featEdgesG=$('featEdges');
+      let featEdgeEls=[];
+
+
+      const cardX = 58, cardW = 172, cardH = 80, cardGap = 102, cardY0 = 138;
+      const cardEls = [];
+      const cardsG = $('cards');
+      SHAPES.forEach((S,i)=>{
+        const y = cardY0 + i*cardGap;
+        const g = document.createElementNS(NSVG,'g');
+        const sh = document.createElementNS(NSVG,'rect');
+        sh.setAttribute('x',cardX+5); sh.setAttribute('y',y+6);
+        sh.setAttribute('width',cardW); sh.setAttribute('height',cardH);
+        sh.setAttribute('fill','var(--meikku-ink)');
+        const rc = document.createElementNS(NSVG,'rect');
+        rc.setAttribute('x',cardX); rc.setAttribute('y',y);
+        rc.setAttribute('width',cardW); rc.setAttribute('height',cardH);
+        rc.setAttribute('fill','var(--meikku-paper)');
+        rc.setAttribute('stroke','var(--meikku-ink)'); rc.setAttribute('stroke-width',4);
+        g.appendChild(sh); g.appendChild(rc);
+
+        // 简笔画 icon: the simplest drawing that captures the animal
+        const icx = cardX+42, icy = y+cardH/2;
+        const el = (tag, attrs)=>{
+          const n = document.createElementNS(NSVG, tag);
+          for (const k in attrs) n.setAttribute(k, attrs[k]);
+          if (attrs.fill===undefined) n.setAttribute('fill','none');
+          n.setAttribute('stroke', attrs.stroke!==undefined ? attrs.stroke : 'var(--meikku-ink)');
+          if (attrs['stroke-width']===undefined) n.setAttribute('stroke-width',2.2);
+          n.setAttribute('stroke-linecap','round');
+          n.setAttribute('stroke-linejoin','round');
+          g.appendChild(n);
+        };
+        const dot = (dx,dy,r)=> el('circle',{cx:icx+dx, cy:icy+dy, r, fill:'var(--meikku-ink)', stroke:'none'});
+        if (S.name==='CAT'){
+          el('circle',{cx:icx, cy:icy, r:12.5});
+          el('path',{d:`M ${icx-11} ${icy-6} L ${icx-15} ${icy-18} L ${icx-4} ${icy-12}`});
+          el('path',{d:`M ${icx+11} ${icy-6} L ${icx+15} ${icy-18} L ${icx+4} ${icy-12}`});
+          dot(-5,-2,1.6); dot(5,-2,1.6);
+          el('path',{d:`M ${icx-3} ${icy+5} Q ${icx} ${icy+8} ${icx+3} ${icy+5}`});
+          el('path',{d:`M ${icx-10} ${icy+2} L ${icx-18} ${icy+1} M ${icx-10} ${icy+5} L ${icx-17} ${icy+7}`,'stroke-width':1.6});
+          el('path',{d:`M ${icx+10} ${icy+2} L ${icx+18} ${icy+1} M ${icx+10} ${icy+5} L ${icx+17} ${icy+7}`,'stroke-width':1.6});
+        } else if (S.name==='PIG'){
+          el('circle',{cx:icx, cy:icy, r:13});
+          el('path',{d:`M ${icx-12} ${icy-5} L ${icx-13} ${icy-16} L ${icx-3} ${icy-12}`});
+          el('path',{d:`M ${icx+12} ${icy-5} L ${icx+13} ${icy-16} L ${icx+3} ${icy-12}`});
+          el('ellipse',{cx:icx, cy:icy+3, rx:6, ry:4.5});
+          dot(-2.4,3,1.3); dot(2.4,3,1.3);
+          dot(-7,-4,1.5); dot(7,-4,1.5);
+        } else if (S.name==='FISH'){
+          el('path',{d:`M ${icx+16} ${icy} Q ${icx+6} ${icy-8} ${icx-6} ${icy-5.5} Q ${icx-10} ${icy-4.5} ${icx-10} ${icy} Q ${icx-10} ${icy+4.5} ${icx-6} ${icy+5.5} Q ${icx+6} ${icy+8} ${icx+16} ${icy} Z`});
+          el('path',{d:`M ${icx-10} ${icy} L ${icx-18} ${icy-6.5} Q ${icx-15.5} ${icy} ${icx-18} ${icy+6.5} Z`});
+          el('path',{d:`M ${icx+5} ${icy-4} Q ${icx+3} ${icy} ${icx+5} ${icy+4}`,'stroke-width':1.6});
+          dot(11,-2,1.6);
+        } else if (S.name==='BIRD'){
+          el('ellipse',{cx:icx+1, cy:icy, rx:9.5, ry:4.2});
+          el('path',{d:`M ${icx-1} ${icy-3.5} L ${icx-4} ${icy-17} Q ${icx+1} ${icy-13} ${icx+3.5} ${icy-3.5}`});
+          el('path',{d:`M ${icx-1} ${icy+3.5} L ${icx-4} ${icy+17} Q ${icx+1} ${icy+13} ${icx+3.5} ${icy+3.5}`});
+          el('path',{d:`M ${icx+10.5} ${icy-1} L ${icx+16.5} ${icy} L ${icx+10.5} ${icy+1.6} Z`, fill:'var(--meikku-ink)'});
+          el('path',{d:`M ${icx-9} ${icy-2} L ${icx-17} ${icy-5} M ${icx-9.5} ${icy} L ${icx-18} ${icy} M ${icx-9} ${icy+2} L ${icx-17} ${icy+5}`,'stroke-width':1.6});
+          dot(6.5,-1.8,1.3);
+        } else if (S.name==='STARFISH'){
+          let sd = '';
+          for (let k=0;k<10;k++){
+            const rr = k%2 ? 7 : 17;
+            const a = -Math.PI/2 + k*Math.PI/5;
+            sd += (k?'L':'M') + (icx+rr*Math.cos(a)).toFixed(1) + ' ' + (icy+rr*Math.sin(a)).toFixed(1);
+          }
+          el('path',{d: sd+'Z'});
+          dot(0,0,2);
+        }
+        const tx = document.createElementNS(NSVG,'text');
+        tx.setAttribute('x',cardX+80); tx.setAttribute('y',y+cardH/2+6);
+        tx.setAttribute('font-size',16); tx.setAttribute('font-weight',700);
+        tx.setAttribute('letter-spacing','1.5'); tx.setAttribute('fill','var(--meikku-ink)');
+        tx.textContent = S.name;
+        g.appendChild(tx);
+
+        g.style.cursor = 'pointer';
+        g.addEventListener('click', ()=>{ newCycle(i); tLoc = 2.4; });
+        g.addEventListener('mouseenter', ()=>{ hovered = i; });
+        g.addEventListener('mouseleave', ()=>{ if (hovered===i) hovered = -1; });
+        cardsG.appendChild(g);
+        cardEls.push(rc);
+      });
+      const cardClickPt = i => [cardX+42, cardY0 + i*cardGap + cardH/2 + 8];
+
+
+      let choice = -1, humanKeys=[], robotKeys=[], leftKeys=[], humanEng=[], robotEng=[], leftEng=[];
+      let humanDip=[], humanLift=[], robotDip=[], robotLift=[], robotSq=[], leftDip=[];
+      let feats=[], sparkEvents=[], sparkEls=[];
+      let tLoc = 0, hovered = -1;
+      let tpSamples = [], robotTargets = [], tpTargetEls = [], dashOff = 0;
+      let curRadii = SHAPES[0].radii;
+      const FEAT_STRENGTH = 0.7;
+
+      function contact(phi, extra, radii){
+        const r = shapeR(radii, phi) + extra;
+        return [CX + Math.cos(phi)*r, CY + Math.sin(phi)*r];
+      }
+
+      function buildSparks(){
+        sparksG.innerHTML = '';
+        sparkEls = sparkEvents.map(e=>{
+          const g = document.createElementNS(NSVG,'g');
+          for (let k=0;k<5;k++){
+            const a = k/5*TAU + 0.5;
+            const l = document.createElementNS(NSVG,'line');
+            l.setAttribute('x1', e.x + Math.cos(a)*14); l.setAttribute('y1', e.y + Math.sin(a)*14);
+            l.setAttribute('x2', e.x + Math.cos(a)*30); l.setAttribute('y2', e.y + Math.sin(a)*30);
+            l.setAttribute('stroke', e.c); l.setAttribute('stroke-width', 5);
+            l.setAttribute('stroke-linecap','round');
+            g.appendChild(l);
+          }
+          g.setAttribute('opacity','0');
+          sparksG.appendChild(g);
+          return g;
+        });
+      }
+
+      function newCycle(forced){
+        choice = (forced !== undefined) ? forced
+               : choice<0 ? Math.floor(Math.random()*5)
+                          : (choice + 1 + Math.floor(Math.random()*4)) % 5;
+        const S = SHAPES[choice];
+        curRadii = S.radii;
+
+        humanKeys = [
+          [0.0, 430, 1010, 0],
+          [2.2, 430, 1010, 0],
+          [3.15, 430, 760, 0],
+          [3.6, 460, 720, 0]
+        ];
+        robotKeys = [
+          [0.0, 960, -150, 120],
+          [3.0, 960, -150, 120]
+        ];
+        leftKeys = [
+          [0.0, 250, 1010, 0],
+          [3.6, 250, 1010, 0]
+        ];
+        humanDip = []; humanLift=[]; robotDip=[]; robotLift=[]; robotSq=[]; leftDip=[]; leftEng=[];
+        feats = []; robotTargets = [];
+
+        // the left hand parks on the rim: long steady contacts.
+        // press=true makes it a slow forming press (it sculpts its own small arc)
+        function leftHold(phiDeg, tIn, tOut, press){
+          const phi = phiDeg*Math.PI/180;
+          const pOut = contact(phi, 70, S.radii);
+          const pOn  = contact(phi, press ? -4 : 2, S.radii);
+          const rot = phiDeg-90;
+          leftKeys.push(
+            [tIn-0.4, pOut[0], pOut[1], rot],
+            [tIn,     pOn[0],  pOn[1],  rot],
+            [tOut,    pOn[0]-2, pOn[1], rot],
+            [tOut+0.3, pOut[0], pOut[1], rot]
+          );
+          leftDip.push([tIn, tOut]);
+          if (press) leftEng.push([tIn, tOut]);
+        }
+        sparkEvents = [];
+
+
+
+        function addAction(a){
+          const x = CX + a.dx, y = CY + a.dy;
+          const w = a.t1 - a.t0, mid = a.t0 + w*0.5;
+          const v = a.v || 'press';
+          const e = {t0:a.t0, t1:a.t1, x, y, s:a.s, max:a.max, sig:a.sig};
+          if (v === 'push'){ e.x = x-30; e.y = y+12; e.x2 = x+26; e.y2 = y-8; }
+          if (v === 'rub'){ e.sig = a.sig*0.75; e.sig2 = a.sig*1.25; }
+          feats.push(e);
+
+          if (a.who === 'h'){
+            if (v === 'push'){
+              humanKeys.push(
+                [a.t0-0.25, x-52, y+130, 8],
+                [a.t0,      x-38, y+16,  8],
+                [a.t1,      x+30, y-10, -6],
+                [a.t1+0.3,  x+14, y+150, 0]
+              );
+            } else if (v === 'rub'){
+              humanKeys.push([a.t0-0.25, x-8, y+120, 2]);
+              for (let k=0;k<=5;k++){
+                const ang = k/5*Math.PI*3;
+                humanKeys.push([a.t0 + w*k/5, x+Math.cos(ang)*16, y+Math.sin(ang)*11, (k%2? 6:-6)]);
+              }
+              humanKeys.push([a.t1+0.3, x-24, y+150, 4]);
+            } else if (v === 'pull'){
+              humanKeys.push(
+                [a.t0-0.25, x-8, y+120, 2],
+                [a.t0,        x,   y+6, 0],
+                [a.t0+w*0.35, x-3, y-3, -4],
+                [a.t0+w*0.55, x+4, y+4, 4],
+                [a.t0+w*0.8,  x-2, y-4, -3],
+                [a.t1,        x,   y,   0],
+                [a.t1+0.3,  x-24, y+150, 4]
+              );
+            } else if (v === 'pinch'){
+              humanKeys.push(
+                [a.t0-0.25, x-8, y+120, 2],
+                [a.t0, x, y+6, -8],
+                [mid,  x, y+3,  8],
+                [a.t1, x, y+2, -5],
+                [a.t1+0.3, x-24, y+150, 4]
+              );
+            } else {
+              humanKeys.push(
+                [a.t0-0.25, x-8, y+120, 2],
+                [a.t0,        x,   y+8, 0],
+                [a.t0+w*0.45, x,   y+2, 0],
+                [a.t0+w*0.6,  x+2, y+7, -3],
+                [a.t1,        x+1, y+2, 2],
+                [a.t1+0.3,  x-24, y+150, 4]
+              );
+            }
+            (v==='pull' || a.s>0 ? humanLift : humanDip).push([a.t0, a.t1]);
+            sparkEvents.push({t:a.t0+0.12, x, y, c:INK});
+          } else {
+            if (v === 'rub'){
+              robotKeys.push([a.t0-0.25, x+14, y-120, 0]);
+              for (let k=0;k<=5;k++){
+                const ang = k/5*Math.PI*3;
+                robotKeys.push([a.t0 + w*k/5, x+Math.cos(ang)*14, y-Math.sin(ang)*10, (k%2? 5:-5)]);
+              }
+              robotKeys.push([a.t1+0.3, x+34, y-140, -8]);
+              robotSq.push([a.t0-0.1, a.t1+0.1]);
+            } else if (v === 'pull'){
+              robotKeys.push(
+                [a.t0-0.25, x+14, y-120, 0],
+                [a.t0,        x,   y-4, 0],
+                [a.t0+w*0.35, x-3, y-9, -5],
+                [a.t0+w*0.55, x+4, y-2, 5],
+                [a.t0+w*0.8,  x-2, y-8, -4],
+                [a.t1,        x,   y-4, 0],
+                [a.t1+0.3,  x+34, y-140, -8]
+              );
+              robotSq.push([a.t0-0.1, a.t1+0.1]);
+            } else if (v === 'pinch'){
+              robotKeys.push(
+                [a.t0-0.25, x+14, y-120, 0],
+                [a.t0, x, y-4, -6],
+                [mid,  x, y-2,  6],
+                [a.t1, x, y-2, -4],
+                [a.t1+0.3, x+34, y-140, -8]
+              );
+              robotSq.push([a.t0, a.t0+w*0.25], [a.t0+w*0.4, a.t0+w*0.65], [a.t0+w*0.75, a.t1]);
+            } else {
+              robotKeys.push(
+                [a.t0-0.25, x+14, y-120, 0],
+                [a.t0,        x,   y-6, 0],
+                [a.t0+w*0.45, x,   y-1, 0],
+                [a.t0+w*0.6,  x+2, y-6, -4],
+                [a.t1,        x,   y-1, 2],
+                [a.t1+0.3,  x+34, y-140, -8]
+              );
+              robotSq.push([a.t0-0.1, a.t1+0.1]);
+            }
+            (v==='pull' || a.s>0 ? robotLift : robotDip).push([a.t0, a.t1]);
+            robotTargets.push({t:a.t0, x, y});
+            sparkEvents.push({t:a.t0+0.12, x, y, c:LIME});
+          }
+        }
+
+        if (S.mode === 'edge'){
+          // zones, so no arm ever crosses the body:
+          // right hand 95-175 deg (south->south-west), left hand 180-206 deg (west),
+          // robot 85..-85 deg (east+north) then continues 268->212 (north-west)
+          {
+            const p = contact(95*Math.PI/180, 60, S.radii);
+            humanKeys.push([4.0, p[0], p[1], 5]);
+          }
+          for (let k=0;k<=8;k++){
+            const phiDeg = 95 + 80*k/8;
+            const phi = phiDeg*Math.PI/180;
+            const p = contact(phi, (k%2 ? 26 : -6), S.radii);
+            humanKeys.push([4.4 + 5.0*k/8, p[0], p[1], phiDeg-90]);
+          }
+          humanEng = [[4.3,9.45]];
+          // hover low outside while the centre is still busy
+          humanKeys.push([10.1, ...contact(150*Math.PI/180, 85, S.radii), 60]);
+
+          robotKeys.push(
+            [3.45, ...contact(25*Math.PI/180, 140, S.radii), 135],
+            [3.8, ...contact(85*Math.PI/180, 46, S.radii), 175]
+          );
+          for (let k=0;k<=14;k++){
+            const phiDeg = 85 - 170*k/14;
+            const phi = phiDeg*Math.PI/180;
+            const p = contact(phi, (k%2 ? -6 : 26), S.radii);
+            const tk = 4.4 + 5.6*k/14;
+            robotKeys.push([tk, p[0], p[1], phiDeg+90]);
+            if (k%2) robotTargets.push({t:tk, x:p[0], y:p[1]});
+          }
+          // continuation: around the top into the north-west arc
+          for (let k=0;k<=4;k++){
+            const phiDeg = 268 - 14*k;
+            const phi = phiDeg*Math.PI/180;
+            const p = contact(phi, (k%2 ? -6 : 26), S.radii);
+            const tk = 10.3 + 1.9*k/4;
+            robotKeys.push([tk, p[0], p[1], phiDeg+90]);
+            if (k%2) robotTargets.push({t:tk, x:p[0], y:p[1]});
+          }
+          robotEng = [[4.3,12.25]];
+
+          // left hand: three slow forming presses on its own arc
+          leftHold(180, 5.4, 6.6, true);
+          leftHold(193, 7.4, 8.6, true);
+          leftHold(206, 9.4, 10.6, true);
+          leftHold(140, 11.9, 13.3);      // brace the rim while the centre is puffed
+
+          S.actions.forEach(addAction);
+
+          const g1t = contact(85*Math.PI/180, 0, S.radii);
+          g1L.setAttribute('d', `M 930 -20 L ${g1t[0]+20} ${g1t[1]-40}`);
+          g1C.setAttribute('cx', g1t[0]); g1C.setAttribute('cy', g1t[1]);
+          sparkEvents.push(
+            {t:4.45, x:contact(95*Math.PI/180,0,S.radii)[0], y:contact(95*Math.PI/180,0,S.radii)[1], c:INK},
+            {t:4.45, x:g1t[0], y:g1t[1], c:LIME}
+          );
+        } else {
+
+          humanKeys.push([4.1, CX-20, CY+220, 3]);
+          robotKeys.push([4.3, CX+150, CY-190, -30]);
+          S.actions.forEach(addAction);
+
+          if (S.smooth){
+            for (let k=0;k<=4;k++){
+              const phiDeg = 100 + 70*k/4;      // right hand smooths only its own arc
+              const phi = phiDeg*Math.PI/180;
+              humanKeys.push([S.smooth.h0 + 0.42*k, CX+Math.cos(phi)*98, CY+Math.sin(phi)*98, phiDeg-90]);
+            }
+            for (let k=0;k<=4;k++){
+              const phiDeg = -90 + 145*k/4;
+              const phi = phiDeg*Math.PI/180;
+              robotKeys.push([S.smooth.r0 + 0.4*k, CX+Math.cos(phi)*98, CY+Math.sin(phi)*98, phiDeg+90]);
+            }
+            humanEng = [[S.smooth.h0-0.05, S.smooth.h0+1.78]];
+            robotEng = [[S.smooth.r0-0.05, S.smooth.r0+1.7]];
+            robotSq.push([S.smooth.r0-0.05, S.smooth.r0+1.7]);
+            robotTargets.push({t:S.smooth.r0, x:CX, y:CY-98});
+          } else {
+            humanEng = []; robotEng = [];
+          }
+
+
+          g1L.setAttribute('d', `M 930 -20 L ${CX+70} ${CY-130}`);
+          g1C.setAttribute('cx', CX+4); g1C.setAttribute('cy', CY-2);
+
+          // left hand braces the west rim while the right works the centre
+          leftHold(160, 5.0, 7.5);
+          leftHold(200, 8.6, 10.5);
+          if (S.smooth){
+            // support done — hover clear of the smoothing sweeps
+            leftKeys.push([11.4, CX-160, CY+270, 15], [13.5, CX-150, CY+265, 12]);
+          } else {
+            leftHold(182, 11.3, 12.8); // hold the flank while the crater is pressed
+          }
+        }
+
+
+        humanKeys.push(
+          [13.9, 430, 720, 0],
+          [15.2, 435, 720, 0],
+          [16.6, 450, 1015, 0],
+          [T,    450, 1015, 0]
+        );
+        robotKeys.push(
+          [13.9, 850, 140, 60],
+          [15.2, 855, 140, 60],
+          [16.7, 1000, -170, 60],
+          [T,    1000, -170, 60]
+        );
+        leftKeys.push(
+          [14.2, 320, 780, 8],
+          [15.2, 325, 780, 8],
+          [16.4, 250, 1015, 0],
+          [T,    250, 1015, 0]
+        );
+        // one ink edge ring per feature
+        featEdgesG.innerHTML = '';
+        featEdgeEls = feats.map(()=>{
+          const c = document.createElementNS(NSVG,'circle');
+          c.setAttribute('r','0'); c.setAttribute('opacity','0');
+          featEdgesG.appendChild(c);
+          return c;
+        });
+        buildToolpath();
+        buildSparks();
+      }
+
+
+      function buildToolpath(){
+        tpSamples = [];
+        for (let tt=3.3; tt<=13.6; tt+=0.08){
+          const p = track(robotKeys, tt);
+          tpSamples.push([tt, p[0], p[1]]);
+        }
+        tpTargets.innerHTML = '';
+        tpTargetEls = robotTargets.map(tg=>{
+          const c = document.createElementNS(NSVG,'circle');
+          c.setAttribute('cx', tg.x); c.setAttribute('cy', tg.y);
+          c.setAttribute('r', 10); c.setAttribute('opacity','0');
+          tpTargets.appendChild(c);
+          return c;
+        });
+      }
+
+
+      const isoEls = [$('iso0'),$('iso1'),$('iso2'),$('iso3'),$('iso4'),$('iso5')];
+      const isoLevels = [0.2, 0.45, 0.7, 0.9, 1.12, 1.35];
+      const GN = 50, GX0 = CX-265, GY0 = CY-265, CS = 530/GN;
+      const field = new Float32Array((GN+1)*(GN+1));
+      const MS = {1:[['l','b']],2:[['b','r']],3:[['l','r']],4:[['t','r']],
+                  5:[['l','t'],['b','r']],6:[['b','t']],7:[['l','t']],8:[['l','t']],
+                  9:[['b','t']],10:[['l','b'],['t','r']],11:[['t','r']],12:[['l','r']],
+                  13:[['b','r']],14:[['l','b']]};
+      const pk=(c,L,R2,Tp,B)=> c==='l'?L : c==='r'?R2 : c==='t'?Tp : B;
+
+
+
+      const seeds=[2,7,13];
+      let si=0;
+      setInterval(()=>{
+        si=(si+1)%seeds.length;
+        turb.setAttribute('seed', seeds[si]);
+        for (let i=0;i<N;i++) jitter[i]=(Math.random()*2-1)*2.6;
+      }, 140);
+
+      function ghostOpacity(t, tIn, tFull, tOut, tGone){
+        if (t<tIn || t>tGone) return 0;
+        if (t<tFull) return (t-tIn)/(tFull-tIn);
+        if (t<tOut) return 1;
+        return 1-(t-tOut)/(tGone-tOut);
+      }
+      const pressEnv = (wins,t) => wins.reduce((m,w)=>{
+        if (t<w[0]||t>w[1]) return m;
+        return Math.max(m, clamp(Math.min((t-w[0])*5,(w[1]-t)*5,1),0,1));
+      },0);
+
+      let prev = performance.now();
+      newCycle();
+
+      function frame(now){
+        const dt = clamp((now-prev)/1000, 0, 0.05);
+        prev = now;
+        tLoc += dt;
+        if (tLoc >= T){ tLoc -= T; newCycle(); }
+        const t = tLoc;
+
+
+        cardEls.forEach((rc,i)=>{
+          const on = (i===choice && t>2.62 && t<16.6);
+          rc.setAttribute('fill', on ? 'var(--meikku-lime)'
+                            : i===hovered ? CARD_HOVER : 'var(--meikku-paper)');
+        });
+
+
+        const hp = track(humanKeys, t);
+        const rp = track(robotKeys, t);
+        const lp = track(leftKeys, t);
+        const hScale = 1 - 0.08*pressEnv(humanDip, t) + 0.07*pressEnv(humanLift, t);
+        const rScale = 1 - 0.07*pressEnv(robotDip, t) + 0.07*pressEnv(robotLift, t);
+        const lScale = 0.96 * (1 - 0.05*pressEnv(leftDip, t));   // slightly smaller, gentler press
+        hand.setAttribute('transform', `translate(${hp[0]},${hp[1]}) rotate(${hp[2]}) scale(${hScale.toFixed(3)})`);
+        handL.setAttribute('transform', `translate(${lp[0]},${lp[1]}) rotate(${lp[2]}) scale(${lScale.toFixed(3)})`);
+        bot.setAttribute('transform',  `translate(${rp[0]},${rp[1]}) rotate(${rp[2]}) scale(${rScale.toFixed(3)})`);
+
+
+        const squeeze = (inWin(robotEng, t) || inWin(robotSq, t)) ? 7 : 0;
+        prongL.setAttribute('transform', `translate(${squeeze},0)`);
+        prongR.setAttribute('transform', `translate(${-squeeze},0)`);
+
+
+        const actors = [];
+        if (inWin(humanEng,t)) actors.push(hp);
+        if (inWin(robotEng,t)) actors.push(rp);
+        if (inWin(leftEng,t))  actors.push(lp);
+        const resetting = t > T_RESET;
+
+        for (const a of actors){
+          const phiH = Math.atan2(a[1]-CY, a[0]-CX);
+          const dH   = Math.hypot(a[0]-CX, a[1]-CY);
+          const gate = clamp((shapeR(curRadii,phiH)+14 - dH)/20, 0, 1);
+          if (gate<=0) continue;
+          for (let i=0;i<N;i++){
+            const w = Math.exp(-Math.pow(wrapA(theta[i]-phiH)/0.5, 2));
+            if (w > 0.05){
+              const off = curRadii[i] - R;
+              D[i] += (off - D[i]) * Math.min(1, dt*9) * w * gate;
+            }
+          }
+        }
+        if (resetting) for (let i=0;i<N;i++) D[i] *= Math.exp(-dt*3);
+
+
+        const breathe = Math.sin(t*1.4)*2.5;
+        const pts = [];
+        for (let i=0;i<N;i++){
+          const r = clamp(R + D[i] + jitter[i] + breathe, 34, 300);   // deep enough for the tail notch
+          pts.push([CX + Math.cos(theta[i])*r, CY + Math.sin(theta[i])*r]);
+        }
+        const d = blobPath(pts);
+        dough.setAttribute('d', d);
+        doughShadow.setAttribute('d', d);
+        doughClipPath.setAttribute('d', d);
+
+
+        const fa = feats.map(e=>{
+          if (t < e.t0) return 0;
+          if (t < e.t1) return e.max * ease((t-e.t0)/(e.t1-e.t0));
+          if (t < T_RESET) return e.max;
+          return e.max * Math.max(0, 1-(t-T_RESET)/1.3);
+        });
+
+        const fEff = feats.map(e=>{
+          const p = clamp((t-e.t0)/((e.t1-e.t0)||1), 0, 1);
+          const ex = e.x2!==undefined ? e.x+(e.x2-e.x)*p : e.x;
+          const ey = e.y2!==undefined ? e.y+(e.y2-e.y)*p : e.y;
+          const es = e.sig2 ? e.sig+(e.sig2-e.sig)*p : e.sig;
+          return {x:ex, y:ey, es, s2:2*es*es};
+        });
+
+        // ink edge rings: boundary where a feature rises or sinks.
+        // broad soft volumes (sig > 36) get no ring — only compact features do
+        feats.forEach((e,k)=>{
+          const el2 = featEdgeEls[k];
+          if (!el2) return;
+          if (e.sig > 36){ el2.setAttribute('opacity','0'); return; }
+          const prog = fa[k]/e.max;
+          el2.setAttribute('cx', fEff[k].x.toFixed(1));
+          el2.setAttribute('cy', fEff[k].y.toFixed(1));
+          el2.setAttribute('r', (1.3*fEff[k].es*prog).toFixed(1));
+          el2.setAttribute('opacity', (0.9*clamp(prog,0,1)).toFixed(2));
+        });
+
+
+        if (feats.length && SHAPES[choice].hole){
+          let depth = 0;
+          for (let k=0;k<feats.length;k++) depth += fa[k]*FEAT_STRENGTH;
+          const rH = Math.min(58, 75*Math.sqrt(Math.max(0, depth-1)));
+          holeC.setAttribute('r', rH.toFixed(1));
+          holeC.setAttribute('opacity', clamp(rH/3,0,1).toFixed(2));
+        } else {
+          holeC.setAttribute('opacity','0');
+          holeC.setAttribute('r','0');
+        }
+
+        for (let j=0;j<=GN;j++){
+          for (let i2=0;i2<=GN;i2++){
+            const x = GX0+i2*CS, y = GY0+j*CS;
+            const dx = x-CX, dy = y-CY;
+            const dd = Math.hypot(dx,dy);
+            let phi = Math.atan2(dy,dx); if (phi<0) phi += TAU;
+            const fi = phi/TAU*N, ii = Math.floor(fi)%N, fr = fi-Math.floor(fi);
+            const re = R + D[ii]*(1-fr) + D[(ii+1)%N]*fr + breathe;
+            const u = dd/re;
+            let hgt = 1 - u*u;
+            for (let k=0;k<feats.length;k++){
+              if (fa[k] <= 0.02) continue;
+              const fdx = x-fEff[k].x, fdy = y-fEff[k].y;
+              const q = (fdx*fdx+fdy*fdy)/fEff[k].s2;
+              if (q < 6) hgt += feats[k].s * fa[k] * FEAT_STRENGTH * Math.exp(-q);
+            }
+            field[j*(GN+1)+i2] = hgt;
+          }
+        }
+
+        isoEls.forEach((el,li)=>{
+          const lv = isoLevels[li];
+          let ds = '';
+          for (let j=0;j<GN;j++){
+            for (let i2=0;i2<GN;i2++){
+              const vtl = field[j*(GN+1)+i2],     vtr = field[j*(GN+1)+i2+1];
+              const vbl = field[(j+1)*(GN+1)+i2], vbr = field[(j+1)*(GN+1)+i2+1];
+              let idx = 0;
+              if (vbl>lv) idx|=1; if (vbr>lv) idx|=2; if (vtr>lv) idx|=4; if (vtl>lv) idx|=8;
+              if (idx===0 || idx===15) continue;
+              const x = GX0+i2*CS, y = GY0+j*CS;
+              const L  = [x,                          y + CS*(lv-vtl)/(vbl-vtl)];
+              const R2 = [x+CS,                       y + CS*(lv-vtr)/(vbr-vtr)];
+              const Tp = [x + CS*(lv-vtl)/(vtr-vtl),  y];
+              const B  = [x + CS*(lv-vbl)/(vbr-vbl),  y+CS];
+              for (const s of MS[idx]){
+                const p = pk(s[0],L,R2,Tp,B), q = pk(s[1],L,R2,Tp,B);
+                ds += `M${p[0].toFixed(1)} ${p[1].toFixed(1)}L${q[0].toFixed(1)} ${q[1].toFixed(1)}`;
+              }
+            }
+          }
+          el.setAttribute('d', ds || 'M -10 -10');
+        });
+
+
+        ghost1.setAttribute('opacity', ghostOpacity(t, 3.1, 3.5, 4.0, 4.5).toFixed(2));
+
+
+
+        const tpVis = ghostOpacity(t, 3.0, 3.5, 12.9, 13.6);
+        toolpathG.setAttribute('opacity', tpVis.toFixed(2));
+        if (tpVis > 0){
+          const ni = robotTargets.findIndex(tg => t <= tg.t + 0.25);
+          let planD = '', aheadD = '';
+          if (ni !== -1){
+            const stageStart = ni===0 ? 3.2 : robotTargets[ni-1].t + 0.25;
+            const chunkEnd = robotTargets[ni].t + 0.35;
+            const u = ease(clamp((t - stageStart)/0.6, 0, 1));
+            const revealEnd = stageStart + (chunkEnd - stageStart)*u;
+            const w0 = Math.max(t, 3.3);
+            for (const s of tpSamples){
+              if (s[0] < w0 || s[0] > revealEnd) continue;
+              planD += (planD?'L':'M') + s[1].toFixed(1) + ' ' + s[2].toFixed(1);
+              if (s[0] <= Math.min(t+1.4, revealEnd))
+                aheadD += (aheadD?'L':'M') + s[1].toFixed(1) + ' ' + s[2].toFixed(1);
+            }
+            robotTargets.forEach((tg,i)=>{
+              const el = tpTargetEls[i];
+              if (t > tg.t + 0.25) el.setAttribute('opacity','0');
+              else if (i===ni)
+                el.setAttribute('opacity', (u*(0.65+0.3*Math.sin(t*7))).toFixed(2));
+              else el.setAttribute('opacity','0');
+            });
+          } else {
+            tpTargetEls.forEach(el=>el.setAttribute('opacity','0'));
+          }
+          tpFull.setAttribute('d', planD || 'M -10 -10');
+          tpAhead.setAttribute('d', aheadD || 'M -10 -10');
+          dashOff -= dt*45;
+          tpAhead.setAttribute('stroke-dashoffset', dashOff.toFixed(1));
+        }
+
+
+        sparkEvents.forEach((e,idx)=>{
+          const tt = t - e.t;
+          if (tt>=0 && tt<0.5){
+            sparkEls[idx].setAttribute('opacity', (1-tt/0.5).toFixed(2));
+            sparkEls[idx].style.transformOrigin = `${e.x}px ${e.y}px`;
+            sparkEls[idx].style.transform = `scale(${0.7+tt*1.2})`;
+          } else {
+            sparkEls[idx].setAttribute('opacity','0');
+          }
+        });
+
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
