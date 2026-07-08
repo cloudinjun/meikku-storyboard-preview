@@ -776,7 +776,7 @@
     Codex handoff notes:
     - This is a new copy based on ui/meikku_storyboard_draft.html.
     - Frame 01 hides the original five animal buttons and skips the hand-click selection beat.
-    - Frames 03-08 are an outline draft for the cybernetics map and node explanations.
+    - Frames 03-07 are an outline draft for the cybernetics map and paired node explanations.
     - Placeholder notes are intentionally visible where thesis wording or evidence should be refined later.
     - Keep the story collaborative: human and robot act together on one material, not command/execution.
   -->
@@ -826,7 +826,7 @@
             <path id="iso5" d=""/>
           </g>
 
-          <!-- ink boundary of every raised / sunken feature (简笔画 edge) -->
+          <!-- ink boundary of every raised / sunken feature (simple sketch edge) -->
           <g id="featEdges" clip-path="url(#doughClip)" fill="none"
              stroke="var(--meikku-ink)" stroke-width="4" stroke-linecap="round"></g>
 
@@ -856,7 +856,7 @@
           <g id="sparks"></g>
 
 
-          <!-- LEFT HAND: mirrored, the steadying hand — holds what the right hand has shaped -->
+          <!-- LEFT HAND: mirrored, the steadying hand - holds what the right hand has shaped -->
           <g id="handL">
             <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
                   stroke-linecap="round" stroke-linejoin="round" transform="scale(-1,1)" d="
@@ -895,7 +895,7 @@
               Z"/>
           </g>
 
-          <!-- RIGHT HAND: the shaping hand — clicks, presses, pushes, pinches, pulls, rubs -->
+          <!-- RIGHT HAND: the shaping hand - clicks, presses, pushes, pinches, pulls, rubs -->
           <g id="hand">
             <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
                   stroke-linecap="round" stroke-linejoin="round" d="
@@ -1062,108 +1062,221 @@
       </figure>
     </section>
 
-    <section id="frame-05" class="board node-detail-board cyb-frame" aria-label="Inside the loop, part one: the human comparator and the AI regulator that converts typed language into motion.">
+    <section id="frame-05" class="board node-detail-board cyb-frame node-pair-board" aria-label="Node explanations: Human comparator and AI regulator.">
       <figure class="cyb-figure">
-        <svg viewBox="0 0 1200 620" role="img" aria-label="Inside the loop, part one: the human comparator and the AI regulator that converts typed language into motion.">
-          <defs><marker id="nd5" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="#000"/></marker></defs>
-          <text x="40" y="52" font-size="19" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">INSIDE THE LOOP</text>
-          <text x="320" y="52" font-size="16" font-weight="700" fill="var(--meikku-slate)">What Happens Inside Each Node</text>
-          <line x1="40" y1="70" x2="1160" y2="70" stroke="#000" stroke-width="3"/>
-          <text x="44" y="122" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">COMPARATOR</text>
-          <text class="disp" x="44" y="166" font-size="32" fill="#000">HUMAN</text>
-          <text x="44" y="200" font-size="15" font-weight="700" fill="var(--meikku-slate)">observes the new state, judges it,</text>
-          <text x="44" y="222" font-size="15" font-weight="700" fill="var(--meikku-slate)">and types the next thing</text>
-          <text x="44" y="258" font-size="12.5" font-weight="700" fill="var(--meikku-slate)">a loose, moving goal (2nd-order)</text>
-          <circle cx="286" cy="118" r="15" fill="var(--role-human)" stroke="#000" stroke-width="3"/><text x="286" y="123" text-anchor="middle" font-size="14" font-weight="800" fill="#000">H</text>
-          <rect x="346" y="138" width="195" height="150" fill="#000"/><rect x="340" y="132" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
-          <text x="356" y="160" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">IN</text>
-          <text x="437" y="204" text-anchor="middle" font-size="18" font-weight="700" fill="#000">what is shown</text>
-          <text x="437" y="230" text-anchor="middle" font-size="14" font-weight="700" fill="var(--meikku-slate)">the new state</text>
-          <line x1="540" y1="207" x2="568" y2="207" stroke="#000" stroke-width="5" marker-end="url(#nd5)"/>
-          <rect x="578" y="123" width="250" height="176" fill="#000"/><rect x="572" y="117" width="250" height="176" fill="var(--role-human)" stroke="#000" stroke-width="3"/>
-          <text x="588" y="144" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="#000">PROCESS</text>
-          <text class="disp" x="697" y="190" text-anchor="middle" font-size="30" fill="#000">COMPARE</text>
-          <text x="697" y="226" text-anchor="middle" font-size="16" font-weight="700" fill="#000">a fit, or not?</text>
-          <text x="697" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#000">more? softer?</text>
-          <line x1="826" y1="207" x2="854" y2="207" stroke="#000" stroke-width="5" marker-end="url(#nd5)"/>
-          <rect x="866" y="138" width="195" height="150" fill="#000"/><rect x="860" y="132" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
-          <text x="876" y="160" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">OUT</text>
-          <text x="957" y="204" text-anchor="middle" font-size="18" font-weight="700" fill="#000">next words</text>
-          <text x="957" y="230" text-anchor="middle" font-size="18" font-weight="800" fill="#FF0055">"no, softer"</text>
-          <line x1="40" y1="342" x2="1160" y2="342" stroke="var(--meikku-grid)" stroke-width="2"/>
-          <text x="44" y="402" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">REGULATOR</text>
-          <text class="disp" x="44" y="446" font-size="32" fill="#000">AI</text>
-          <text x="44" y="480" font-size="15" font-weight="700" fill="var(--meikku-slate)">converts typed language into</text>
-          <text x="44" y="502" font-size="15" font-weight="700" fill="var(--meikku-slate)">motion &#8212; no path to author</text>
-          <text x="44" y="538" font-size="12.5" font-weight="700" fill="var(--meikku-slate)">many words in, one act (Ashby)</text>
-          <circle cx="286" cy="398" r="15" fill="var(--role-ai)" stroke="#000" stroke-width="3"/><text x="286" y="403" text-anchor="middle" font-size="14" font-weight="800" fill="#000">A</text>
-          <rect x="346" y="418" width="195" height="150" fill="#000"/><rect x="340" y="412" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
-          <text x="356" y="440" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">IN</text>
-          <text x="437" y="484" text-anchor="middle" font-size="18" font-weight="700" fill="#000">typed words</text>
-          <text x="437" y="510" text-anchor="middle" font-size="14" font-weight="700" fill="var(--meikku-slate)">+ the table</text>
-          <line x1="540" y1="487" x2="568" y2="487" stroke="#000" stroke-width="5" marker-end="url(#nd5)"/>
-          <rect x="578" y="403" width="250" height="176" fill="#000"/><rect x="572" y="397" width="250" height="176" fill="var(--role-ai)" stroke="#000" stroke-width="3"/>
-          <text x="588" y="424" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="#000">PROCESS</text>
-          <text class="disp" x="697" y="470" text-anchor="middle" font-size="30" fill="#000">NARROW</text>
-          <text x="697" y="506" text-anchor="middle" font-size="16" font-weight="700" fill="#000">one bounded move</text>
-          <text x="697" y="530" text-anchor="middle" font-size="16" font-weight="700" fill="#000">kept within limits</text>
-          <line x1="826" y1="487" x2="854" y2="487" stroke="#000" stroke-width="5" marker-end="url(#nd5)"/>
-          <rect x="866" y="418" width="195" height="150" fill="#000"/><rect x="860" y="412" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
-          <text x="876" y="440" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">OUT</text>
-          <text x="957" y="484" text-anchor="middle" font-size="18" font-weight="700" fill="#000">one bounded,</text>
-          <text x="957" y="510" text-anchor="middle" font-size="18" font-weight="800" fill="#000">safe move</text>
+        <svg viewBox="0 0 1200 820" role="img" aria-label="Node explanations: Human comparator and AI regulator.">
+          <defs><marker id="pairHA" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="#000"/></marker></defs>
+            <g transform="translate(0,0)">
+              <rect x="40" y="28" width="26" height="26" fill="var(--role-human)" stroke="#000" stroke-width="2"/>
+              <text x="78" y="48" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">COMPARATOR &#183; H NODE</text>
+              <text class="disp" x="40" y="96" font-size="38" fill="#000">HUMAN</text>
+              <line x1="40" y1="114" x2="840" y2="114" stroke="#000" stroke-width="3"/>
+              <g transform="translate(920,18) scale(0.88)">
+                <line x1="14" y1="0" x2="216" y2="0" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="230" y1="14" x2="230" y2="130" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="216" y1="144" x2="14" y2="144" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="0" y1="130" x2="0" y2="86" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="14" y1="72" x2="106" y2="72" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="134" y1="66" x2="216" y2="12" stroke="#cfcec8" stroke-width="2"/>
+                <circle cx="0" cy="0" r="13" fill="var(--role-human)" stroke="#000" stroke-width="3"/><text x="0" y="4" text-anchor="middle" font-size="10" font-weight="800" fill="#000">H</text>
+                <circle cx="230" cy="0" r="13" fill="var(--role-ai)" stroke="#000" stroke-width="3"/><text x="230" y="4" text-anchor="middle" font-size="10" font-weight="800" fill="#000">A</text>
+                <circle cx="0" cy="72" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="0" y="75.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">S</text>
+                <circle cx="120" cy="72" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="120" y="75.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">D</text>
+                <circle cx="0" cy="144" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="0" y="147.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">M</text>
+                <circle cx="230" cy="144" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="230" y="147.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">R</text>
+              </g>
+              <rect x="46" y="172" width="300" height="150" fill="#000"/><rect x="40" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="62" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">RECEIVES</text>
+              <text x="62" y="224" font-size="15" font-weight="800" fill="#000">from the SENSOR</text>
+              <text x="62" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">the observed clay state,</text>
+              <text x="62" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">rendered on screen</text>
+              <rect x="382" y="146" width="448" height="210" fill="#000"/><rect x="376" y="140" width="448" height="210" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <rect x="379" y="143" width="442" height="9" fill="var(--role-human)"/>
+              <text x="398" y="174" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">WHAT IT DOES</text>
+              <text x="398" y="212" font-size="15" font-weight="700" fill="#000">&#8212;  Reads the current clay state on screen.</text>
+              <text x="398" y="242" font-size="15" font-weight="700" fill="#000">&#8212;  Compares it against a loose, shifting goal.</text>
+              <text x="398" y="272" font-size="15" font-weight="700" fill="#000">&#8212;  Decides what should change next.</text>
+              <text x="398" y="302" font-size="15" font-weight="700" fill="#000">&#8212;  Writes the next line of plain language.</text>
+              <rect x="866" y="172" width="300" height="150" fill="#000"/><rect x="860" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="882" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">SENDS</text>
+              <text x="882" y="224" font-size="15" font-weight="800" fill="#000">to the AI</text>
+              <text x="882" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">one line of</text>
+              <text x="882" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">natural language</text>
+              <line x1="340" y1="241" x2="372" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairHA)"/>
+              <line x1="824" y1="241" x2="856" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairHA)"/>
+            </g>
+          <line x1="40" y1="410" x2="1160" y2="410" stroke="var(--meikku-grid)" stroke-width="2" stroke-dasharray="6 12"/>
+            <g transform="translate(0,410)">
+              <rect x="40" y="28" width="26" height="26" fill="var(--role-ai)" stroke="#000" stroke-width="2"/>
+              <text x="78" y="48" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">REGULATOR &#183; A NODE</text>
+              <text class="disp" x="40" y="96" font-size="38" fill="#000">AI</text>
+              <line x1="40" y1="114" x2="840" y2="114" stroke="#000" stroke-width="3"/>
+              <rect x="46" y="172" width="300" height="150" fill="#000"/><rect x="40" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="62" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">RECEIVES</text>
+              <text x="62" y="224" font-size="15" font-weight="800" fill="#000">from HUMAN + DATASET</text>
+              <text x="62" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">typed language, plus</text>
+              <text x="62" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">recent dataset context</text>
+              <rect x="382" y="146" width="448" height="210" fill="#000"/><rect x="376" y="140" width="448" height="210" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <rect x="379" y="143" width="442" height="9" fill="var(--role-ai)"/>
+              <text x="398" y="174" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">WHAT IT DOES</text>
+              <text x="398" y="212" font-size="15" font-weight="700" fill="#000">&#8212;  Reads the request together with dataset context.</text>
+              <text x="398" y="242" font-size="15" font-weight="700" fill="#000">&#8212;  Locates the target region on the observed clay mesh.</text>
+              <text x="398" y="272" font-size="15" font-weight="700" fill="#000">&#8212;  Plans a bounded tool path: approach, contact, retract.</text>
+              <text x="398" y="302" font-size="15" font-weight="700" fill="#000">&#8212;  Clamps every waypoint to safe, reachable limits.</text>
+              <rect x="866" y="172" width="300" height="150" fill="#000"/><rect x="860" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="882" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">SENDS</text>
+              <text x="882" y="224" font-size="15" font-weight="800" fill="#000">to the ROBOT ARM</text>
+              <text x="882" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">one tool path</text>
+              <text x="882" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">also logged to the dataset</text>
+              <line x1="340" y1="241" x2="372" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairHA)"/>
+              <line x1="824" y1="241" x2="856" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairHA)"/>
+            </g>
         </svg>
       </figure>
     </section>
 
-    <section id="frame-06" class="board node-detail-board cyb-frame" aria-label="Inside the loop, part two: the robot arm effector and the material.">
+    <section id="frame-06" class="board node-detail-board cyb-frame node-pair-board" aria-label="Node explanations: Robot arm effector and material variable.">
       <figure class="cyb-figure">
-        <svg viewBox="0 0 1200 620" role="img" aria-label="Inside the loop, part two: the robot arm effector and the material.">
-          <defs><marker id="nd6" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="#000"/></marker></defs>
-          <text x="40" y="52" font-size="19" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">INSIDE THE LOOP</text>
-          <text x="320" y="52" font-size="16" font-weight="700" fill="var(--meikku-slate)">What Happens Inside Each Node</text>
-          <line x1="40" y1="70" x2="1160" y2="70" stroke="#000" stroke-width="3"/>
-          <text x="44" y="122" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">EFFECTOR</text>
-          <text class="disp" x="44" y="166" font-size="26" fill="#000">ROBOT ARM</text>
-          <text x="44" y="200" font-size="15" font-weight="700" fill="var(--meikku-slate)">turns the move into slow,</text>
-          <text x="44" y="222" font-size="15" font-weight="700" fill="var(--meikku-slate)">readable motion</text>
-          <text x="44" y="258" font-size="12.5" font-weight="700" fill="var(--meikku-slate)">signal becomes physical energy</text>
-          <circle cx="286" cy="118" r="15" fill="var(--role-robot)" stroke="#000" stroke-width="3"/><text x="286" y="123" text-anchor="middle" font-size="14" font-weight="800" fill="var(--meikku-paper)">R</text>
-          <rect x="346" y="138" width="195" height="150" fill="#000"/><rect x="340" y="132" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
-          <text x="356" y="160" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">IN</text>
-          <text x="437" y="214" text-anchor="middle" font-size="18" font-weight="700" fill="#000">one safe move</text>
-          <line x1="540" y1="207" x2="568" y2="207" stroke="#000" stroke-width="5" marker-end="url(#nd6)"/>
-          <rect x="578" y="123" width="250" height="176" fill="#000"/><rect x="572" y="117" width="250" height="176" fill="var(--role-robot)" stroke="#000" stroke-width="3"/>
-          <text x="588" y="144" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="var(--meikku-paper)">PROCESS</text>
-          <text class="disp" x="697" y="190" text-anchor="middle" font-size="34" fill="var(--meikku-paper)">ACT</text>
-          <text x="697" y="226" text-anchor="middle" font-size="16" font-weight="700" fill="var(--meikku-paper)">hover &#8594; touch &#8594; act</text>
-          <text x="697" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="var(--meikku-paper)">slow and readable</text>
-          <line x1="826" y1="207" x2="854" y2="207" stroke="#000" stroke-width="5" marker-end="url(#nd6)"/>
-          <rect x="866" y="138" width="195" height="150" fill="#000"/><rect x="860" y="132" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
-          <text x="876" y="160" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">OUT</text>
-          <text x="957" y="204" text-anchor="middle" font-size="18" font-weight="700" fill="#000">a real mark</text>
-          <text x="957" y="230" text-anchor="middle" font-size="18" font-weight="800" fill="#000">in the material</text>
-          <line x1="40" y1="342" x2="1160" y2="342" stroke="var(--meikku-grid)" stroke-width="2"/>
-          <text x="44" y="402" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">REGULATED VARIABLE</text>
-          <text class="disp" x="44" y="446" font-size="28" fill="#000">MATERIAL</text>
-          <text x="44" y="480" font-size="15" font-weight="700" fill="var(--meikku-slate)">changes, keeps the mark,</text>
-          <text x="44" y="502" font-size="15" font-weight="700" fill="var(--meikku-slate)">and can surprise</text>
-          <text x="44" y="538" font-size="12.5" font-weight="700" fill="var(--meikku-slate)">the medium both sides read (Pask)</text>
-          <circle cx="286" cy="398" r="15" fill="var(--role-material)" stroke="#000" stroke-width="3"/><text x="286" y="403" text-anchor="middle" font-size="14" font-weight="800" fill="#000">M</text>
-          <rect x="346" y="418" width="195" height="150" fill="#000"/><rect x="340" y="412" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
-          <text x="356" y="440" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">IN</text>
-          <text x="437" y="494" text-anchor="middle" font-size="18" font-weight="700" fill="#000">the arm's action</text>
-          <line x1="540" y1="487" x2="568" y2="487" stroke="#000" stroke-width="5" marker-end="url(#nd6)"/>
-          <rect x="578" y="403" width="250" height="176" fill="#000"/><rect x="572" y="397" width="250" height="176" fill="var(--role-material)" stroke="#000" stroke-width="3"/>
-          <text x="588" y="424" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="#000">PROCESS</text>
-          <text class="disp" x="697" y="470" text-anchor="middle" font-size="24" fill="#000">CHANGE + KEEP</text>
-          <text x="697" y="506" text-anchor="middle" font-size="16" font-weight="700" fill="#000">the mark stays</text>
-          <text x="697" y="530" text-anchor="middle" font-size="16" font-weight="700" fill="#000">it surprises</text>
-          <line x1="826" y1="487" x2="854" y2="487" stroke="#000" stroke-width="5" marker-end="url(#nd6)"/>
-          <rect x="866" y="418" width="195" height="150" fill="#000"/><rect x="860" y="412" width="195" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
-          <text x="876" y="440" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">OUT</text>
-          <text x="957" y="484" text-anchor="middle" font-size="18" font-weight="700" fill="#000">a new state</text>
-          <text x="957" y="510" text-anchor="middle" font-size="18" font-weight="800" fill="#000">to read</text>
+        <svg viewBox="0 0 1200 820" role="img" aria-label="Node explanations: Robot arm effector and material variable.">
+          <defs><marker id="pairRM" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="#000"/></marker></defs>
+            <g transform="translate(0,0)">
+              <rect x="40" y="28" width="26" height="26" fill="var(--role-robot)" stroke="#000" stroke-width="2"/>
+              <text x="78" y="48" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">EFFECTOR &#183; R NODE</text>
+              <text class="disp" x="40" y="96" font-size="32" fill="#000">ROBOT ARM</text>
+              <line x1="40" y1="114" x2="840" y2="114" stroke="#000" stroke-width="3"/>
+              <g transform="translate(920,18) scale(0.88)">
+                <line x1="14" y1="0" x2="216" y2="0" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="230" y1="14" x2="230" y2="130" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="216" y1="144" x2="14" y2="144" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="0" y1="130" x2="0" y2="86" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="14" y1="72" x2="106" y2="72" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="134" y1="66" x2="216" y2="12" stroke="#cfcec8" stroke-width="2"/>
+                <circle cx="0" cy="0" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="0" y="3.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">H</text>
+                <circle cx="230" cy="0" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="230" y="3.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">A</text>
+                <circle cx="0" cy="72" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="0" y="75.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">S</text>
+                <circle cx="120" cy="72" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="120" y="75.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">D</text>
+                <circle cx="0" cy="144" r="13" fill="var(--role-material)" stroke="#000" stroke-width="3"/><text x="0" y="148" text-anchor="middle" font-size="10" font-weight="800" fill="#000">M</text>
+                <circle cx="230" cy="144" r="13" fill="var(--role-robot)" stroke="#000" stroke-width="3"/><text x="230" y="148" text-anchor="middle" font-size="10" font-weight="800" fill="#000">R</text>
+              </g>
+              <rect x="46" y="172" width="300" height="150" fill="#000"/><rect x="40" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="62" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">RECEIVES</text>
+              <text x="62" y="224" font-size="15" font-weight="800" fill="#000">from the AI</text>
+              <text x="62" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">one tool path,</text>
+              <text x="62" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">a list of waypoints</text>
+              <rect x="382" y="146" width="448" height="210" fill="#000"/><rect x="376" y="140" width="448" height="210" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <rect x="379" y="143" width="442" height="9" fill="var(--role-robot)"/>
+              <text x="398" y="174" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">WHAT IT DOES</text>
+              <text x="398" y="212" font-size="15" font-weight="700" fill="#000">&#8212;  Solves inverse kinematics for each waypoint.</text>
+              <text x="398" y="242" font-size="15" font-weight="700" fill="#000">&#8212;  Moves slowly: hover, approach, contact, retract.</text>
+              <text x="398" y="272" font-size="15" font-weight="700" fill="#000">&#8212;  Keeps the motion readable at human scale.</text>
+              <text x="398" y="302" font-size="15" font-weight="700" fill="#000">&#8212;  Stops within the path safe limits.</text>
+              <rect x="866" y="172" width="300" height="150" fill="#000"/><rect x="860" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="882" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">SENDS</text>
+              <text x="882" y="224" font-size="15" font-weight="800" fill="#000">to the MATERIAL</text>
+              <text x="882" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">physical contact</text>
+              <text x="882" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">on the clay</text>
+              <line x1="340" y1="241" x2="372" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairRM)"/>
+              <line x1="824" y1="241" x2="856" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairRM)"/>
+            </g>
+          <line x1="40" y1="410" x2="1160" y2="410" stroke="var(--meikku-grid)" stroke-width="2" stroke-dasharray="6 12"/>
+            <g transform="translate(0,410)">
+              <rect x="40" y="28" width="26" height="26" fill="var(--role-material)" stroke="#000" stroke-width="2"/>
+              <text x="78" y="48" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">REGULATED VARIABLE &#183; M NODE</text>
+              <text class="disp" x="40" y="96" font-size="32" fill="#000">MATERIAL</text>
+              <line x1="40" y1="114" x2="840" y2="114" stroke="#000" stroke-width="3"/>
+              <rect x="46" y="172" width="300" height="150" fill="#000"/><rect x="40" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="62" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">RECEIVES</text>
+              <text x="62" y="224" font-size="15" font-weight="800" fill="#000">from the ROBOT ARM</text>
+              <text x="62" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">the arm physical</text>
+              <text x="62" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">contact and motion</text>
+              <rect x="382" y="146" width="448" height="210" fill="#000"/><rect x="376" y="140" width="448" height="210" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <rect x="379" y="143" width="442" height="9" fill="var(--role-material)"/>
+              <text x="398" y="174" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">WHAT IT DOES</text>
+              <text x="398" y="212" font-size="15" font-weight="700" fill="#000">&#8212;  Deforms where the tool touches.</text>
+              <text x="398" y="242" font-size="15" font-weight="700" fill="#000">&#8212;  Keeps every mark: the record accumulates.</text>
+              <text x="398" y="272" font-size="15" font-weight="700" fill="#000">&#8212;  Responds imperfectly: the clay can surprise.</text>
+              <text x="398" y="302" font-size="15" font-weight="700" fill="#000">&#8212;  Becomes the new state to be sensed.</text>
+              <rect x="866" y="172" width="300" height="150" fill="#000"/><rect x="860" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="882" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">SENDS</text>
+              <text x="882" y="224" font-size="15" font-weight="800" fill="#000">to the SENSOR</text>
+              <text x="882" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">a changed</text>
+              <text x="882" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">clay surface</text>
+              <line x1="340" y1="241" x2="372" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairRM)"/>
+              <line x1="824" y1="241" x2="856" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairRM)"/>
+            </g>
+        </svg>
+      </figure>
+    </section>
+
+    <section id="frame-07" class="board node-detail-board cyb-frame node-pair-board" aria-label="Node explanations: Sensor perception and dataset memory.">
+      <figure class="cyb-figure">
+        <svg viewBox="0 0 1200 820" role="img" aria-label="Node explanations: Sensor perception and dataset memory.">
+          <defs><marker id="pairSD" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="#000"/></marker></defs>
+            <g transform="translate(0,0)">
+              <rect x="40" y="28" width="26" height="26" fill="#000" stroke="#000" stroke-width="2"/>
+              <text x="78" y="48" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">PERCEPTION &#183; S NODE</text>
+              <text class="disp" x="40" y="96" font-size="38" fill="#000">SENSOR</text>
+              <line x1="40" y1="114" x2="840" y2="114" stroke="#000" stroke-width="3"/>
+              <g transform="translate(920,18) scale(0.88)">
+                <line x1="14" y1="0" x2="216" y2="0" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="230" y1="14" x2="230" y2="130" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="216" y1="144" x2="14" y2="144" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="0" y1="130" x2="0" y2="86" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="14" y1="72" x2="106" y2="72" stroke="#cfcec8" stroke-width="2"/>
+                <line x1="134" y1="66" x2="216" y2="12" stroke="#cfcec8" stroke-width="2"/>
+                <circle cx="0" cy="0" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="0" y="3.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">H</text>
+                <circle cx="230" cy="0" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="230" y="3.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">A</text>
+                <circle cx="0" cy="72" r="13" fill="#000" stroke="#000" stroke-width="3"/><text x="0" y="76" text-anchor="middle" font-size="10" font-weight="800" fill="var(--meikku-paper)">S</text>
+                <circle cx="120" cy="72" r="13" fill="#000" stroke="#000" stroke-width="3"/><text x="120" y="76" text-anchor="middle" font-size="10" font-weight="800" fill="var(--meikku-paper)">D</text>
+                <circle cx="0" cy="144" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="0" y="147.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">M</text>
+                <circle cx="230" cy="144" r="9" fill="var(--meikku-paper)" stroke="#000" stroke-width="2"/><text x="230" y="147.5" text-anchor="middle" font-size="9" font-weight="800" fill="#9a9a95">R</text>
+              </g>
+              <rect x="46" y="172" width="300" height="150" fill="#000"/><rect x="40" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="62" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">RECEIVES</text>
+              <text x="62" y="224" font-size="15" font-weight="800" fill="#000">from the MATERIAL</text>
+              <text x="62" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">the physical</text>
+              <text x="62" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">clay surface</text>
+              <rect x="382" y="146" width="448" height="210" fill="#000"/><rect x="376" y="140" width="448" height="210" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <rect x="379" y="143" width="442" height="9" fill="#000"/>
+              <text x="398" y="174" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">WHAT IT DOES</text>
+              <text x="398" y="212" font-size="15" font-weight="700" fill="#000">&#8212;  An RGB camera captures colour and marks.</text>
+              <text x="398" y="242" font-size="15" font-weight="700" fill="#000">&#8212;  A depth camera captures surface height.</text>
+              <text x="398" y="272" font-size="15" font-weight="700" fill="#000">&#8212;  Frames are fused into a clay mesh.</text>
+              <text x="398" y="302" font-size="15" font-weight="700" fill="#000">&#8212;  Calibration aligns it to the arm workspace.</text>
+              <rect x="866" y="172" width="300" height="150" fill="#000"/><rect x="860" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="882" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">SENDS</text>
+              <text x="882" y="224" font-size="15" font-weight="800" fill="#000">to the DATASET</text>
+              <text x="882" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">clay mesh +</text>
+              <text x="882" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">depth frames</text>
+              <line x1="340" y1="241" x2="372" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairSD)"/>
+              <line x1="824" y1="241" x2="856" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairSD)"/>
+            </g>
+          <line x1="40" y1="410" x2="1160" y2="410" stroke="var(--meikku-grid)" stroke-width="2" stroke-dasharray="6 12"/>
+            <g transform="translate(0,410)">
+              <rect x="40" y="28" width="26" height="26" fill="#000" stroke="#000" stroke-width="2"/>
+              <text x="78" y="48" font-size="13" font-weight="800" letter-spacing="1" fill="var(--meikku-slate)">MEMORY NODE &#183; D NODE</text>
+              <text class="disp" x="40" y="96" font-size="38" fill="#000">DATASET</text>
+              <line x1="40" y1="114" x2="840" y2="114" stroke="#000" stroke-width="3"/>
+              <rect x="46" y="172" width="300" height="150" fill="#000"/><rect x="40" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="62" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">RECEIVES</text>
+              <text x="62" y="224" font-size="15" font-weight="800" fill="#000">from SENSOR + AI</text>
+              <text x="62" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">observed mesh, depth frames,</text>
+              <text x="62" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">language logs, tool paths</text>
+              <rect x="382" y="146" width="448" height="210" fill="#000"/><rect x="376" y="140" width="448" height="210" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <rect x="379" y="143" width="442" height="9" fill="#000"/>
+              <text x="398" y="174" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">WHAT IT DOES</text>
+              <text x="398" y="212" font-size="15" font-weight="700" fill="#000">&#8212;  Stores every message, path, and observation.</text>
+              <text x="398" y="242" font-size="15" font-weight="700" fill="#000">&#8212;  Accumulates the running record of the session.</text>
+              <text x="398" y="272" font-size="15" font-weight="700" fill="#000">&#8212;  Holds the memory the AI reads as context.</text>
+              <text x="398" y="302" font-size="15" font-weight="700" fill="#000">&#8212;  Grows with each turn of the loop.</text>
+              <rect x="866" y="172" width="300" height="150" fill="#000"/><rect x="860" y="166" width="300" height="150" fill="var(--meikku-paper)" stroke="#000" stroke-width="3"/>
+              <text x="882" y="194" font-size="13" font-weight="800" letter-spacing="1.5" fill="var(--meikku-slate)">SENDS</text>
+              <text x="882" y="224" font-size="15" font-weight="800" fill="#000">to the AI</text>
+              <text x="882" y="256" font-size="14" font-weight="700" fill="var(--meikku-slate)">context for the</text>
+              <text x="882" y="278" font-size="14" font-weight="700" fill="var(--meikku-slate)">next tool path</text>
+              <line x1="340" y1="241" x2="372" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairSD)"/>
+              <line x1="824" y1="241" x2="856" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairSD)"/>
+            </g>
         </svg>
       </figure>
     </section>
@@ -1328,7 +1441,7 @@
         rc.setAttribute('stroke','var(--meikku-ink)'); rc.setAttribute('stroke-width',4);
         g.appendChild(sh); g.appendChild(rc);
 
-        // 简笔画 icon: the simplest drawing that captures the animal
+        // sketch icon: the simplest drawing that captures the animal
         const icx = cardX+42, icy = y+cardH/2;
         const el = (tag, attrs)=>{
           const n = document.createElementNS(NSVG, tag);
@@ -1660,7 +1773,7 @@
           leftHold(160, 5.0, 7.5);
           leftHold(200, 8.6, 10.5);
           if (S.smooth){
-            // support done — hover clear of the smoothing sweeps
+            // support done - hover clear of the smoothing sweeps
             leftKeys.push([11.4, CX-160, CY+270, 15], [13.5, CX-150, CY+265, 12]);
           } else {
             leftHold(182, 11.3, 12.8); // hold the flank while the crater is pressed
@@ -1830,8 +1943,8 @@
           return {x:ex, y:ey, es, s2:2*es*es};
         });
 
-        // ink edge rings: boundary where a feature rises or sinks.
-        // broad soft volumes (sig > 36) get no ring — only compact features do
+        // Ink edge rings: boundary where a feature rises or sinks.
+        // Broad soft volumes (sig > 36) get no ring; only compact features do.
         feats.forEach((e,k)=>{
           const el2 = featEdgeEls[k];
           if (!el2) return;
