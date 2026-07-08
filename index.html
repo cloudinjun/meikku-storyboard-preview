@@ -789,6 +789,20 @@
       background: var(--dark-panel);
     }
 
+    .video-review-frame {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-review-frame video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--dark-panel);
+      object-fit: contain;
+    }
+
     body.solo-frame .scada-review-board.active-solo { display: grid; }
 
     @media (max-width: 760px) {
@@ -874,7 +888,7 @@
     Codex handoff notes:
     - This is a new copy based on ui/meikku_storyboard_draft.html.
     - Frame 01 hides the original five animal buttons and skips the hand-click selection beat.
-    - Frames 03-07 are an outline draft for the cybernetics map and paired node explanations.
+    - Frames 03-09 are an outline draft for the cybernetics map, paired node explanations, UI review, and video evidence.
     - Placeholder notes are intentionally visible where thesis wording or evidence should be refined later.
     - Keep the story collaborative: human and robot act together on one material, not command/execution.
   -->
@@ -1374,6 +1388,26 @@
       </div>
       <figure class="scada-review-frame">
         <iframe src="scada-ui-mockup.html?review=1" title="Dehydrated SCADA UI review frame" loading="lazy"></iframe>
+      </figure>
+    </section>
+
+    <section id="frame-09" class="board scada-review-board video-review-board" aria-label="Frame 09 SCADA path run video playback">
+      <div class="scada-review-copy">
+        <span>Looping playback</span>
+        <h2>PATH RUN VIDEO</h2>
+        <p>Recorded SCADA path-run evidence: the interface playback loops automatically and can still be paused or scrubbed with the video controls.</p>
+      </div>
+      <figure class="scada-review-frame video-review-frame">
+        <video
+          src="assets/storyboard/storyboard_scada_path_run_20260708_153040_cw38_30s.mp4"
+          controls
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          aria-label="SCADA UI path run recording">
+        </video>
       </figure>
     </section>
   </main>
