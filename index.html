@@ -722,6 +722,75 @@
     .cyb-figure svg { width: 100%; height: 100%; display: block; font-family: var(--font-sans); }
     .cyb-figure svg .disp { font-family: var(--font-display); letter-spacing: 0.02em; }
 
+    .scada-review-board {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 20px;
+      padding: 56px 64px 52px;
+      background:
+        radial-gradient(var(--meikku-grid) var(--paper-dot-size), transparent var(--paper-dot-size)),
+        var(--meikku-paper);
+      background-size: var(--paper-dot-grid-size) var(--paper-dot-grid-size);
+    }
+
+    .scada-review-copy {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px 24px;
+      align-items: end;
+      min-width: 0;
+    }
+
+    .scada-review-copy span {
+      align-self: center;
+      padding: 8px 10px 6px;
+      background: var(--meikku-ink);
+      color: var(--meikku-lime);
+      font-size: var(--text-small);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .scada-review-copy h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(42px, 4vw, 68px);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+
+    .scada-review-copy p {
+      grid-column: 2;
+      margin: 0;
+      max-width: 760px;
+      color: var(--meikku-slate);
+      font-size: var(--text-label);
+      font-weight: 800;
+      line-height: 1.32;
+    }
+
+    .scada-review-frame {
+      min-height: 0;
+      margin: 0;
+      border: 3px solid var(--meikku-ink);
+      background: var(--dark-panel);
+      box-shadow: 6px 6px 0 var(--meikku-ink);
+      overflow: hidden;
+    }
+
+    .scada-review-frame iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: var(--dark-panel);
+    }
+
+    body.solo-frame .scada-review-board.active-solo { display: grid; }
+
     @media (max-width: 760px) {
       body { padding: 0; }
       .storyboard { width: 100vw; }
@@ -779,6 +848,19 @@
       }
       .detail-card h3 { font-size: var(--text-mobile-detail-heading); }
       .detail-card p { font-size: var(--text-mobile-detail-body); }
+      .scada-review-board {
+        padding: 72px 20px 28px;
+        gap: 16px;
+      }
+      .scada-review-copy {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+      .scada-review-copy p {
+        grid-column: 1;
+        font-size: var(--text-mobile-body);
+      }
+      .scada-review-frame { min-height: 620px; }
       .statement-panel {
         width: 84vw;
         padding: 24px;
@@ -1281,6 +1363,17 @@
               <line x1="824" y1="241" x2="856" y2="241" stroke="#000" stroke-width="5" marker-end="url(#pairSD)"/>
             </g>
         </svg>
+      </figure>
+    </section>
+
+    <section id="frame-08" class="board scada-review-board" aria-label="Frame 08 dehydrated SCADA UI review">
+      <div class="scada-review-copy">
+        <span>Dehydrated review mode</span>
+        <h2>SCADA UI REVIEW</h2>
+        <p>Static interface review: this frame runs against frozen fixture responses, not live Blender, inference, or robot servers.</p>
+      </div>
+      <figure class="scada-review-frame">
+        <iframe src="scada-ui-mockup.html?review=1" title="Dehydrated SCADA UI review frame" loading="lazy"></iframe>
       </figure>
     </section>
   </main>
