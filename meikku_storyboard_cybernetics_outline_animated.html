@@ -773,6 +773,7 @@
     }
 
     .scada-review-frame {
+      position: relative;
       min-height: 0;
       margin: 0;
       border: 3px solid var(--meikku-ink);
@@ -781,12 +782,122 @@
       overflow: hidden;
     }
 
-    .scada-review-frame iframe {
+    .scada-compare-layer {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .scada-compare-recording img,
+    .scada-compare-interface iframe {
       display: block;
       width: 100%;
       height: 100%;
       border: 0;
       background: var(--dark-panel);
+    }
+
+    .scada-compare-recording img {
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .scada-compare-interface {
+      z-index: 2;
+      clip-path: inset(0 calc(100% - var(--compare-split, 54%)) 0 0);
+    }
+
+    .scada-compare-label {
+      position: absolute;
+      top: 16px;
+      z-index: 3;
+      padding: 8px 12px;
+      border: 2px solid var(--meikku-ink);
+      background: var(--meikku-paper);
+      color: var(--meikku-ink);
+      font-size: var(--text-small);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      line-height: 1;
+      text-transform: uppercase;
+      box-shadow: 4px 4px 0 var(--meikku-ink);
+      pointer-events: none;
+    }
+
+    .scada-compare-label-live {
+      left: 16px;
+      background: var(--meikku-lime);
+    }
+
+    .scada-compare-label-recorded { right: 16px; }
+
+    .scada-compare-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--compare-split, 54%);
+      z-index: 5;
+      width: 52px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      transform: translateX(-50%);
+      cursor: ew-resize;
+      touch-action: none;
+    }
+
+    .scada-compare-handle::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      background: var(--meikku-lime);
+      border-left: 2px solid var(--meikku-ink);
+      border-right: 2px solid var(--meikku-ink);
+      transform: translateX(-50%);
+    }
+
+    .scada-compare-grip {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      border: 3px solid var(--meikku-ink);
+      background: var(--meikku-lime);
+      color: var(--meikku-ink);
+      font-family: var(--font-display);
+      font-size: var(--text-label);
+      line-height: 1;
+      box-shadow: 4px 4px 0 var(--meikku-ink);
+      transform: translate(-50%, -50%);
+    }
+
+    .scada-compare-handle:focus-visible .scada-compare-grip {
+      outline: 4px solid var(--meikku-paper);
+      outline-offset: 4px;
+    }
+
+    .scada-compare-hint {
+      position: absolute;
+      left: 50%;
+      bottom: 16px;
+      z-index: 4;
+      margin: 0;
+      padding: 8px 12px;
+      background: var(--meikku-ink);
+      color: var(--meikku-paper);
+      font-size: var(--text-small);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-transform: uppercase;
+      transform: translateX(-50%);
+      pointer-events: none;
     }
 
     body.solo-frame .scada-review-board.active-solo { display: grid; }
@@ -849,8 +960,12 @@
       .detail-card h3 { font-size: var(--text-mobile-detail-heading); }
       .detail-card p { font-size: var(--text-mobile-detail-body); }
       .scada-review-board {
+        height: auto;
+        min-height: 100vh;
+        grid-template-rows: auto 620px;
         padding: 72px 20px 28px;
         gap: 16px;
+        overflow: visible;
       }
       .scada-review-copy {
         grid-template-columns: 1fr;
@@ -861,6 +976,11 @@
         font-size: var(--text-mobile-body);
       }
       .scada-review-frame { min-height: 620px; }
+      .scada-compare-label { top: 12px; padding: 8px; }
+      .scada-compare-label-live { left: 12px; }
+      .scada-compare-label-recorded { right: 12px; }
+      .scada-compare-grip { width: 44px; height: 44px; }
+      .scada-compare-hint { display: none; }
       .statement-panel {
         width: 84vw;
         padding: 24px;
@@ -1655,8 +1775,19 @@ text.disp,.disp{font-family:var(--font-display);}
         <h2>TALK → PLAN → PREVIEW</h2>
         <p>A browser-local, pre-authored performance demonstrates typing, interpretation, path generation, and preview. It does not run live inference or authorize robot motion.</p>
       </div>
-      <figure class="scada-review-frame">
-        <iframe src="scada-ui-mockup.html?review=1&amp;presetDemo=1" title="Scripted SCADA typing, path-generation, and preview demonstration" loading="lazy"></iframe>
+      <figure class="scada-review-frame scada-compare">
+        <div class="scada-compare-layer scada-compare-recording">
+          <img src="assets/storyboard/storyboard_scada_path_run_compare.gif" alt="Recorded SCADA path-run animation, cropped to remove the lower-right recording watermark." loading="lazy">
+          <span class="scada-compare-label scada-compare-label-recorded">Path run · GIF</span>
+        </div>
+        <div class="scada-compare-layer scada-compare-interface">
+          <iframe src="scada-ui-mockup.html?review=1&amp;presetDemo=1" title="Scripted SCADA typing, path-generation, and preview demonstration" loading="lazy"></iframe>
+          <span class="scada-compare-label scada-compare-label-live">Scripted UI</span>
+        </div>
+        <button class="scada-compare-handle" type="button" role="slider" aria-label="Change the visible ratio between the scripted UI and recorded path-run GIF" aria-valuemin="8" aria-valuemax="92" aria-valuenow="54" aria-valuetext="54 percent scripted UI, 46 percent recorded GIF">
+          <span class="scada-compare-grip" aria-hidden="true">↔</span>
+        </button>
+        <p class="scada-compare-hint">Drag to compare · arrow keys adjust</p>
       </figure>
     </section>
   </main>
@@ -1673,6 +1804,47 @@ text.disp,.disp{font-family:var(--font-display);}
           });
         }
       }
+
+      document.querySelectorAll('.scada-compare').forEach(compare => {
+        const handle = compare.querySelector('.scada-compare-handle');
+        let split = 54;
+
+        const setSplit = value => {
+          split = Math.max(8, Math.min(92, value));
+          compare.style.setProperty('--compare-split', `${split}%`);
+          handle.setAttribute('aria-valuenow', Math.round(split));
+          handle.setAttribute('aria-valuetext', `${Math.round(split)} percent scripted UI, ${Math.round(100 - split)} percent recorded GIF`);
+        };
+
+        const setFromPointer = clientX => {
+          const bounds = compare.getBoundingClientRect();
+          setSplit(((clientX - bounds.left) / bounds.width) * 100);
+        };
+
+        handle.addEventListener('pointerdown', event => {
+          handle.setPointerCapture(event.pointerId);
+          setFromPointer(event.clientX);
+          handle.focus();
+        });
+        handle.addEventListener('pointermove', event => {
+          if (handle.hasPointerCapture(event.pointerId)) setFromPointer(event.clientX);
+        });
+        handle.addEventListener('keydown', event => {
+          const keySteps = { ArrowLeft: -2, ArrowDown: -2, ArrowRight: 2, ArrowUp: 2 };
+          if (event.key in keySteps) {
+            event.preventDefault();
+            setSplit(split + keySteps[event.key]);
+          } else if (event.key === 'Home') {
+            event.preventDefault();
+            setSplit(8);
+          } else if (event.key === 'End') {
+            event.preventDefault();
+            setSplit(92);
+          }
+        });
+        handle.addEventListener('dblclick', () => setSplit(54));
+        setSplit(split);
+      });
 
       const NSVG = 'http://www.w3.org/2000/svg';
       const T = 18;
