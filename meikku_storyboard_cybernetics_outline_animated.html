@@ -1151,6 +1151,80 @@ text.disp,.disp{font-family:var(--font-display);}
 .ty-label{font-size:var(--fs-label);}  /* 全大写 eyebrow 标签 */
 .ty-micro{font-size:var(--fs-micro);}  /* 索引小图的节点字母 */
 </style>
+
+<style id="resolutionScaleContract">
+/* 1920×1080: 1rem = 1 design pixel; 3840×2160: 1rem = 2 design pixels. */
+@media (min-width: 761px) {
+  html { font-size: var(--text-resolution-unit); }
+  :root {
+    --text-resolution-unit: min(0.052083333vw, 0.092592593vh);
+    --text-scada-heading: clamp(42rem, 4vw, 68rem);
+    --paper-dot-size: 1.3rem; --paper-dot-grid-size: 28rem;
+    --dark-dot-size: 1.4rem; --dark-dot-grid-size: 30rem;
+    --text-micro: 12rem; --text-small: 14rem; --text-label: 16rem;
+    --text-body: 20rem; --text-title: 26rem;
+    --text-hero: clamp(54rem, 7.4vw, 112rem);
+    --text-intro-subtitle: clamp(17rem, 1.65vw, 25rem);
+    --text-intro-note: clamp(14rem, 1.05vw, 18rem);
+    --text-statement-heading: clamp(34rem, 4.6vw, 70rem);
+    --text-statement-body: clamp(18rem, 1.9vw, 28rem);
+    --text-diagram-heading: clamp(42rem, 4.8vw, 76rem);
+    --text-section-heading: clamp(42rem, 5.4vw, 88rem);
+    --text-section-body: clamp(17rem, 1.35vw, 23rem);
+    --text-map-title: 18rem; --text-map-body: 14rem;
+    --text-detail-heading: 30rem; --text-detail-body: 18rem;
+    /* SVG viewBox geometry already scales with the viewport; keep these in user-space px. */
+    --fs-display: 42px; --fs-title: 26px; --fs-strong: 16px;
+    --fs-body: 14px; --fs-label: 13px; --fs-micro: 9px;
+  }
+
+  .board, .visual-panel img, .intro-kicker, .frame-tag, .statement-panel,
+  .too-path-evidence, .blender-shot, .scada-review-frame { border-width: 3rem; }
+  .intro-title { width: min(540rem, 42vw); }
+  .intro-kicker { margin-bottom: 20rem; padding: 12rem 12rem 8rem; box-shadow: 6rem 6rem 0 var(--meikku-ink); }
+  .intro-title .subtitle, .intro-title .thesis-line { margin-top: 16rem; }
+  .frame-tag { left: 40rem; top: 32rem; padding: 8rem 12rem; box-shadow: 6rem 6rem 0 var(--meikku-ink); }
+  .statement-board .visual-panel::after { left: 32rem; bottom: 28rem; padding: 8rem 12rem; }
+  .statement-panel { width: min(760rem, 72vw); padding: 36rem 40rem; box-shadow: 6rem 6rem 0 var(--meikku-ink); }
+  .statement-panel h2 { margin-bottom: 16rem; }
+
+  .diagram-board, .blackbox-board, .node-detail-board { padding: 96rem 72rem 64rem; }
+  .diagram-board { grid-template-columns: minmax(460rem, 0.4fr) minmax(660rem, 0.6fr); gap: 44rem; }
+  .diagram-copy p, .blackbox-copy p, .node-detail-copy p { margin-top: 24rem; }
+  .map-panel { gap: 32rem 24rem; height: calc(100vh - 180rem); min-height: 480rem; max-height: 650rem; padding: 52rem 32rem 48rem; box-shadow: 6rem 6rem 0 var(--meikku-ink); }
+  .map-node { min-height: 112rem; padding: 16rem 16rem 12rem; box-shadow: 6rem 6rem 0 var(--meikku-ink); }
+  .map-node strong { margin-bottom: 8rem; }
+
+  .blackbox-board { gap: 56rem; --blackbox-shot-height: min(calc(37.125vw - 74rem), calc(100vh - 160rem)); --blackbox-left-lift: clamp(200rem, 12vw, 260rem); }
+  .detail-list { gap: 12rem; margin-top: 28rem; }
+  .detail-list div, .detail-note { padding: 16rem 16rem 12rem; }
+  .too-path-evidence { height: clamp(360rem, 42vh, 420rem); box-shadow: 6rem 6rem 0 var(--meikku-ink); }
+  .blender-shot { box-shadow: 6rem 6rem 0 var(--meikku-ink); }
+  .shot-annotation { grid-template-columns: 32rem 1fr; gap: 8rem; width: min(288rem, 28%); padding: 12rem 16rem 12rem 12rem; border-width: 3rem; box-shadow: 6rem 6rem 0 var(--meikku-ink); }
+  .shot-annotation b { width: 28rem; height: 28rem; }
+  .shot-caption { left: 24rem; bottom: 20rem; max-width: 680rem; padding: 12rem 16rem; }
+  .map-legend { gap: 8rem 18rem; margin-top: 22rem; }
+  .map-legend i { width: 24rem; height: 4rem; margin-right: 8rem; }
+  .locator-loop { margin-top: 22rem; }
+
+  .scada-review-board { gap: 20rem; padding: 56rem 64rem 52rem; }
+  .scada-review-copy { gap: 10rem 24rem; }
+  .scada-review-copy span { padding: 8rem 10rem 6rem; }
+  .scada-review-copy h2 { font-size: var(--text-scada-heading); }
+  .scada-review-copy p { max-width: 760rem; }
+  .scada-review-frame { box-shadow: 6rem 6rem 0 var(--meikku-ink); }
+  .scada-compare-label { top: 16rem; padding: 8rem 12rem; border-width: 2rem; box-shadow: 4rem 4rem 0 var(--meikku-ink); }
+  .scada-compare-label-live { left: 16rem; }
+  .scada-compare-label-recorded { right: 16rem; }
+  .scada-compare-handle { width: 52rem; }
+  .scada-compare-handle::before { width: 4rem; border-left-width: 2rem; border-right-width: 2rem; }
+  .scada-compare-grip { width: 52rem; height: 52rem; border-width: 3rem; box-shadow: 4rem 4rem 0 var(--meikku-ink); }
+  .scada-compare-handle:focus-visible .scada-compare-grip { outline-width: 4rem; outline-offset: 4rem; }
+  .scada-compare-hint { bottom: 16rem; padding: 8rem 12rem; }
+  #cybMiniDock { top: 88rem; }
+  #cybMiniHUD { left: 40rem; width: 176rem; border-width: 1rem; transform: translateY(-8rem); }
+}
+</style>
 </head>
 <body>
 

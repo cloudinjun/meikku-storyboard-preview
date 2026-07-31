@@ -10740,12 +10740,12 @@
 @keyframes ofblink{50%{opacity:0;}}
 </style>
 
-<div id="ofPanelHost" aria-label="OpenClaw conversation">
+<div id="ofPanelHost" aria-label="Meikku conversation">
   <div class="of" id="ofx_panel" data-phase="idle" data-collapsed="0">
     <div class="of-top">
       <span class="of-orb" aria-hidden="true"><i></i><i></i></span>
       <div class="of-id">
-        <span class="of-name">OPENCLAW</span>
+        <span class="of-name">MEIKKU</span>
         <span class="of-phase" id="ofxPhase" data-phase="idle"><b id="ofxPhaseLabel">IDLE</b></span>
       </div>
       <span class="of-conn" id="ofx_conn"><span class="live"></span><span id="ofx_connTxt">Online</span></span>
@@ -10835,7 +10835,54 @@
       else { el.classList.remove('stream-cur'); streamTimer=null; }
     })();
   }
-  function line(text, who, variant){
+  /* ---- keep engineering out of the sentence ----------------------------
+     Producers leak ports, endpoints and URLs into the user-facing string
+     ("解析器联系不上(:7801/resolve_action)"). Rather than police every call
+     site, strip those fragments here and hand them to the detail drawer, so
+     the person reads a sentence and the operator can still open the cause. */
+  var TECH_PATTERNS=[
+    /https?:\/\/[^\s)）]+/g,                 /* full URLs                     */
+    /\b\d{1,3}(?:\.\d{1,3}){3}:\d{2,5}\b/g,  /* 127.0.0.1:7801                */
+    /[（(]\s*:\d{2,5}\/[^\s)）]*\s*[)）]/g,    /* (:7801/resolve_action)        */
+    /(?:^|\s):\d{2,5}\/[^\s,，。)）]+/g       /* bare :7801/resolve_action     */
+  ];
+  function splitTechnical(text){
+    var found=[], clean=String(text||'');
+    TECH_PATTERNS.forEach(function(re){
+      clean=clean.replace(re,function(hit){ found.push(hit.trim()); return ' '; });
+    });
+    clean=clean
+      .replace(/\s*[（(]\s*[)）]\s*/g,' ')     /* emptied brackets            */
+      /* a stripped URL leaves the preposition that pointed at it dangling
+         ("Fetch failed for  — timeout"); drop it so the net still reads. */
+      .replace(/\b(?:for|at|to|from|on|with|via)\s+(?=[—–\-,，。.;；]|$)/gi,'')
+      .replace(/\s{2,}/g,' ')
+      .replace(/\s+([,，。.;；:：])/g,'$1')
+      .replace(/^[\s,，。.;；-]+/,'')
+      .trim();
+    return { text: clean, technical: found.join('  ') };
+  }
+
+  function attachDetail(row, detail){
+    if(!detail) return;
+    var wrap=document.createElement('div'); wrap.className='of-detail';
+    var btn=document.createElement('button');
+    btn.type='button'; btn.className='of-detail__toggle';
+    btn.textContent='DETAIL'; btn.setAttribute('aria-expanded','false');
+    var body=document.createElement('div'); body.className='of-detail__body';
+    body.textContent=detail; body.hidden=true;
+    btn.onclick=function(){
+      var open=body.hidden;
+      body.hidden=!open;
+      btn.setAttribute('aria-expanded', open?'true':'false');
+      btn.textContent=open?'HIDE':'DETAIL';
+      scrollDown();
+    };
+    wrap.appendChild(btn); wrap.appendChild(body);
+    row.appendChild(wrap);
+  }
+
+  function line(text, who, variant, detail){
     if(!text) return null;
     stopTyping();
     var row=document.createElement('div');
@@ -10843,14 +10890,19 @@
       row.className='of-msg you';
       var t=document.createElement('span'); t.className='txt'; t.textContent=text;
       row.appendChild(t);
-    } else {
-      row.className='of-msg'+(variant?' '+variant:'');
-      var g=document.createElement('span'); g.className='glyph'; g.textContent='◆';
-      var t2=document.createElement('span'); t2.className='txt';
-      row.appendChild(g); row.appendChild(t2);
+      thread.appendChild(row); scrollDown();
+      return row;
     }
+    var split=splitTechnical(text);
+    if(!split.text) split.text=text;           /* never blank out a message */
+    var merged=[detail, split.technical].filter(Boolean).join('\n');
+    row.className='of-msg'+(variant?' '+variant:'');
+    var g=document.createElement('span'); g.className='glyph'; g.textContent='◆';
+    var t2=document.createElement('span'); t2.className='txt';
+    row.appendChild(g); row.appendChild(t2);
     thread.appendChild(row); scrollDown();
-    if(who!=='you'){ streamInto(row.querySelector('.txt'), text); }
+    streamInto(t2, split.text);
+    attachDetail(row, merged);
     return row;
   }
   /* Exposed so the Meikku cognition surface can speak in play voice
@@ -10858,6 +10910,7 @@
   window.ofSay=function(text,variant,detail){ return line(text,'arm',variant,detail); };
   window.ofThinking=function(text){ if(text) typing(text); else stopTyping(); };
   window.ofFinishStreams=finishStreams;
+
   var seenEvidence={reasoning:'',features:'',reflection:''};
   window.ofShowReasoning=function(data){
     data=data||{};
@@ -10883,12 +10936,25 @@
     if(text===seenEvidence.reflection) return;
     seenEvidence.reflection=text; line(text,'arm','ok');
   };
-  function typing(){
-    if($('ofx_typing')) return;
+  function typing(label){
+    var existing=$('ofx_typing');
+    if(existing){
+      /* Deliberation lives here: the label can change while the arm thinks,
+         and the whole thing disappears without leaving anything in the log. */
+      if(label!==undefined){
+        var lb=existing.querySelector('.think-label');
+        if(!lb){ lb=document.createElement('span'); lb.className='think-label'; existing.appendChild(lb); }
+        lb.textContent=label||'';
+      }
+      return;
+    }
     finishStreams();
     var el=document.createElement('div'); el.className='of-think'; el.id='ofx_typing';
-    el.innerHTML='<span class="glyph">◆</span><span class="dots"><i></i><i></i><i></i></span>';
-    thread.appendChild(el); scrollDown();
+    el.innerHTML='<span class="glyph">◆</span><span class="dots"><i></i><i></i><i></i></span>'
+      + (label?'<span class="think-label"></span>':'');
+    thread.appendChild(el);
+    if(label){ el.querySelector('.think-label').textContent=label; }
+    scrollDown();
   }
   function stopTyping(){ var t=$('ofx_typing'); if(t) t.remove(); }
 
@@ -11005,7 +11071,8 @@
       if(cls.indexOf('--ask')>=0) variant='ask';
       else if(cls.indexOf('--ok')>=0) variant='ok';
       else if(cls.indexOf('--block')>=0) variant='block';
-      line(msg,'arm',variant);
+      /* the technical note used to be dropped here; it now feeds the drawer */
+      line(msg,'arm',variant, why?String(why.textContent||'').trim():'');
     }catch(e){}
   }
   function rebuildOptions(){
@@ -12331,8 +12398,10 @@
           throw new Error('resolver returned an unbound intent envelope');
         }
         setState('UNDERSTOOD', 'ok');
-        say('ROBOT', msg || ('Understood: ' + r.selectedActionId), 'ok',
-            'Compiler ' + (r.compilerId || '') + ' · ready to send');
+        /* the action id is an internal name; it belongs in the drawer */
+        say('ROBOT', msg || 'Got it.', 'ok',
+            'action ' + (r.selectedActionId || '?')
+              + ' · compiler ' + (r.compilerId || '?') + ' · ready to send');
         st.clearedFor = st.intent;
         setHint('Understood. Press SEND INTENT to continue.');
         try { if (window.__why) { window.__why.renderResolution(r); window.__why.fetchFeatures(); } } catch (_) {}
@@ -12376,9 +12445,10 @@
         renderOptions(null);
         setState('RESOLVER DOWN', 'block');
         say('ROBOT',
-            '解析器联系不上(:7801/resolve_action),所以我不会猜这句话是什么意思。',
+            '我现在没法理解这句话，所以先不动。',
             'block',
-            String((error && error.message) || error));
+            'resolver unreachable at :7801/resolve_action — '
+              + String((error && error.message) || error));
         setHint('启动 inference_server 后重试。');
         if (requestToken === st.requestToken) st.clearedFor = '';
         return null;
@@ -19659,6 +19729,731 @@
   }
 
   setPhase('idle', 'IDLE');
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     CHAT DOCK — the human surface
+     Colour carries meaning in this UI: light panels are where a person can
+     act, dark is the machine's interior. The conversation is the one place
+     the person actually operates, so it becomes paper and takes the full
+     screen height on the left.
+
+     One exception, and it is the point: while the arm is deliberating, a
+     dark band surfaces inside the paper. That is the machine showing
+     through the human sheet for a moment. It carries the thinking, then
+     disappears without leaving anything in the log.
+     ═══════════════════════════════════════════════════════════════════ -->
+<style>
+  /* The right-hand operator panel is the reference, and this dock has to be
+     the same object seen from the other side of the screen. Matching it means
+     obeying four things that were got wrong the first time:
+
+       1. base is --human-paper-3 (the bright sheet), not the cream tint;
+       2. titles are Bungee at the V8 panel scale, not body text;
+       3. emphasis is a solid ink block with paper text — the .idx / .tag
+          language already used for "01" chips and panel tags — not a blue fill;
+       4. the V8 contract: letter-spacing 0, and no panel text below 12px.
+
+     Accents stay ink and white. Colour only enters where it carries state,
+     the same way the operator panel uses it. */
+  :root{ --of-dock-w: 420px; }
+
+  /* ── full-height left dock ── */
+  #ofPanelHost{
+    left:0 !important; top:0 !important; bottom:0 !important;
+    width:var(--of-dock-w) !important; max-height:none !important;
+    height:100vh !important; z-index:72 !important;
+  }
+  #ofPanelHost .of{
+    background:var(--human-paper-3) !important;
+    border:none !important;
+    border-right:2px solid var(--human-ink) !important;
+    clip-path:none !important;
+    box-shadow:none !important;
+    height:100% !important;
+    font-family:var(--font-body) !important;
+  }
+  #ofPanelHost .of *{ letter-spacing:0 !important; }
+
+  /* ── header: matches the operator panel-header, 80px, ink rule under it ── */
+  #ofPanelHost .of-top{
+    background:var(--human-paper-3) !important;
+    border-bottom:2px solid var(--human-ink) !important;
+    min-height:80px !important;
+    padding:16px 20px !important;
+    align-items:center !important;
+  }
+  #ofPanelHost .of-id{ display:flex !important; flex-direction:column !important; gap:4px !important; }
+  #ofPanelHost .of-name{
+    color:var(--human-ink) !important; text-shadow:none !important;
+    font:400 var(--text-panel-title)/var(--leading-panel-tight) var(--font-display) !important;
+    text-transform:uppercase !important;
+  }
+  #ofPanelHost .of-phase,
+  #ofPanelHost .of-phase b{
+    color:var(--human-muted) !important; text-shadow:none !important;
+    font:700 var(--text-panel-label)/1.2 var(--font-body) !important;
+    text-transform:uppercase !important;
+  }
+  /* connection reads as a tag chip, like the operator panel's .tag */
+  #ofPanelHost .of-conn{
+    color:var(--human-paper-3) !important; background:var(--human-ink) !important;
+    border:1px solid var(--human-ink) !important; padding:3px 8px !important;
+    font:700 var(--text-panel-label)/1.2 var(--font-body) !important;
+    text-transform:uppercase !important; text-shadow:none !important;
+  }
+  #ofPanelHost #ofx_connTxt{ color:var(--human-paper-3) !important; }
+  #ofPanelHost .of-conn .live{ background:var(--human-paper-3) !important; box-shadow:none !important; }
+  #ofPanelHost .of-collapse{
+    color:var(--human-ink) !important; border:1px solid var(--human-ink) !important;
+    background:var(--human-paper-3) !important; text-shadow:none !important;
+    font:700 var(--text-panel-label)/1 var(--font-body) !important;
+  }
+  /* the machine's presence: a solid ink disc, no glow */
+  #ofPanelHost .of-orb i:first-child{
+    background:var(--human-ink) !important; border-radius:50% !important;
+    animation:none !important;
+  }
+  #ofPanelHost .of-orb i:last-child{
+    border:1px solid var(--human-ink) !important; border-top-color:transparent !important;
+  }
+
+  /* ── activity strip ── */
+  #ofPanelHost .of-activity{
+    background:var(--human-paper-3) !important;
+    border-bottom:1px solid var(--human-line) !important;
+    padding:10px 20px !important;
+  }
+  #ofPanelHost .of-activity-text{
+    color:var(--human-muted) !important; text-shadow:none !important;
+    font:700 var(--text-panel-label)/1.2 var(--font-body) !important;
+    text-transform:uppercase !important;
+  }
+  #ofPanelHost .of-activity-dot{ background:var(--human-ink) !important; box-shadow:none !important; }
+  #ofPanelHost .of-activity.is-warn .of-activity-text{ color:var(--human-amber) !important; }
+  #ofPanelHost .of-activity.is-warn .of-activity-dot{ background:var(--human-amber) !important; }
+
+  /* ── thread ── */
+  #ofPanelHost .of-thread{
+    background:var(--human-paper-3) !important;
+    flex:1 1 auto !important; min-height:0 !important;
+    padding:16px 20px !important; gap:14px !important;
+  }
+  /* V8: nothing below 12px, body weight for reading */
+  #ofPanelHost .of-msg .txt{
+    color:var(--human-copy) !important; text-shadow:none !important;
+    font:400 14px/1.55 var(--font-body) !important;
+  }
+  #ofPanelHost .of-msg .glyph{ color:var(--human-ink) !important; text-shadow:none !important; }
+
+  /* the person's own words: solid ink block, the way emphasis is done here */
+  #ofPanelHost .of-msg.you .txt{
+    color:var(--human-paper-3) !important;
+    background:var(--human-ink) !important;
+    border:none !important; border-bottom:none !important;
+    padding:8px 11px !important;
+    font:500 13px/1.5 var(--font-body) !important;
+    clip-path:polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%) !important;
+  }
+  /* state accents: a left rule only, matching the operator panel's restraint */
+  #ofPanelHost .of-msg.ask{ border-left:2px solid var(--human-amber) !important; }
+  #ofPanelHost .of-msg.ask .glyph{ color:var(--human-amber) !important; text-shadow:none !important; }
+  #ofPanelHost .of-msg.ok{ border-left:2px solid var(--human-ink) !important; }
+  #ofPanelHost .of-msg.ok .glyph{ color:var(--human-ink) !important; }
+  #ofPanelHost .of-msg.block{ border-left:2px solid var(--human-coral) !important; padding-left:9px; margin-left:-11px; }
+  #ofPanelHost .of-msg.block .glyph{ color:var(--human-coral) !important; }
+
+  /* ── deliberation: the machine surfacing inside the sheet ── */
+  #ofPanelHost .of-think{
+    background:var(--human-ink) !important;
+    border-left:2px solid var(--neon, #A3FF00) !important;
+    padding:9px 12px !important; margin:0 -20px !important;
+    align-items:center !important;
+  }
+  #ofPanelHost .of-think .glyph{ color:var(--neon, #A3FF00) !important; }
+  #ofPanelHost .of-think .dots i{ background:var(--neon, #A3FF00) !important; }
+  #ofPanelHost .of-think .think-label{
+    color:rgba(255,250,240,0.72) !important;
+    font:400 12px/1.4 var(--font-body) !important; font-style:normal !important;
+  }
+
+  /* ── utility drawer ─────────────────────────────────────────────────
+     Chat should be chat. Four bands of furniture used to sit around the
+     conversation: the header's phase/connection chips, the activity
+     strip, the footer's start-over and shortcut hint, and the
+     engineering fold. All of it is machine business, so all of it goes
+     behind one dot, and opens dark — the same rule the typing indicator
+     and the detail drawer follow.
+
+     Nothing is deleted: the nodes are relocated, so every handler
+     already wired to the backend keeps working. */
+  #ofPanelHost .of-util{
+    background:var(--human-ink) !important;
+    border-bottom:2px solid var(--human-ink) !important;
+    padding:0 !important; max-height:0; overflow:hidden;
+    transition:max-height .18s ease-out;
+  }
+  #ofPanelHost .of-util.is-open{ max-height:min(62vh, 620px); overflow:auto; padding:14px 20px !important; }
+  #ofPanelHost .of-util .of-util__group + .of-util__group{
+    margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,250,240,0.14);
+  }
+  #ofPanelHost .of-util__title{
+    font:700 12px/1.2 var(--font-body) !important; text-transform:uppercase !important;
+    color:rgba(255,250,240,0.42) !important; margin-bottom:8px;
+  }
+  /* everything inside the drawer reads as machine interior */
+  #ofPanelHost .of-util *{
+    color:rgba(255,250,240,0.82) !important;
+    background:transparent !important;
+    border-color:rgba(255,250,240,0.22) !important;
+    text-shadow:none !important; box-shadow:none !important;
+  }
+  #ofPanelHost .of-util button,
+  #ofPanelHost .of-util input[type="text"]{
+    border:1px solid rgba(255,250,240,0.28) !important;
+    font:400 12px/1.2 var(--font-body) !important;
+    padding:7px 10px !important; cursor:pointer;
+  }
+  #ofPanelHost .of-util button:hover{
+    background:rgba(255,250,240,0.10) !important; color:#fffaf0 !important;
+  }
+  #ofPanelHost .of-util .of-seg-btn.active{
+    background:var(--neon, #A3FF00) !important; color:var(--human-ink) !important;
+    border-color:var(--neon, #A3FF00) !important;
+  }
+  #ofPanelHost .of-util summary{ cursor:pointer; }
+  #ofPanelHost .of-util .of-crow{
+    display:flex !important; justify-content:space-between; gap:12px;
+    font:400 12px/1.6 var(--font-body) !important;
+  }
+  #ofPanelHost .of-util .of-crow span{ color:rgba(255,250,240,0.45) !important; }
+
+  /* the one control that replaces four bands */
+  #ofPanelHost .of-util-btn{
+    width:26px; height:26px; flex:none; align-self:center;
+    display:flex; align-items:center; justify-content:center;
+    background:transparent !important; color:var(--human-ink) !important;
+    border:1px solid var(--human-ink) !important;
+    font:700 14px/1 var(--font-body) !important; cursor:pointer;
+  }
+  #ofPanelHost .of-util-btn[aria-expanded="true"]{
+    background:var(--human-ink) !important; color:var(--human-paper-3) !important;
+  }
+  /* a single dot carries state; the words live in the drawer */
+  #ofPanelHost .of-state-dot{
+    width:8px; height:8px; flex:none; align-self:center; border-radius:50%;
+    background:var(--human-ink); margin-left:auto;
+  }
+  #ofPanelHost .of-state-dot[data-tone="warn"]{ background:var(--human-amber); }
+  #ofPanelHost .of-state-dot[data-tone="block"]{ background:var(--human-coral); }
+
+  /* furniture removed from the reading column */
+  #ofPanelHost .of-activity,
+  #ofPanelHost .of-foot,
+  #ofPanelHost .of-dev,
+  #ofPanelHost .of-phase,
+  #ofPanelHost .of-conn,
+  #ofPanelHost .of-collapse{ display:none !important; }
+  /* except when they have been relocated into the drawer */
+  #ofPanelHost .of-util .of-activity,
+  #ofPanelHost .of-util .of-foot,
+  #ofPanelHost .of-util .of-dev,
+  #ofPanelHost .of-util .of-phase,
+  #ofPanelHost .of-util .of-conn,
+  #ofPanelHost .of-util .of-collapse{ display:block !important; }
+  #ofPanelHost .of-util .of-activity{ border:none !important; padding:0 !important; }
+  #ofPanelHost .of-util .of-foot{ display:flex !important; gap:12px; align-items:center; }
+
+  /* ── detail drawer ──────────────────────────────────────────────────
+     Engineering never reaches the sentence, but it must stay one click
+     away or debugging the booth becomes guesswork. The affordance is
+     deliberately quiet: a hairline chip that only reads as a control once
+     you are looking for it. Opened, it is dark — same rule as the typing
+     indicator, because this is the machine's interior, not the person's
+     sheet. */
+  #ofPanelHost .of-detail{ grid-column:2; margin-top:6px; }
+  #ofPanelHost .of-detail__toggle{
+    background:transparent !important; color:var(--human-faint) !important;
+    border:1px solid var(--human-line) !important;
+    font:700 12px/1 var(--font-body) !important;
+    padding:3px 7px !important; cursor:pointer;
+    text-transform:uppercase !important;
+  }
+  #ofPanelHost .of-detail__toggle:hover,
+  #ofPanelHost .of-detail__toggle[aria-expanded="true"]{
+    color:var(--human-paper-3) !important;
+    background:var(--human-ink) !important;
+    border-color:var(--human-ink) !important;
+  }
+  #ofPanelHost .of-detail__body{
+    margin-top:6px; padding:10px 12px;
+    background:var(--human-ink); color:rgba(255,250,240,0.78);
+    border-left:2px solid var(--neon, #A3FF00);
+    font:400 12px/1.5 var(--font-body);
+    white-space:pre-wrap; word-break:break-word;
+    max-height:180px; overflow:auto;
+  }
+
+  /* ── pending action ── */
+  #ofPanelHost .of-dock-action{
+    background:var(--human-paper-3) !important;
+    border-top:2px solid var(--human-ink) !important;
+    padding:16px 20px !important;
+  }
+  #ofPanelHost .of-dock-label{
+    color:var(--human-muted) !important;
+    font:700 var(--text-panel-label)/1.2 var(--font-body) !important;
+    text-transform:uppercase !important;
+  }
+  #ofPanelHost .of-dock-intent{
+    color:var(--human-ink) !important;
+    font:400 14px/1.45 var(--font-body) !important;
+  }
+  /* primary = solid ink, the same weight as TWIN / ARM HOME */
+  #ofPanelHost .of-primary{
+    background:var(--human-ink) !important; color:var(--human-paper-3) !important;
+    border:1px solid var(--human-ink) !important;
+    font:400 var(--text-panel-command)/var(--leading-panel-control) var(--font-display) !important;
+    text-transform:uppercase !important; text-shadow:none !important; box-shadow:none !important;
+    min-height:40px !important;
+    clip-path:polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%) !important;
+  }
+  /* secondary = sheet with an ink rule, the way ARM / LOCAL read */
+  #ofPanelHost .of-cancel{
+    background:var(--human-paper-3) !important; color:var(--human-ink) !important;
+    border:1px solid var(--human-ink) !important;
+    font:400 var(--text-panel-command)/var(--leading-panel-control) var(--font-display) !important;
+    text-transform:uppercase !important; text-shadow:none !important;
+    min-height:40px !important;
+    clip-path:polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%) !important;
+  }
+  #ofPanelHost .of-cancel:hover{ background:var(--human-coral) !important; color:var(--human-paper-3) !important; border-color:var(--human-coral) !important; }
+
+  /* ── composer ── */
+  #ofPanelHost .of-composer{
+    background:var(--human-paper-3) !important;
+    border-top:2px solid var(--human-ink) !important;
+    padding:16px 20px !important; flex:none !important;
+  }
+  #ofPanelHost #ofx_field{
+    background:var(--human-paper-3) !important;
+    color:var(--human-ink) !important;
+    border:1px solid var(--human-ink) !important;
+    font:400 14px/1.45 var(--font-body) !important;
+    text-shadow:none !important; padding:10px 12px !important;
+  }
+  #ofPanelHost #ofx_field::placeholder{ color:var(--human-faint) !important; }
+  #ofPanelHost #ofx_field:focus{ border-color:var(--human-ink) !important; outline:2px solid var(--human-ink) !important; outline-offset:-3px; box-shadow:none !important; }
+  #ofPanelHost .of-send{
+    background:var(--human-ink) !important; color:var(--human-paper-3) !important;
+    border:1px solid var(--human-ink) !important; box-shadow:none !important;
+  }
+
+  @media (max-width: 1180px){
+    :root{ --of-dock-w: 340px; }
+  }
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     MEIKKU COGNITION SURFACE
+     The cognition backend emits alternatives, selection margin, belief
+     state, and a real prediction/actual gap. None of it was rendered.
+
+     The obvious answer is a panel of readouts. That is the wrong answer
+     here: this is a toy, not a console, so the work arrives as scene art
+     and as what the arm says. Visual restraint is the governing rule —
+     the layer is static by default, carries no numbers, and reserves
+     motion for genuine surprise.
+
+     Additive only: nothing above is rewritten. Colours come from the
+     existing SCADA variables, which already match MEIKKU_DESIGN_DNA
+     (lime = proposed / ghost paths, amber = memory, pink = conflict).
+     ═══════════════════════════════════════════════════════════════════ -->
+<style>
+  /* deliberation label inside the typing indicator — ephemeral, no residue */
+  #ofPanelHost .of-think .think-label{
+    font-size:11.5px;line-height:1.5;color:rgba(233,255,243,0.42);
+    font-style:italic;margin-left:8px;letter-spacing:.01em;
+  }
+
+  /* Sits to the right of the chat dock so the scene art is never drawn
+     underneath the human panel. */
+  #mkCognitionLayer{
+    position:absolute;top:0;right:0;bottom:0;
+    left:var(--of-dock-w, 0);
+    width:auto;height:100%;
+    pointer-events:none;z-index:6;
+  }
+  /* Only surprise is allowed to move. Everything else is still. */
+  @keyframes mkGapIn{from{opacity:0}to{opacity:1}}
+  #mkCognitionLayer .mk-gap{animation:mkGapIn .28s ease-out both}
+</style>
+<script>
+/* MEIKKU_CHAT_DECLUTTER v1
+   Chat should be chat. Relocate every functional band into one drawer behind
+   a single control, without rebuilding any of it -- moving a node keeps its
+   listeners, so all the backend wiring survives untouched. */
+(function(){
+  'use strict';
+  function build(){
+    var host=document.getElementById('ofPanelHost');
+    var panel=host && host.querySelector('.of');
+    var top=panel && panel.querySelector('.of-top');
+    if(!panel || !top || panel.querySelector('.of-util')) return;
+
+    var drawer=document.createElement('div');
+    drawer.className='of-util'; drawer.id='ofx_util';
+
+    function group(title, nodes){
+      var kept=nodes.filter(Boolean);
+      if(!kept.length) return;
+      var g=document.createElement('div'); g.className='of-util__group';
+      if(title){
+        var h=document.createElement('div'); h.className='of-util__title'; h.textContent=title;
+        g.appendChild(h);
+      }
+      kept.forEach(function(n){ g.appendChild(n); });   /* move, never clone */
+      drawer.appendChild(g);
+    }
+
+    group('Status', [
+      top.querySelector('.of-phase'),
+      top.querySelector('.of-conn'),
+      panel.querySelector('.of-activity')
+    ]);
+    group('Session', [
+      panel.querySelector('.of-foot'),
+      top.querySelector('.of-collapse')
+    ]);
+    group('', [ panel.querySelector('.of-dev') ]);
+
+    top.insertAdjacentElement('afterend', drawer);
+
+    /* one dot for state, one control for everything else */
+    var dot=document.createElement('span');
+    dot.className='of-state-dot'; dot.id='ofx_stateDot';
+    var btn=document.createElement('button');
+    btn.type='button'; btn.className='of-util-btn'; btn.id='ofx_utilBtn';
+    btn.textContent='⋯'; btn.title='Status and tools';
+    btn.setAttribute('aria-expanded','false');
+    btn.setAttribute('aria-controls','ofx_util');
+    btn.onclick=function(){
+      var open=!drawer.classList.contains('is-open');
+      drawer.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open?'true':'false');
+    };
+    top.appendChild(dot); top.appendChild(btn);
+
+    /* the strip's tone still needs to be legible at a glance, so mirror it
+       onto the dot and keep the words for the drawer and the tooltip */
+    function syncDot(){
+      try{
+        var strip=drawer.querySelector('.of-activity');
+        var text=(drawer.querySelector('.of-activity-text')||{}).textContent||'';
+        var tone='ok';
+        if(strip && strip.classList.contains('is-warn')) tone='warn';
+        var phase=(drawer.querySelector('.of-phase')||{}).textContent||'';
+        if(/down|fail|block|error/i.test(phase)) tone='block';
+        dot.dataset.tone=tone;
+        dot.title=[phase.trim(), text.trim()].filter(Boolean).join(' · ');
+      }catch(e){}
+    }
+    syncDot();
+    try{ new MutationObserver(syncDot).observe(drawer,{subtree:true,childList:true,characterData:true,attributes:true}); }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build);
+  else build();
+  setTimeout(build, 800);   /* the OF script may build its panel late */
+})();
+</script>
+
+<script>
+/* MEIKKU_COGNITION_SURFACE v1 */
+(function(){
+  'use strict';
+
+  var LIME='#A3FF00', AMBER='#FFAA00', PINK='#FF0055';
+  var NS='http://www.w3.org/2000/svg';
+
+  /* Visual restraint constants. These are the whole design, so they live
+     together where they can be argued about. */
+  var GHOST_MAX_ALPHA      = 0.55;  /* a considered path never outshouts the chosen one */
+  var GHOST_MIN_ALPHA      = 0.05;  /* a landslide is nearly invisible: quiet is correct */
+  var SALIENT_ALPHA        = 0.85;
+  var BACKGROUND_ALPHA     = 0.13;  /* low-salience anchors recede rather than clutter */
+  var GAP_HOLD_MS          = 4200;  /* the one thing that appears, then leaves */
+  var UNCERTAIN_BELOW      = 0.60;
+
+  var host=null, svg=null, layers={};
+  var gapTimer=null;
+
+  function el(tag,attrs){
+    var n=document.createADocumentFragment?null:null;
+    n=document.createElementNS(NS,tag);
+    for(var k in attrs){ if(attrs[k]!==null&&attrs[k]!==undefined) n.setAttribute(k,attrs[k]); }
+    return n;
+  }
+
+  function ensureLayer(){
+    if(svg && document.body.contains(svg)) return true;
+    host=document.getElementById('viewportContainer');
+    if(!host) return false;
+    if(getComputedStyle(host).position==='static') host.style.position='relative';
+    svg=document.getElementById('mkCognitionLayer');
+    if(!svg){
+      svg=el('svg',{id:'mkCognitionLayer',viewBox:'0 0 1000 640',preserveAspectRatio:'xMidYMid slice'});
+      svg.setAttribute('aria-hidden','true');
+      host.appendChild(svg);
+    }
+    ['ghosts','chosen','target','memory','gap'].forEach(function(name){
+      var g=svg.querySelector('[data-layer="'+name+'"]');
+      if(!g){ g=el('g',{'data-layer':name}); svg.appendChild(g); }
+      layers[name]=g;
+    });
+    return true;
+  }
+
+  function clear(name){ if(layers[name]) layers[name].textContent=''; }
+
+  /* ---------------------------------------------------------------
+     Projection. The mockup viewport is a Three.js scene; without a
+     camera matrix we place workspace millimetres into the layer's own
+     box. Good enough for the mockup, and swapped for the real
+     projection when this moves onto the live viewport.
+     --------------------------------------------------------------- */
+  var WS={x:[0,220],y:[0,220]};
+  function project(p){
+    if(!p||p.length<2) return null;
+    var u=(Number(p[0])-WS.x[0])/(WS.x[1]-WS.x[0]);
+    var v=(Number(p[1])-WS.y[0])/(WS.y[1]-WS.y[0]);
+    if(!isFinite(u)||!isFinite(v)) return null;
+    return [140+u*720, 540-v*400];
+  }
+  function toPath(points){
+    var d='', started=false;
+    (points||[]).forEach(function(w){
+      var pt=project(w&&(w.point||w));
+      if(!pt) return;
+      d+=(started?' L':'M')+pt[0].toFixed(1)+' '+pt[1].toFixed(1);
+      started=true;
+    });
+    return d;
+  }
+
+  /* ---------------------------------------------------------------
+     1. Ghost paths — alpha encodes the decision margin.
+        Close call: ghosts nearly as bright as the chosen path, so the
+        hesitation is visible. Landslide: almost nothing, because there
+        was no deliberation worth showing.
+     --------------------------------------------------------------- */
+  function renderCandidates(plan){
+    clear('ghosts'); clear('chosen');
+    if(!plan||plan.status!=='ok') return;
+
+    var chosenD=toPath(plan.workspace_path_mm);
+    if(chosenD){
+      var uncertain=(plan.manner&&plan.manner.manner==='hesitant');
+      layers.chosen.appendChild(el('path',{
+        d:chosenD, fill:'none', stroke:LIME,
+        'stroke-width':uncertain?2.2:3,
+        'stroke-linecap':'round',
+        /* certainty becomes line quality, never a number */
+        'stroke-dasharray':uncertain?'8 6':null,
+        opacity:uncertain?0.7:0.95
+      }));
+    }
+
+    /* Only geometry the backend actually returned is drawn. A candidate that
+       came back as a name and a score alone is not invented into a path. */
+    var alts=plan.alternatives||[], sel=plan.selection||{};
+    var top=Number(sel.score)||0;
+    alts.forEach(function(alt){
+      var d=toPath(alt.workspace_path_mm);
+      if(!d) return;
+      var margin=Math.max(0,top-(Number(alt.score)||0));
+      var alpha=GHOST_MIN_ALPHA+(GHOST_MAX_ALPHA-GHOST_MIN_ALPHA)*Math.max(0,1-margin/0.3);
+      layers.ghosts.appendChild(el('path',{
+        d:d, fill:'none', stroke:LIME, 'stroke-width':1.6,
+        'stroke-linecap':'round', opacity:alpha.toFixed(3)
+      }));
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     2. Target ring — uncertainty as literal visual softness.
+     --------------------------------------------------------------- */
+  function renderTarget(prediction, belief){
+    clear('target');
+    if(!prediction||prediction.status!=='ok') return;
+    var pt=project(prediction.predicted_point_mm);
+    if(!pt) return;
+    var conf=Number((belief&&belief.actionReadiness&&belief.actionReadiness.confidence));
+    var soft=isFinite(conf)&&conf<UNCERTAIN_BELOW;
+    layers.target.appendChild(el('circle',{
+      cx:pt[0],cy:pt[1],r:soft?26:13,fill:'none',stroke:LIME,
+      'stroke-width':soft?9:1.8,opacity:soft?0.20:0.5
+    }));
+    layers.target.appendChild(el('circle',{cx:pt[0],cy:pt[1],r:3.4,fill:LIME,opacity:0.8}));
+  }
+
+  /* ---------------------------------------------------------------
+     3. Prediction vs actual — the closed loop, made visible without a
+        chart. A match simply fades: success should be quiet. Only a
+        divergence draws a mark, and only for a few seconds.
+     --------------------------------------------------------------- */
+  function renderGap(outcome){
+    clear('gap');
+    if(gapTimer){ clearTimeout(gapTimer); gapTimer=null; }
+    var gap=outcome&&outcome.gap;
+    if(!gap||gap.verdict!=='diverged_from_prediction') return;
+
+    var pos=(gap.dimensions||{}).position||{};
+    var a=project(pos.predictedMm), b=project(pos.observedMm);
+    if(!a||!b) return;
+
+    var g=el('g',{'class':'mk-gap'});
+    g.appendChild(el('circle',{cx:a[0],cy:a[1],r:10,fill:'none',stroke:LIME,'stroke-width':1.4,opacity:0.45}));
+    g.appendChild(el('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:PINK,'stroke-width':2.2,'stroke-linecap':'round'}));
+    g.appendChild(el('circle',{cx:b[0],cy:b[1],r:4,fill:PINK}));
+    layers.gap.appendChild(g);
+
+    gapTimer=setTimeout(function(){ clear('gap'); gapTimer=null; }, GAP_HOLD_MS);
+  }
+
+  /* ---------------------------------------------------------------
+     4. Memory — one small amber tick. Not text, not a badge.
+        "I have been here before."
+     --------------------------------------------------------------- */
+  function renderMemory(window_){
+    clear('memory');
+    var lessons=(window_&&window_.activeLessons)||[];
+    var prediction=(window_&&window_.__prediction)||null;
+    if(!lessons.length||!prediction) return;
+    var pt=project(prediction.predicted_point_mm);
+    if(!pt) return;
+    layers.memory.appendChild(el('line',{
+      x1:pt[0]+16,y1:pt[1]-16,x2:pt[0]+24,y2:pt[1]-24,
+      stroke:AMBER,'stroke-width':2.2,'stroke-linecap':'round',opacity:0.75
+    }));
+  }
+
+  /* ---------------------------------------------------------------
+     5. Salience — restraint by removal. Anchors the current request
+        does not care about recede instead of accumulating.
+     --------------------------------------------------------------- */
+  function applySalience(window_){
+    var salient=(window_&&window_.salientAnchors)||[];
+    if(!salient.length) return;
+    var keep={};
+    salient.slice(0,5).forEach(function(a){ if(a&&a.anchor_id) keep[a.anchor_id]=true; });
+    document.querySelectorAll('[data-anchor-id]').forEach(function(node){
+      node.style.opacity=keep[node.getAttribute('data-anchor-id')]?SALIENT_ALPHA:BACKGROUND_ALPHA;
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     Play voice. play_voice.py owns the same decisions server-side;
+     this mirrors it so the mockup reads correctly offline.
+     Deliberation goes to the typing indicator (ephemeral). Only
+     questions, admissions, and honesty reach the thread.
+     --------------------------------------------------------------- */
+  var SAY={
+    press_vertical:'poke it', short_drag:'drag across it', scrape_shave:'shave a bit off',
+    raster_patch:'smooth it out', pinch_gather:'pinch it together',
+    edge_trace:'run along the edge', score_line:'score a line', probe_hover:'just hover and look'
+  };
+  function word(k){ return SAY[k]||String(k||'').replace(/_/g,' '); }
+
+  var spoken=[];
+  function say(text,variant){
+    if(!text) return;
+    var isQuestion=/\?\s*$/.test(text);
+    if(!isQuestion && spoken.slice(-4).indexOf(text)>=0) return;  /* no repeats */
+    spoken.push(text);
+    if(window.ofSay) window.ofSay(text,variant||null);
+  }
+  function think(text){ if(window.ofThinking) window.ofThinking(text||null); }
+
+  function voiceForPlan(plan){
+    if(!plan||plan.status!=='ok') return;
+    var sel=plan.selection||{}, alts=plan.alternatives||[];
+    if(!alts.length){ think(null); return; }
+    var best=alts.reduce(function(a,b){ return (Number(b.score)||0)>(Number(a.score)||0)?b:a; });
+    var margin=(Number(sel.score)||0)-(Number(best.score)||0);
+    /* An obvious choice is not thinking out loud, it is padding. */
+    if(margin>0.25){ think(null); return; }
+    think('weighing '+word(best.primitive)+' against '+word(sel.chosen_primitive));
+  }
+
+  function voiceForOutcome(outcome){
+    var gap=outcome&&outcome.gap;
+    if(!gap) return;
+    think(null);
+    if(gap.verdict==='matched_prediction'){ say("yeah — that's what I wanted.",'ok'); return; }
+    if(gap.verdict==='unverified'){ say("I can't really tell how that came out."); return; }
+    if(gap.verdict!=='diverged_from_prediction') return;
+    var d=(gap.dimensions||{}).depth||{}, p=(gap.dimensions||{}).position||{};
+    var line;
+    if(d && d.withinTolerance===false){
+      line=(Number(d.gapMm)>0)?'hm, that went deeper than I meant.':'that barely touched it.';
+    } else if(p && p.withinTolerance===false){
+      line='that landed off from where I was aiming.';
+    } else { line="that didn't come out how I expected."; }
+    say(line,'ask');
+  }
+
+  function voiceForBelief(belief){
+    var r=(belief&&belief.actionReadiness)||{};
+    var c=Number(r.confidence);
+    if(!isFinite(c)||c>=UNCERTAIN_BELOW) return;
+    if(belief.material&&belief.material.located===false){ say("I can't really see it — where is it?",'ask'); return; }
+    say(r.limitedBy==='calibration'
+      ? "my aim's been a bit off lately — going slow."
+      : "it's a bit hard to make out. carefully, then.", 'ask');
+  }
+
+  function voiceForDegraded(session){
+    var d=session&&session.degraded;
+    if(d&&d.isTemplated) say("I'm not really thinking right now — just running through the motions.",'block');
+  }
+
+  /* ---------------------------------------------------------------
+     Public surface. Call these as the real payloads arrive.
+     --------------------------------------------------------------- */
+  var api={
+    plan:function(plan){ if(!ensureLayer())return; renderCandidates(plan); voiceForPlan(plan); },
+    prediction:function(prediction,belief){
+      if(!ensureLayer())return;
+      api._prediction=prediction; renderTarget(prediction,belief);
+    },
+    outcome:function(outcome){ if(!ensureLayer())return; renderGap(outcome); voiceForOutcome(outcome); },
+    window:function(w){
+      if(!ensureLayer())return;
+      if(w) w.__prediction=api._prediction;
+      renderMemory(w); applySalience(w); voiceForBelief((w&&w.beliefState)||{});
+    },
+    session:function(s){ voiceForDegraded(s); },
+    thinking:think,
+    clearAll:function(){ if(!ensureLayer())return; ['ghosts','chosen','target','memory','gap'].forEach(clear); },
+    _prediction:null
+  };
+  window.meikkuCognition=api;
+
+  /* Mirror whatever the existing loop already holds, without owning it. */
+  function syncFromCognitionState(){
+    var cs=window.cognitionState;
+    if(!cs) return;
+    try{
+      if(cs.strategy&&cs.strategy.__plan) api.plan(cs.strategy.__plan);
+      if(cs.prediction) api.prediction(cs.prediction, cs.__belief||{});
+      if(cs.result&&cs.result.__outcome) api.outcome(cs.result.__outcome);
+    }catch(e){}
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',function(){ ensureLayer(); syncFromCognitionState(); });
+  } else { ensureLayer(); syncFromCognitionState(); }
+  setInterval(syncFromCognitionState, 2000);
 })();
 </script>
 
