@@ -9708,10 +9708,12 @@
       document.head.appendChild(style);
       const badge = document.createElement('div');
       badge.className = 'dehydrated-review-badge';
-      const label = document.createElement('span');
-      label.className = 'dehydrated-review-badge__label';
-      label.textContent = presetDemo ? 'scripted preset · no live servers' : 'dehydrated review mode';
-      badge.appendChild(label);
+      if (!presetDemo) {
+        const label = document.createElement('span');
+        label.className = 'dehydrated-review-badge__label';
+        label.textContent = 'dehydrated review mode';
+        badge.appendChild(label);
+      }
       if (presetDemo) {
         const replay = document.createElement('button');
         replay.className = 'dehydrated-review-badge__replay';

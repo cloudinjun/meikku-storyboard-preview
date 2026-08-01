@@ -735,22 +735,10 @@
 
     .scada-review-copy {
       display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 10px 24px;
+      grid-template-columns: 1fr;
+      gap: 10px;
       align-items: end;
       min-width: 0;
-    }
-
-    .scada-review-copy span {
-      align-self: center;
-      padding: 8px 10px 6px;
-      background: var(--meikku-ink);
-      color: var(--meikku-lime);
-      font-size: var(--text-small);
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      line-height: 1;
-      text-transform: uppercase;
     }
 
     .scada-review-copy h2 {
@@ -763,7 +751,7 @@
     }
 
     .scada-review-copy p {
-      grid-column: 2;
+      grid-column: 1;
       margin: 0;
       max-width: 760px;
       color: var(--meikku-slate);
@@ -1208,8 +1196,7 @@ text.disp,.disp{font-family:var(--font-display);}
   .locator-loop { margin-top: 22rem; }
 
   .scada-review-board { gap: 20rem; padding: 56rem 64rem 52rem; }
-  .scada-review-copy { gap: 10rem 24rem; }
-  .scada-review-copy span { padding: 8rem 10rem 6rem; }
+  .scada-review-copy { gap: 10rem; }
   .scada-review-copy h2 { font-size: var(--text-scada-heading); }
   .scada-review-copy p { max-width: 760rem; }
   .scada-review-frame { box-shadow: 6rem 6rem 0 var(--meikku-ink); }
@@ -1844,7 +1831,6 @@ text.disp,.disp{font-family:var(--font-display);}
 
     <section id="frame-08" class="board scada-review-board" aria-label="Frame 08 scripted SCADA preset demonstration">
       <div class="scada-review-copy">
-        <span>Scripted preset · no live servers</span>
         <h2>TALK → PLAN → PREVIEW</h2>
         <p>A browser-local, pre-authored performance demonstrates typing, interpretation, path generation, and preview. It does not run live inference or authorize robot motion.</p>
       </div>
