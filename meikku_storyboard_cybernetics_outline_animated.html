@@ -795,25 +795,6 @@
       clip-path: inset(0 calc(100% - var(--compare-split, 54%)) 0 0);
     }
 
-    .scada-compare-label {
-      position: absolute;
-      top: 16px;
-      z-index: 3;
-      padding: 8px 12px;
-      border: 2px solid var(--meikku-ink);
-      background: var(--meikku-paper);
-      color: var(--meikku-ink);
-      font-size: var(--text-small);
-      font-weight: 900;
-      letter-spacing: 0.1em;
-      line-height: 1;
-      text-transform: uppercase;
-      box-shadow: 4px 4px 0 var(--meikku-ink);
-      pointer-events: none;
-    }
-
-    .scada-compare-label-recorded { right: 16px; }
-
     .scada-compare-handle {
       position: absolute;
       top: 0;
@@ -959,8 +940,6 @@
         font-size: var(--text-mobile-body);
       }
       .scada-review-frame { min-height: 620px; }
-      .scada-compare-label { top: 12px; padding: 8px; }
-      .scada-compare-label-recorded { right: 12px; }
       .scada-compare-grip { width: 44px; height: 44px; }
       .scada-compare-hint { display: none; }
       .statement-panel {
@@ -1194,8 +1173,6 @@ text.disp,.disp{font-family:var(--font-display);}
   .scada-review-copy h2 { font-size: var(--text-scada-heading); }
   .scada-review-copy p { max-width: 760rem; }
   .scada-review-frame { box-shadow: 6rem 6rem 0 var(--meikku-ink); }
-  .scada-compare-label { top: 16rem; padding: 8rem 12rem; border-width: 2rem; box-shadow: 4rem 4rem 0 var(--meikku-ink); }
-  .scada-compare-label-recorded { right: 16rem; }
   .scada-compare-handle { width: 52rem; }
   .scada-compare-handle::before { width: 4rem; border-left-width: 2rem; border-right-width: 2rem; }
   .scada-compare-grip { width: 52rem; height: 52rem; border-width: 3rem; box-shadow: 4rem 4rem 0 var(--meikku-ink); }
@@ -1830,7 +1807,6 @@ text.disp,.disp{font-family:var(--font-display);}
       <figure class="scada-review-frame scada-compare">
         <div class="scada-compare-layer scada-compare-recording">
           <img src="assets/storyboard/storyboard_human_robot_cooperation_compare.gif" alt="Concept-film animation of a person and robot arm working together on a clay surface, cropped to remove the source watermark." loading="lazy">
-          <span class="scada-compare-label scada-compare-label-recorded">Concept film · GIF</span>
         </div>
         <div class="scada-compare-layer scada-compare-interface">
           <iframe src="scada-ui-mockup.html?review=1&amp;presetDemo=1" title="Scripted SCADA typing, path-generation, and preview demonstration" loading="lazy"></iframe>
