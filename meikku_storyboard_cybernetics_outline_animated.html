@@ -1851,14 +1851,14 @@ text.disp,.disp{font-family:var(--font-display);}
       </div>
       <figure class="scada-review-frame scada-compare">
         <div class="scada-compare-layer scada-compare-recording">
-          <img src="assets/storyboard/storyboard_scada_path_run_compare.gif" alt="Recorded SCADA path-run animation, cropped to remove the lower-right recording watermark." loading="lazy">
-          <span class="scada-compare-label scada-compare-label-recorded">Path run · GIF</span>
+          <img src="assets/storyboard/storyboard_human_robot_cooperation_compare.gif" alt="Concept-film animation of a person and robot arm working together on a clay surface, cropped to remove the source watermark." loading="lazy">
+          <span class="scada-compare-label scada-compare-label-recorded">Concept film · GIF</span>
         </div>
         <div class="scada-compare-layer scada-compare-interface">
           <iframe src="scada-ui-mockup.html?review=1&amp;presetDemo=1" title="Scripted SCADA typing, path-generation, and preview demonstration" loading="lazy"></iframe>
           <span class="scada-compare-label scada-compare-label-live">Scripted UI</span>
         </div>
-        <button class="scada-compare-handle" type="button" role="slider" aria-label="Change the visible ratio between the scripted UI and recorded path-run GIF" aria-valuemin="8" aria-valuemax="92" aria-valuenow="54" aria-valuetext="54 percent scripted UI, 46 percent recorded GIF">
+        <button class="scada-compare-handle" type="button" role="slider" aria-label="Change the visible ratio between the scripted UI and concept-film GIF" aria-valuemin="8" aria-valuemax="92" aria-valuenow="54" aria-valuetext="54 percent scripted UI, 46 percent concept film">
           <span class="scada-compare-grip" aria-hidden="true">↔</span>
         </button>
         <p class="scada-compare-hint">Drag to compare · arrow keys adjust</p>
@@ -1887,7 +1887,7 @@ text.disp,.disp{font-family:var(--font-display);}
           split = Math.max(8, Math.min(92, value));
           compare.style.setProperty('--compare-split', `${split}%`);
           handle.setAttribute('aria-valuenow', Math.round(split));
-          handle.setAttribute('aria-valuetext', `${Math.round(split)} percent scripted UI, ${Math.round(100 - split)} percent recorded GIF`);
+      handle.setAttribute('aria-valuetext', `${Math.round(split)} percent scripted UI, ${Math.round(100 - split)} percent concept film`);
         };
 
         const setFromPointer = clientX => {
