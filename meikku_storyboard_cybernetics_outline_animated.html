@@ -846,24 +846,6 @@
       outline-offset: 4px;
     }
 
-    .scada-compare-hint {
-      position: absolute;
-      left: 50%;
-      bottom: 16px;
-      z-index: 4;
-      margin: 0;
-      padding: 8px 12px;
-      background: var(--meikku-ink);
-      color: var(--meikku-paper);
-      font-size: var(--text-small);
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      line-height: 1;
-      text-transform: uppercase;
-      transform: translateX(-50%);
-      pointer-events: none;
-    }
-
     body.solo-frame .scada-review-board.active-solo { display: grid; }
 
     @media (max-width: 760px) {
@@ -941,7 +923,6 @@
       }
       .scada-review-frame { min-height: 620px; }
       .scada-compare-grip { width: 44px; height: 44px; }
-      .scada-compare-hint { display: none; }
       .statement-panel {
         width: 84vw;
         padding: 24px;
@@ -1177,7 +1158,6 @@ text.disp,.disp{font-family:var(--font-display);}
   .scada-compare-handle::before { width: 4rem; border-left-width: 2rem; border-right-width: 2rem; }
   .scada-compare-grip { width: 52rem; height: 52rem; border-width: 3rem; box-shadow: 4rem 4rem 0 var(--meikku-ink); }
   .scada-compare-handle:focus-visible .scada-compare-grip { outline-width: 4rem; outline-offset: 4rem; }
-  .scada-compare-hint { bottom: 16rem; padding: 8rem 12rem; }
   #cybMiniDock { top: 88rem; }
   #cybMiniHUD { left: 40rem; width: 176rem; border-width: 1rem; transform: translateY(-8rem); }
 }
@@ -1814,7 +1794,6 @@ text.disp,.disp{font-family:var(--font-display);}
         <button class="scada-compare-handle" type="button" role="slider" aria-label="Change the visible ratio between the scripted UI and concept-film GIF" aria-valuemin="8" aria-valuemax="92" aria-valuenow="54" aria-valuetext="54 percent scripted UI, 46 percent concept film">
           <span class="scada-compare-grip" aria-hidden="true">↔</span>
         </button>
-        <p class="scada-compare-hint">Drag to compare · arrow keys adjust</p>
       </figure>
     </section>
   </main>
