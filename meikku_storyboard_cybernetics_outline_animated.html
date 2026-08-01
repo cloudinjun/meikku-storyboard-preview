@@ -812,11 +812,6 @@
       pointer-events: none;
     }
 
-    .scada-compare-label-live {
-      left: 16px;
-      background: var(--meikku-lime);
-    }
-
     .scada-compare-label-recorded { right: 16px; }
 
     .scada-compare-handle {
@@ -965,7 +960,6 @@
       }
       .scada-review-frame { min-height: 620px; }
       .scada-compare-label { top: 12px; padding: 8px; }
-      .scada-compare-label-live { left: 12px; }
       .scada-compare-label-recorded { right: 12px; }
       .scada-compare-grip { width: 44px; height: 44px; }
       .scada-compare-hint { display: none; }
@@ -1201,7 +1195,6 @@ text.disp,.disp{font-family:var(--font-display);}
   .scada-review-copy p { max-width: 760rem; }
   .scada-review-frame { box-shadow: 6rem 6rem 0 var(--meikku-ink); }
   .scada-compare-label { top: 16rem; padding: 8rem 12rem; border-width: 2rem; box-shadow: 4rem 4rem 0 var(--meikku-ink); }
-  .scada-compare-label-live { left: 16rem; }
   .scada-compare-label-recorded { right: 16rem; }
   .scada-compare-handle { width: 52rem; }
   .scada-compare-handle::before { width: 4rem; border-left-width: 2rem; border-right-width: 2rem; }
@@ -1841,7 +1834,6 @@ text.disp,.disp{font-family:var(--font-display);}
         </div>
         <div class="scada-compare-layer scada-compare-interface">
           <iframe src="scada-ui-mockup.html?review=1&amp;presetDemo=1" title="Scripted SCADA typing, path-generation, and preview demonstration" loading="lazy"></iframe>
-          <span class="scada-compare-label scada-compare-label-live">Scripted UI</span>
         </div>
         <button class="scada-compare-handle" type="button" role="slider" aria-label="Change the visible ratio between the scripted UI and concept-film GIF" aria-valuemin="8" aria-valuemax="92" aria-valuenow="54" aria-valuetext="54 percent scripted UI, 46 percent concept film">
           <span class="scada-compare-grip" aria-hidden="true">↔</span>
