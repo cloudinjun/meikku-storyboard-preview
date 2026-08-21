@@ -766,6 +766,7 @@
     { at: 71000, anchor: 7, label: 'Film' }
   ];
   const autoplayDuration = 90000;
+  const smoothOpeningAnchorCount = 3;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let autoplayTimers = [];
   let autoplayCycle = 0;
@@ -775,12 +776,16 @@
     autoplayTimers = [];
   };
 
-  const goToAutoplayAnchor = (anchorIndex, immediate = false) => {
+  // 开场三个锚点属于同一段空间叙事，保留平滑滚动；从第四页起按方向键逻辑离散切页。
+  const goToDeckAnchor = (anchorIndex, immediate = false) => {
     const anchors = getAnchors();
     const top = anchors[Math.min(anchorIndex, anchors.length - 1)];
+    const smoothOpeningScroll = anchorIndex < smoothOpeningAnchorCount
+      && !immediate
+      && !prefersReducedMotion.matches;
     deck.scrollTo({
       top,
-      behavior: immediate || prefersReducedMotion.matches ? 'auto' : 'smooth'
+      behavior: smoothOpeningScroll ? 'smooth' : 'auto'
     });
   };
 
@@ -793,12 +798,12 @@
     document.title = `Meikku — Deck v1 · Loop ${autoplayCycle}`;
 
     // Every cycle re-primes the opening so all embedded motion begins at its authored start.
-    goToAutoplayAnchor(0, true);
+    goToDeckAnchor(0, true);
     if (opening) opening.src = opening.dataset.src + '?v=' + Date.now();
 
     autoplayCues.slice(1).forEach((cue) => {
       autoplayTimers.push(window.setTimeout(() => {
-        goToAutoplayAnchor(cue.anchor);
+        goToDeckAnchor(cue.anchor);
         document.body.dataset.autoplayFrame = cue.label;
       }, cue.at));
     });
@@ -950,7 +955,7 @@
       if (Math.abs(anchors[i] - y) < Math.abs(anchors[idx] - y)) idx = i;
     }
     const next = Math.min(anchors.length - 1, Math.max(0, idx + dir));
-    deck.scrollTo({ top: anchors[next], behavior: 'smooth' });
+    goToDeckAnchor(next);
   });
 
   // P1→P2 钉住转场：滚动进度驱动「气泡包裹真实动画 → 缩小消失 → 空手」
