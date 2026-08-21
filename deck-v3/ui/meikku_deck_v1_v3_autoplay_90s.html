@@ -360,8 +360,7 @@
     line-height: 1.45;
     color: var(--stone);
   }
-  .autoplay-button,
-  .autoplay-replay {
+  .autoplay-button {
     min-height: 56px;
     border: 3px solid var(--slate);
     border-radius: 0;
@@ -382,21 +381,11 @@
     padding: 0 16px;
   }
   .autoplay-button:hover,
-  .autoplay-button:focus-visible,
-  .autoplay-replay:hover,
-  .autoplay-replay:focus-visible {
+  .autoplay-button:focus-visible {
     color: var(--paper);
     background: var(--role-human);
     outline: 3px solid var(--paper);
     outline-offset: 3px;
-  }
-  .autoplay-replay {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 900;
-    padding: 0 20px;
-    box-shadow: 7px 7px 0 var(--slate);
   }
   body.autoplay-running .deck { overflow-y: hidden; }
 
@@ -410,13 +399,12 @@
   <div class="autoplay-card">
     <span class="autoplay-eyebrow">Meikku · 90 second deck</span>
     <h1 id="autoplayTitle">Click to play</h1>
-    <p>One tap starts the complete presentation from the beginning.</p>
+    <p>One tap starts continuous 90-second playback from the beginning.</p>
     <button class="autoplay-button" id="autoplayStart" type="button">
-      <span>Play from beginning</span><span aria-hidden="true">01:30</span>
+      <span>Start continuous loop</span><span aria-hidden="true">01:30 ↻</span>
     </button>
   </div>
 </div>
-<button class="autoplay-replay" id="autoplayReplay" type="button" hidden>Replay 01:30</button>
 <div class="deck">
 
   <!-- ============ ACT 1 · 开场 ============ -->
@@ -764,10 +752,9 @@
   const deck = document.querySelector('.deck');
   const slides = [...document.querySelectorAll('.slide')];
 
-  // 分享版自动播放：转场不单列，触发翻页即开始计算目标 frame 的时间。
+  // 分享版连续自动播放：转场不单列，触发翻页即开始计算目标 frame 的时间。
   const autoplayGate = document.getElementById('autoplayGate');
   const autoplayStart = document.getElementById('autoplayStart');
-  const autoplayReplay = document.getElementById('autoplayReplay');
   const autoplayCues = [
     { at: 0, anchor: 0, label: 'Opening dream' },
     { at: 5000, anchor: 1, label: 'Bubble / empty hands / arm entry' },
@@ -781,6 +768,7 @@
   const autoplayDuration = 90000;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let autoplayTimers = [];
+  let autoplayCycle = 0;
 
   const clearAutoplayTimers = () => {
     autoplayTimers.forEach(window.clearTimeout);
@@ -796,32 +784,15 @@
     });
   };
 
-  const finishAutoplay = () => {
+  const runAutoplayCycle = () => {
     clearAutoplayTimers();
-    document.dispatchEvent(new CustomEvent('meikku:autoplay-finish'));
-    document.body.classList.remove('autoplay-running');
-    autoplayReplay.hidden = false;
-    document.title = 'Meikku — Deck v1 · Finished';
-  };
-
-  const cancelAutoplay = () => {
-    clearAutoplayTimers();
-    document.body.classList.remove('autoplay-running');
-    autoplayReplay.hidden = true;
-    autoplayGate.classList.remove('is-hidden');
-    autoplayStart.focus();
-    document.title = 'Meikku — Deck v1 · Ready';
-  };
-
-  const startAutoplay = () => {
-    clearAutoplayTimers();
-    autoplayReplay.hidden = true;
-    autoplayGate.classList.add('is-hidden');
-    document.body.classList.add('autoplay-running');
+    document.dispatchEvent(new CustomEvent('meikku:autoplay-cycle-reset'));
+    autoplayCycle += 1;
+    document.body.dataset.autoplayCycle = String(autoplayCycle);
     document.body.dataset.autoplayFrame = autoplayCues[0].label;
-    document.title = 'Meikku — Deck v1 · Playing';
+    document.title = `Meikku — Deck v1 · Loop ${autoplayCycle}`;
 
-    // Re-prime the opening on the same user gesture, so waiting on the gate never consumes it.
+    // Every cycle re-primes the opening so all embedded motion begins at its authored start.
     goToAutoplayAnchor(0, true);
     if (opening) opening.src = opening.dataset.src + '?v=' + Date.now();
 
@@ -831,11 +802,27 @@
         document.body.dataset.autoplayFrame = cue.label;
       }, cue.at));
     });
-    autoplayTimers.push(window.setTimeout(finishAutoplay, autoplayDuration));
+    autoplayTimers.push(window.setTimeout(runAutoplayCycle, autoplayDuration));
+  };
+
+  const cancelAutoplay = () => {
+    clearAutoplayTimers();
+    document.dispatchEvent(new CustomEvent('meikku:autoplay-cycle-reset'));
+    document.body.classList.remove('autoplay-running');
+    autoplayGate.classList.remove('is-hidden');
+    autoplayStart.focus();
+    document.title = 'Meikku — Deck v1 · Ready';
+  };
+
+  const startAutoplay = () => {
+    clearAutoplayTimers();
+    autoplayGate.classList.add('is-hidden');
+    document.body.classList.add('autoplay-running');
+    autoplayCycle = 0;
+    runAutoplayCycle();
   };
 
   autoplayStart.addEventListener('click', startAutoplay);
-  autoplayReplay.addEventListener('click', startAutoplay);
   document.addEventListener('keydown', (event) => {
     if (!document.body.classList.contains('autoplay-running')) return;
     if (event.key === 'Escape') {
@@ -912,16 +899,13 @@
       at(() => { film.classList.add('sharp'); hideRows(); }, BEAT_SHARPEN);
       at(() => { rewind(); film.play().catch(() => {}); }, BEAT_PLAY);
     };
-    // The shared 90-second controller owns the final hold. Stop the page's normal
-    // three-second loop restart so the public link lands on the same resolved frame as the MP4.
-    document.addEventListener('meikku:autoplay-finish', () => {
+    // Reset the Film before each 90-second deck cycle jumps back to the opening.
+    document.addEventListener('meikku:autoplay-cycle-reset', () => {
       stopFilmTimers();
       hideRows();
-      film.classList.add('sharp');
+      film.classList.remove('sharp');
       film.pause();
-      if (Number.isFinite(film.duration) && film.duration > 0) {
-        film.currentTime = Math.max(0, film.duration - .04);
-      }
+      rewind();
     });
     // 片尾停在最后一帧：对白先撤，静止 3 秒，再起下一轮
     film.addEventListener('ended', () => {
