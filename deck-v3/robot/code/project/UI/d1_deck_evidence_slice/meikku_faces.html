@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Meikku — Face set</title>
+    <link rel="icon" href="data:," />
+    <style>
+      @font-face {
+        font-family: "Bungee";
+        src: url("../../../../../ui/assets/storyboard/fonts/Bungee-Regular.ttf") format("truetype");
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Space Grotesk";
+        src: url("../../../../../ui/assets/storyboard/fonts/SpaceGrotesk-wght.ttf") format("truetype");
+        font-weight: 300 700;
+        font-display: swap;
+      }
+
+      :root {
+        /* Meikku Design DNA 2026-08-07 —— 唯一允许出现字面色值的地方 */
+        --meikku-paper: #FCFCFA;
+        --meikku-clay:  #EBEBE7;
+        --meikku-grid:  #D8D8D3;
+        --meikku-stone: #5C5C58;
+        --meikku-slate: #232322;
+        --meikku-ultramarine: #1052CC;
+        --meikku-viridian:    #0E7A42;
+        --meikku-cadmium:     #F7C600;
+        --meikku-vermilion:   #D42718;
+        --font-display: "Bungee", Impact, "Arial Black", sans-serif;
+        --font-body: "Space Grotesk", Arial, Helvetica, sans-serif;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: var(--font-body);
+        background: var(--meikku-paper);
+        color: var(--meikku-slate);
+        padding: 40px 32px 64px;
+        background-image: radial-gradient(var(--meikku-grid) 1px, transparent 1px);
+        background-size: 14px 14px;
+        background-position: 7px 7px;
+      }
+
+      header { max-width: 1180px; margin: 0 auto 32px; }
+      h1 {
+        font-family: var(--font-display); font-size: 30px;
+        letter-spacing: .05em; text-transform: uppercase; line-height: 1;
+      }
+      .lede {
+        margin-top: 14px; max-width: 62ch;
+        font-size: 15px; font-weight: 500; line-height: 1.55; color: var(--meikku-stone);
+      }
+      .note {
+        margin-top: 14px; display: inline-block;
+        background: var(--meikku-slate); color: var(--meikku-paper);
+        padding: 5px 10px; font-size: 12px; font-weight: 700;
+        letter-spacing: .06em; text-transform: uppercase;
+      }
+
+      .grid {
+        max-width: 1180px; margin: 0 auto;
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
+        gap: 20px;
+      }
+      .cell {
+        background: var(--meikku-paper);
+        border: 3px solid var(--meikku-slate);
+        padding: 20px 16px 14px;
+        display: flex; flex-direction: column; align-items: center; gap: 14px;
+      }
+      .cell figcaption { text-align: center; }
+      .cell b {
+        display: block; font-family: var(--font-display);
+        font-size: 14px; letter-spacing: .06em; text-transform: uppercase;
+      }
+      .cell code {
+        display: block; margin-top: 5px;
+        font-family: var(--font-body); font-size: 12px; font-weight: 500;
+        color: var(--meikku-stone);
+      }
+      .cell small {
+        display: block; margin-top: 7px; font-size: 12px;
+        font-weight: 500; line-height: 1.4; color: var(--meikku-stone);
+      }
+
+      /* ══════════════════════════════════════════════════════════
+         THE FACE
+         结构与产品里的头像完全一致：三个方块，无第四个元素。
+         全部尺寸用百分比，所以 36px 与 96px 表现一致 ——
+         换尺寸只改 .face 的 width/height。
+         ══════════════════════════════════════════════════════════ */
+      .face {
+        position: relative; flex-shrink: 0;
+        width: 96px; height: 96px;
+        background: var(--meikku-cadmium);
+        border: 2px solid var(--meikku-slate);
+      }
+      .face i { position: absolute; background: var(--meikku-slate); display: block; }
+      .face .eye  { width: 13.9%; height: 19.4%; top: 27.8%; }
+      .face .eye-l { left: 19.4%; }
+      .face .eye-r { right: 19.4%; }
+      .face .mouth { width: 38.9%; height: 11.1%; left: 30.5%; top: 63.9%; }
+
+      /* 尺寸演示用 */
+      .size-row { display: flex; align-items: flex-end; gap: 18px; }
+      .size-row .face { width: 36px; height: 36px; }
+      .size-row .face.md { width: 56px; height: 56px; }
+      .size-row .face.lg { width: 96px; height: 96px; }
+
+      /* ══════════════════════════════════════════════════════════
+         12 个表情
+         全部用 steps() 切换，保留像素动画的顿感，不用缓动。
+         每个都对应产品里一个真实时刻，不是纯装饰。
+         ══════════════════════════════════════════════════════════ */
+
+      /* 01 IDLE —— 静息，每 5.2s 眨一次，左右眼错开 */
+      @keyframes f-idle { 0%,92%,100% { height: 19.4%; top: 27.8%; } 95% { height: 5%; top: 36%; } }
+      .is-idle .eye { animation: f-idle 5.2s steps(1) infinite; }
+      .is-idle .eye-r { animation-delay: .06s; }
+
+      /* 02 LISTENING —— 你在说话：眼睛睁大并偏向你，嘴收小 */
+      @keyframes f-listen-eye { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-14%); } }
+      .is-listening .eye { height: 24%; top: 25%; animation: f-listen-eye 2.4s steps(2) infinite; }
+      .is-listening .mouth { width: 19%; left: 40.5%; }
+
+      /* 03 THINKING —— 眯眼抿嘴，缓慢起伏 */
+      @keyframes f-think { 0%,100% { height: 8%; top: 33%; } 50% { height: 5%; top: 35%; } }
+      .is-thinking .eye { animation: f-think 1.4s steps(2) infinite; }
+      .is-thinking .mouth { width: 16.6%; left: 41.7%; }
+
+      /* 04 PROPOSING —— 要提建议了：嘴张开又收住，像在斟酌措辞 */
+      @keyframes f-propose { 0%,100% { width: 38.9%; left: 30.5%; } 45% { width: 52%; left: 24%; } }
+      .is-proposing .mouth { animation: f-propose 1.8s steps(2) infinite; }
+      .is-proposing .eye { height: 22%; top: 26%; }
+
+      /* 05 WATCHING —— 在看黏土：视线下移，嘴平 */
+      @keyframes f-watch { 0%,100% { top: 38%; } 50% { top: 41%; } }
+      .is-watching .eye { height: 13%; animation: f-watch 3s steps(2) infinite; }
+      .is-watching .mouth { height: 5.5%; top: 69%; width: 33%; left: 33.5%; }
+
+      /* 06 PLEASED —— 成了：眼睛弯成两道短块，嘴拉宽 */
+      @keyframes f-pleased { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6%); } }
+      .is-pleased .eye { height: 8%; top: 33%; width: 16.6%; }
+      .is-pleased .eye-l { left: 18%; }
+      .is-pleased .eye-r { right: 18%; }
+      .is-pleased .mouth { width: 47%; left: 26.5%; height: 13.9%; top: 61%;
+                            animation: f-pleased 1.2s steps(2) infinite; }
+
+      /* 07 SURPRISED —— 材料结果出乎意料：眼睛弹成方块，嘴缩成小方块 */
+      @keyframes f-surprise-eye { 0%,100% { width: 19.4%; height: 19.4%; } 18% { width: 25%; height: 25%; top: 24%; } }
+      @keyframes f-surprise-mouth { 0%,100% { width: 16.6%; height: 16.6%; left: 41.7%; top: 61%; } 18% { width: 22%; height: 22%; left: 39%; top: 58%; } }
+      .is-surprised .eye { top: 26%; animation: f-surprise-eye 1.6s steps(1) infinite; }
+      .is-surprised .eye-l { left: 17%; }
+      .is-surprised .eye-r { right: 17%; }
+      .is-surprised .mouth { animation: f-surprise-mouth 1.6s steps(1) infinite; }
+
+      /* 08 UNSURE —— 拿不准：两眼不齐，嘴左右挪 */
+      @keyframes f-unsure { 0%,100% { transform: translateX(-10%); } 50% { transform: translateX(10%); } }
+      .is-unsure .eye-l { height: 22%; top: 25%; }
+      .is-unsure .eye-r { height: 12%; top: 32%; }
+      .is-unsure .mouth { width: 25%; left: 37.5%; animation: f-unsure 2s steps(2) infinite; }
+
+      /* 09 CORRECTED —— 被纠正后想通了：连眨两下，然后嘴放宽 */
+      @keyframes f-corr-eye { 0%,55%,100% { height: 19.4%; top: 27.8%; } 12%,28% { height: 4%; top: 36%; } 20% { height: 19.4%; top: 27.8%; } }
+      @keyframes f-corr-mouth { 0%,50% { width: 19%; left: 40.5%; } 70%,100% { width: 44%; left: 28%; } }
+      .is-corrected .eye { animation: f-corr-eye 3.2s steps(1) infinite; }
+      .is-corrected .mouth { animation: f-corr-mouth 3.2s steps(1) infinite; }
+
+      /* 10 SORRY —— 弄砸了：视线下垂，嘴小且偏 */
+      @keyframes f-sorry { 0%,100% { top: 41%; } 50% { top: 43%; } }
+      .is-sorry .eye { height: 10%; animation: f-sorry 2.6s steps(2) infinite; }
+      .is-sorry .mouth { width: 22%; height: 8%; left: 33%; top: 70%; }
+
+      /* 11 YOUR-TURN —— 把回合交还给你：目光左右游移，等着 */
+      @keyframes f-turn { 0%,100% { transform: translateX(-18%); } 50% { transform: translateX(18%); } }
+      .is-your-turn .eye { height: 17%; top: 29%; animation: f-turn 2.8s steps(3) infinite; }
+      .is-your-turn .mouth { width: 25%; left: 37.5%; height: 8%; top: 66%; }
+
+      /* 12 AWAY —— 休眠：眼睛几乎闭合，整张脸退到 clay 色 */
+      @keyframes f-away { 0%,100% { height: 4%; top: 36%; } 50% { height: 6%; top: 35%; } }
+      .is-away { background: var(--meikku-clay); }
+      .is-away .eye { animation: f-away 4s steps(2) infinite; }
+      .is-away .mouth { width: 16.6%; height: 6%; left: 41.7%; top: 68%; }
+
+      /* 尊重系统的减弱动效设置 */
+      @media (prefers-reduced-motion: reduce) {
+        .face i { animation: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Meikku face set</h1>
+      <p class="lede">
+        Twelve states, same three blocks. The markup is identical to the avatar already in the
+        product — one <code>&lt;i class="eye eye-l"&gt;</code>, one <code>eye-r</code>, one
+        <code>mouth</code> — so swapping a state means swapping a single class, never the structure.
+        Every dimension is a percentage, so 36px and 96px behave the same.
+      </p>
+      <span class="note">Steps, not easing — the motion stays pixel-stepped</span>
+    </header>
+
+    <div class="grid">
+      <figure class="cell">
+        <div class="face is-idle"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Idle</b><code>.is-idle</code><small>Resting. Blinks every 5.2s, eyes offset.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-listening"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Listening</b><code>.is-listening</code><small>You are talking. Eyes widen and lean toward you.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-thinking"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Thinking</b><code>.is-thinking</code><small>Already wired to the typing indicator.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-proposing"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Proposing</b><code>.is-proposing</code><small>About to suggest something. Mouth opens, then holds.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-watching"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Watching</b><code>.is-watching</code><small>Eyes drop to the clay while the arm moves.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-pleased"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Pleased</b><code>.is-pleased</code><small>It held. Eyes curve, mouth widens and bobs.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-surprised"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Surprised</b><code>.is-surprised</code><small>The material did something unexpected.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-unsure"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Unsure</b><code>.is-unsure</code><small>Low confidence. Uneven eyes, mouth drifts.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-corrected"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Corrected</b><code>.is-corrected</code><small>You put it right. Two blinks, then the mouth opens up.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-sorry"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Sorry</b><code>.is-sorry</code><small>It got something wrong. Gaze drops.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-your-turn"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Your turn</b><code>.is-your-turn</code><small>Handing the turn back. Eyes wander, waiting.</small></figcaption>
+      </figure>
+
+      <figure class="cell">
+        <div class="face is-away"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <figcaption><b>Away</b><code>.is-away</code><small>Dormant. Eyes nearly shut, plane drops to clay.</small></figcaption>
+      </figure>
+    </div>
+
+    <header style="margin-top:44px">
+      <h1 style="font-size:20px">Same face, three sizes</h1>
+      <p class="lede">All dimensions are percentages, so the 36px avatar in the header and a large
+        on-screen presence share one stylesheet.</p>
+      <div class="size-row" style="margin-top:20px">
+        <div class="face is-idle"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <div class="face md is-listening"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+        <div class="face lg is-pleased"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+      </div>
+    </header>
+  </body>
+</html>

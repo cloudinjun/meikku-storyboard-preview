@@ -1,0 +1,2519 @@
+/* Meikku D1 — Product Chat + Workspace Animation */
+
+/* ═══════════════════════════════════════════════════════════
+   Meikku Design DNA — MEIKKU_DESIGN_DNA.md (2026-08-07 修订)
+   L1 = DNA §7 的规范色值，唯一允许出现字面色值的地方。
+   本次修订的三条硬规则已落实：
+     · 纯黑移出系统，slate #232322 接管黑的全部职责
+     · 禁止霓虹/荧光色（旧的 lime #A3FF00 已删除）
+     · 不得用透明度制造中间色，中间值一律取自五级中性阶
+   ═══════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: "Bungee";
+  src: url("../../../../../ui/assets/storyboard/fonts/Bungee-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../../../../../ui/assets/storyboard/fonts/SpaceGrotesk-wght.ttf") format("truetype");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+:root {
+  /* ── 中性阶：五级，paper 与 slate 是结构两极，中间三级为支持层 ── */
+  --meikku-paper: #FCFCFA;   /* 亮极：底、卡片 */
+  --meikku-clay:  #EBEBE7;   /* 材料场域、静默填充 */
+  --meikku-grid:  #D8D8D3;   /* 点阵纹理、细分隔 */
+  --meikku-stone: #5C5C58;   /* 支持性文字、说明 */
+  --meikku-slate: #232322;   /* 暗极：键线、正文、块投影 */
+
+  /* ── 四支共享颜料，满强度，本身不携带永久语义 ── */
+  --meikku-ultramarine: #1052CC;
+  --meikku-viridian:    #0E7A42;
+  --meikku-cadmium:     #F7C600;
+  --meikku-vermilion:   #D42718;
+
+  /* ═══ 本文件的 LOCAL LEGEND ═══════════════════════════════
+     DNA 禁止把颜料永久绑定到人 / 机器人 / 状态，需要语义时由
+     单个产物声明局部图例，并用标签、形状、位置重复表达。
+     本 demo 的图例（每一条都另有非颜色载体）：
+
+       ultramarine  Meikku 当前持有的记忆
+                    载体：▸ 可展开箭头 + "RECALLED" 字样
+       vermilion    这条记忆正在被人改写
+                    载体：■ 实心方块 + "CORRECTING / MEMORY UPDATED" 字样
+       viridian     机械臂下一步要动的位置
+                    载体：从 TCP 出发的线段 + 十字丝，位于右栏
+
+     人与 Meikku 的区分不依赖颜色：人说的话是**实心块 + 右对齐**，
+     Meikku 说的话是**描边纸卡 + 左对齐**。颜色只是第三重冗余，
+     去掉颜色两者依然可分 —— 满足 DNA「never rely on color alone」。
+     cadmium 本次未上屏 —— 它是纯填充色，此处没有需要它的大色块。
+     ═════════════════════════════════════════════════════════ */
+  --legend-memory-held:    var(--meikku-ultramarine);
+  --legend-memory-changed: var(--meikku-vermilion);
+  --legend-arm-target:     var(--meikku-viridian);
+
+  /* ── 表面与文字 ── */
+  --page-bg:        var(--meikku-slate);   /* deck 舞台，不属于聊天界面 */
+  --bg:             var(--meikku-paper);
+  --surface:        var(--meikku-paper);
+  --track:          var(--meikku-clay);
+  --border:         var(--meikku-slate);
+  --border-light:   var(--meikku-grid);   /* 原为 ink@20%，改取中性阶实色 */
+  --divider:        var(--meikku-grid);
+  --text:           var(--meikku-slate);
+  /* DNA 迁移陷阱：旧 slate(#4A4A4A) 的 caption 角色现由 stone 承担，
+     若继续用 slate 会渲染成近黑。 */
+  --text-secondary: var(--meikku-stone);
+  --text-tertiary:  var(--meikku-stone);
+  --on-fill:        var(--meikku-paper);  /* 压在 slate/蓝/绿/红 实心块上的文字 */
+  --on-light:       var(--meikku-slate);  /* 压在 paper/clay/grid/黄 上的文字 */
+  --on-accent:      var(--meikku-paper);
+
+  /* ── 气泡：区分靠填充与对齐，不用颜色 ── */
+  --human-bubble:   var(--meikku-slate);
+  --human-text:     var(--meikku-paper);
+  --robot-bubble:   var(--meikku-paper);
+  --robot-text:     var(--meikku-slate);
+  --send-idle:      var(--meikku-grid);
+  --grabber:        var(--meikku-grid);
+
+  /* ── 形状（DNA §2 Shape tokens）── */
+  --border-heavy: 3px solid var(--meikku-slate);
+  --border-hair:  2px solid var(--meikku-slate);
+  --shadow-block: 6px 6px 0 var(--meikku-slate);
+  --shadow-block-sm: 4px 4px 0 var(--meikku-slate);
+  --shadow-frame:  var(--shadow-block);
+  --shadow-sheet:  0 -4px 0 var(--meikku-slate);
+  --shadow-pop:    var(--shadow-block-sm);
+  --shadow-knob:   var(--shadow-block-sm);
+  --shadow-well:   none;
+  /* 遮罩是覆盖效果而非色板成员，是全文件仅有的一处 alpha */
+  --scrim: rgb(35 35 34 / .55);
+
+  --radius: 0px;
+  --radius-sm: 0px;
+
+  --font-display: "Bungee", Impact, "Arial Black", sans-serif;
+  --font-body: "Space Grotesk", Arial, Helvetica, sans-serif;
+
+  /* ── DNA §7 官方 legacy 别名 ──────────────────────────────
+     本文件已扩展成 13 页 deck，仍有大量幻灯片样式引用旧名。
+     DNA 明确保留这四个别名让既有产物继续工作（新写的代码不得再用）。
+     映射严格照抄 DNA §7，不自行发挥。
+     ⚠ amber → cadmium 是黄色，DNA 规定黄色只能做填充、
+       绝不能在浅底上当文字色；下面已逐处校正。
+     ───────────────────────────────────────────────────────── */
+  --meikku-ink:   var(--meikku-slate);
+  --meikku-lime:  var(--meikku-ultramarine);
+  --meikku-pink:  var(--meikku-vermilion);
+  --meikku-amber: var(--meikku-cadmium);
+  --accent:            var(--legend-memory-held);
+  --accent-light:      var(--meikku-clay);
+  --correction-red:    var(--legend-memory-changed);
+  --correction-bg:     var(--meikku-clay);
+  --supersession-blue: var(--legend-memory-changed);
+  --supersession-bg:   var(--meikku-clay);
+  --material-olive:    var(--meikku-stone);
+  --material-bg:       var(--meikku-clay);
+
+  /* ── workspace ── */
+  --ws-bg:        var(--meikku-paper);
+  --ws-line:      var(--meikku-slate);
+  --ws-surface:   var(--meikku-clay);
+  --ws-meta:      var(--meikku-stone);
+  --ws-beat:      var(--meikku-stone);
+  --ws-clay-hi:   var(--meikku-clay);
+  --ws-clay-lo:   var(--meikku-clay);
+  --ws-clay-edge: var(--meikku-slate);
+  --ws-arm:       var(--meikku-slate);
+  --floor:        var(--meikku-paper);
+  --floor-line:   var(--meikku-grid);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+/* 未设字族的 button 会落回 UA 默认（Arial），破坏两字族规则 */
+button, input, textarea { font-family: inherit; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.44;
+  color: var(--text);
+  background: var(--page-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Split layout ── */
+.split-view {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  margin-left: -80px;
+}
+
+/* ── Phone frame ── */
+.phone-frame {
+  border: var(--border-heavy);
+  width: 390px;
+  height: 844px;
+  background: var(--bg);
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-frame);
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* ── Workspace frame ── */
+.workspace-frame {
+  border: var(--border-heavy);
+  width: 680px;
+  height: 844px;
+  background: var(--ws-bg);
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-frame);
+  flex-shrink: 0;
+}
+
+.ws-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 10px;
+  border-bottom: 1px solid var(--ws-line);
+}
+.ws-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ws-meta);
+}
+.ws-phase {
+  font-family: var(--font-display);
+  font-size: 14px;
+  padding: 3px 10px;
+  border: 1px solid;
+  border-radius: 0;
+  transition: color .4s, border-color .4s;
+}
+/* phase 徽章的颜色由角色类决定，JS 只负责切类，不碰颜色 */
+.ws-phase.role-cognition { background: var(--meikku-ultramarine); color: var(--meikku-paper); }
+.ws-phase.role-reasoning { background: var(--meikku-clay);  color: var(--meikku-slate); }
+.ws-phase.role-material  { background: var(--meikku-slate);   color: var(--meikku-paper); }
+.ws-phase.role-conflict  { background: var(--meikku-cadmium); color: var(--meikku-slate); }
+.ws-phase.role-yield     { background: var(--meikku-clay);  color: var(--meikku-slate); }
+
+/* ── 舞台：预渲染底图 / 兜底底图 / CV 叠层三层叠放 ── */
+.ws-stage {
+  flex: 1; position: relative; overflow: hidden;
+  background: var(--floor);
+}
+.ws-plate {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  /* 必须是 contain：SVG 用 preserveAspectRatio="xMidYMid meet"，
+     只有 contain 的贴合方式与之一致，CV 叠层坐标才会和底图对齐。
+     换成 cover 会让底图被裁切而叠层不裁，两层立刻错位。
+     配套要求：底图画幅必须等于 viewBox，即 640×480（cam2 的原生画幅）。 */
+  object-fit: contain;
+  display: block;
+}
+.ws-plate[hidden] { display: none; }
+
+/* ══ 工作区错误态 ══
+   取不到相机画面时不再退回矢量兜底底图。在一张真照片的位置上播脚本动画，
+   会让人以为看到的是实况 —— 宁可空着报错。 */
+.ws-error {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 14px;
+  padding: 24px; text-align: center;
+  background: var(--ws-bg);
+}
+.ws-error[hidden] { display: none; }
+.ws-error-tag {
+  font-family: var(--font-display);
+  font-size: 14px; letter-spacing: .06em;
+  color: var(--meikku-paper);
+  background: var(--meikku-vermilion);
+  padding: 6px 12px;
+}
+.ws-error-detail {
+  margin: 0; max-width: 40ch;
+  font-family: var(--font-body);
+  font-size: 13px; font-weight: 500; line-height: 1.5;
+  color: var(--meikku-stone);
+}
+
+/* 有画面但没有感知数据：一条提示，不留白让人猜 */
+.ws-notice {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 2;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--meikku-slate);
+  background: var(--meikku-cadmium);
+}
+.ws-notice[hidden] { display: none; }
+.ws-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+}
+/* 有渲染帧时兜底底图整组退场，CV 叠层不受影响 */
+#basePlate[hidden] { display: none; }
+
+/* ── 兜底底图上色 ── */
+#grid circle { fill: var(--meikku-grid); }
+/* DNA §6 禁止柔和模糊阴影：stdDeviation=0 + 全不透明 = 实心块位移 */
+#clayShadow feDropShadow { flood-color: var(--meikku-slate); flood-opacity: 1; }
+/* 泥料：平涂 clay + 重黑边，不用渐变做氛围（DNA §6） */
+/* 泥料只做平涂色块，边缘由 #cvContour 单独负责，不重复描边 */
+#clayShape { fill: var(--meikku-clay); stroke: none; }
+/* 机械臂：纸白件 + 重黑边，硬边无投影 */
+#armUpper, #armLower { stroke: var(--meikku-slate); }
+#armBase, #armElbow, #armTcp { fill: var(--meikku-paper); stroke: var(--meikku-slate); stroke-width: .5; }
+#armDir { stroke: var(--meikku-slate); }
+
+/* ── CV 分析叠层 ── */
+
+/* 检测轮廓：marching ants */
+/* 检测轮廓：整个叠层唯一的边缘线。虚线＝推断出来的边界。
+   取消了行进蚁线动画 —— 持续爬动不编码任何信息，只制造噪声。 */
+#cvContour {
+  fill: none;
+  stroke: var(--meikku-slate);
+  stroke-width: .7;
+  stroke-dasharray: 2 1.4;
+  transition: d .6s ease;
+}
+/* 动作线：DNA §3「thick neon lime action paths directly over the workspace」 */
+#cvAction {
+  stroke: var(--legend-arm-target);
+  stroke-width: 1.4;
+  stroke-linecap: square;
+}
+
+/* 注意力游标 = 测量 / live cursor，按 guide 用黄 */
+#attentionMarker circle { stroke: var(--legend-arm-target); fill: none; }
+#attentionMarker circle:last-of-type { fill: var(--legend-arm-target); stroke: none; }
+#attentionMarker line { stroke: var(--legend-arm-target); stroke-width: .35; }
+
+/* SVG <g> 不会可靠继承 HTML 的原生 [hidden] 行为；实时数据接管后，
+   必须显式撤掉旧 fixture 轮廓，否则黑色 marching-ants 会残留在新叠层后面。 */
+#cvOverlay[hidden] { display: none; }
+
+/* ══ 实时叠层 ══
+   这一层在相机像素坐标里（640×480），不在 demoSpace 的 100×100 里，
+   所以线宽要按像素给，数值约等于 demo 层的 4.8 倍。
+
+   本图幅内的图例（DNA §5：不建立永久的色相↔语义绑定，必须自带图例，
+   且颜色之外还要有第二载体）：
+     ■ 群青方块  = 机器已经记录下来的坐标系（工作面 + 121 个网格锚点）
+     ● 镉黄圆点  = 正在被观察的材料（虚线边界＝推断出来的，不是量出来的）
+     ✛ 铬绿十字  = 刀尖当前位置，▶ 三角＝下一步要去的方向 */
+#cvLive[hidden] { display: none; }
+
+/* 工作面：已标定的地面，实线闭合 */
+#liveFloor {
+  fill: none;
+  stroke: var(--legend-memory-held);
+  stroke-width: 2.4;
+  stroke-linejoin: miter;
+}
+/* 网格锚点：方块＝记录 */
+#liveGrid rect {
+  fill: var(--legend-memory-held);
+  /* 逐格点亮时由 JS 错开 transition-delay，扫描完停在 .62 */
+  opacity: 0;
+  transition: opacity .18s linear;
+}
+#liveGrid rect.lit { opacity: .62; }
+
+/* 材料边界：虚线＝推断（这个体量是正面测量 + 背面推断，不是全测出来的）。
+   内部填 clay 色实底，让材料在干净的证据底面上保持可辨认。
+   填的是调色板自带的 --meikku-clay，不是靠不透明度调出来的中间色。 */
+#liveMaterial {
+  fill: var(--meikku-clay);
+  stroke: var(--meikku-cadmium);
+  stroke-width: 2.8;
+  stroke-dasharray: 9 6;
+  stroke-linejoin: round;
+  transition: points .4s ease;
+}
+/* 材料特征点：圆＝Meikku 的关注点 */
+#liveFeatures circle {
+  fill: var(--meikku-cadmium);
+  stroke: var(--meikku-slate);
+  stroke-width: 1.2;
+}
+#liveFeatures circle.is-center {
+  fill: var(--meikku-slate);
+  stroke: var(--meikku-cadmium);
+  stroke-width: 2;
+}
+
+/* 动作线与刀尖 */
+#liveAction {
+  stroke: var(--legend-arm-target);
+  stroke-width: 5;
+  stroke-linecap: square;
+}
+#liveAction[hidden] { display: none; }
+#liveTip line { stroke: var(--legend-arm-target); stroke-width: 2.4; }
+#liveTip circle { fill: none; stroke: var(--legend-arm-target); stroke-width: 2.4; }
+#liveTip { transition: opacity .4s ease, transform .5s ease; }
+/* 新一帧证据到达时游标收缩一下，表示「重新读了一次」，不是装饰性常驻动画 */
+#liveTip.refreshed circle { animation: tip-refresh .5s ease; }
+@keyframes tip-refresh {
+  0%   { r: 4; }
+  45%  { r: 11; }
+  100% { r: 4; }
+}
+
+.ws-footer {
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--ws-line);
+  background: var(--ws-bg);
+}
+.ws-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.ws-clay-label, .ws-pose-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--ws-meta);
+  text-transform: uppercase;
+}
+.ws-chapter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.ws-chapter {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--text);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  transition: opacity .3s;
+}
+.ws-beat {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ws-beat);
+  font-variant-numeric: tabular-nums;
+}
+.ws-caption {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  transition: opacity .3s;
+}
+
+/* ── Chat header ── */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 54px 16px 12px;
+  /* band 用 slate。原来 band 和脸同为 cadmium，3px 黑边只能勾出轮廓，
+     填充一样就读成"band 上挖了个洞"而不是"band 上有个角色"。
+     现在整个 header 里只有脸是暖色，它自然成为焦点。 */
+  background: var(--meikku-slate);
+  border-bottom: var(--border-heavy);
+  flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.back-btn { color: var(--text-secondary); display: flex; align-items: center; }
+.avatar {
+  width: 36px; height: 36px; border-radius: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px; flex-shrink: 0;
+}
+/* ══════════════════════════════════════════════════════════════
+   MEIKKU FACE —— 三个方块，12 个状态
+   结构固定为 .eye-l / .eye-r / .mouth，换表情只换一个 class。
+   全部尺寸用百分比，所以 36px 头像与 96px 展示共用这一份样式。
+   全部用 steps() 不用缓动，保留像素动画的顿感。
+   ══════════════════════════════════════════════════════════════ */
+.mk-face {
+  position: relative;
+  background: var(--meikku-cadmium);
+  border: 2px solid var(--meikku-slate);
+}
+.mk-face i { position: absolute; display: block; background: var(--meikku-slate); }
+.mk-face .eye  { width: 13.9%; height: 19.4%; top: 27.8%; }
+.mk-face .eye-l { left: 19.4%; }
+.mk-face .eye-r { right: 19.4%; }
+.mk-face .mouth { width: 38.9%; height: 11.1%; left: 30.5%; top: 63.9%; }
+
+/* 01 静息 */
+@keyframes f-idle { 0%,92%,100% { height: 19.4%; top: 27.8%; } 95% { height: 5%; top: 36%; } }
+.mk-face.is-idle .eye { animation: f-idle 5.2s steps(1) infinite; }
+.mk-face.is-idle .eye-r { animation-delay: .06s; }
+/* 02 在听你说 */
+@keyframes f-listen { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-14%); } }
+.mk-face.is-listening .eye { height: 24%; top: 25%; animation: f-listen 2.4s steps(2) infinite; }
+.mk-face.is-listening .mouth { width: 19%; left: 40.5%; }
+/* 03 思考中 */
+@keyframes f-think { 0%,100% { height: 8%; top: 33%; } 50% { height: 5%; top: 35%; } }
+.mk-face.is-thinking .eye { animation: f-think 1.4s steps(2) infinite; }
+.mk-face.is-thinking .mouth { width: 16.6%; left: 41.7%; }
+/* 04 要提建议 */
+@keyframes f-propose { 0%,100% { width: 38.9%; left: 30.5%; } 45% { width: 52%; left: 24%; } }
+.mk-face.is-proposing .mouth { animation: f-propose 1.8s steps(2) infinite; }
+.mk-face.is-proposing .eye { height: 22%; top: 26%; }
+/* 05 看着黏土 */
+@keyframes f-watch { 0%,100% { top: 38%; } 50% { top: 41%; } }
+.mk-face.is-watching .eye { height: 13%; animation: f-watch 3s steps(2) infinite; }
+.mk-face.is-watching .mouth { height: 5.5%; top: 69%; width: 33%; left: 33.5%; }
+/* 06 成了 */
+@keyframes f-pleased { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6%); } }
+.mk-face.is-pleased .eye { height: 8%; top: 33%; width: 16.6%; }
+.mk-face.is-pleased .eye-l { left: 18%; }
+.mk-face.is-pleased .eye-r { right: 18%; }
+.mk-face.is-pleased .mouth { width: 47%; left: 26.5%; height: 13.9%; top: 61%; animation: f-pleased 1.2s steps(2) infinite; }
+/* 07 意外 */
+@keyframes f-surp-e { 0%,100% { width: 19.4%; height: 19.4%; } 18% { width: 25%; height: 25%; top: 24%; } }
+@keyframes f-surp-m { 0%,100% { width: 16.6%; height: 16.6%; left: 41.7%; top: 61%; } 18% { width: 22%; height: 22%; left: 39%; top: 58%; } }
+.mk-face.is-surprised .eye { top: 26%; animation: f-surp-e 1.6s steps(1) infinite; }
+.mk-face.is-surprised .eye-l { left: 17%; }
+.mk-face.is-surprised .eye-r { right: 17%; }
+.mk-face.is-surprised .mouth { animation: f-surp-m 1.6s steps(1) infinite; }
+/* 08 拿不准 */
+@keyframes f-unsure { 0%,100% { transform: translateX(-10%); } 50% { transform: translateX(10%); } }
+.mk-face.is-unsure .eye-l { height: 22%; top: 25%; }
+.mk-face.is-unsure .eye-r { height: 12%; top: 32%; }
+.mk-face.is-unsure .mouth { width: 25%; left: 37.5%; animation: f-unsure 2s steps(2) infinite; }
+/* 09 被纠正后想通了 */
+@keyframes f-corr-e { 0%,55%,100% { height: 19.4%; top: 27.8%; } 12%,28% { height: 4%; top: 36%; } 20% { height: 19.4%; top: 27.8%; } }
+@keyframes f-corr-m { 0%,50% { width: 19%; left: 40.5%; } 70%,100% { width: 44%; left: 28%; } }
+.mk-face.is-corrected .eye { animation: f-corr-e 3.2s steps(1) infinite; }
+.mk-face.is-corrected .mouth { animation: f-corr-m 3.2s steps(1) infinite; }
+/* 10 弄砸了 */
+@keyframes f-sorry { 0%,100% { top: 41%; } 50% { top: 43%; } }
+.mk-face.is-sorry .eye { height: 10%; animation: f-sorry 2.6s steps(2) infinite; }
+.mk-face.is-sorry .mouth { width: 22%; height: 8%; left: 33%; top: 70%; }
+/* 11 交还回合 */
+@keyframes f-turn { 0%,100% { transform: translateX(-18%); } 50% { transform: translateX(18%); } }
+.mk-face.is-your-turn .eye { height: 17%; top: 29%; animation: f-turn 2.8s steps(3) infinite; }
+.mk-face.is-your-turn .mouth { width: 25%; left: 37.5%; height: 8%; top: 66%; }
+/* 12 休眠 */
+@keyframes f-away { 0%,100% { height: 4%; top: 36%; } 50% { height: 6%; top: 35%; } }
+.mk-face.is-away { background: var(--meikku-clay); }
+.mk-face.is-away .eye { animation: f-away 4s steps(2) infinite; }
+.mk-face.is-away .mouth { width: 16.6%; height: 6%; left: 41.7%; top: 68%; }
+
+@media (prefers-reduced-motion: reduce) { .mk-face i { animation: none !important; } }
+
+/* ── 表情台：deck 之外的独立父容器，?faces=1 打开 ── */
+.face-lab {
+  position: fixed; inset: 0; z-index: 999; overflow: auto;
+  background: var(--meikku-paper); color: var(--meikku-slate);
+  padding: 40px 32px 64px;
+  background-image: radial-gradient(var(--meikku-grid) 1px, transparent 1px);
+  background-size: 14px 14px; background-position: 7px 7px;
+}
+.face-lab[hidden] { display: none; }
+.face-lab h2 {
+  max-width: 1180px; margin: 0 auto 10px;
+  font-family: var(--font-display); font-size: 20px;
+  letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+}
+.face-lab p {
+  max-width: 62ch; margin: 0 auto 26px;
+  font-size: 15px; font-weight: 500; line-height: 1.55; color: var(--meikku-stone);
+}
+.face-lab .lab-grid {
+  max-width: 1180px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(178px, 1fr)); gap: 20px;
+}
+.face-lab figure {
+  border: 3px solid var(--meikku-slate); padding: 20px 16px 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  background: var(--meikku-paper);
+}
+.face-lab .mk-face { width: 96px; height: 96px; flex-shrink: 0; }
+.face-lab figcaption { text-align: center; }
+.face-lab figcaption b {
+  display: block; font-family: var(--font-display); font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.face-lab figcaption code {
+  display: block; margin-top: 5px; font-family: var(--font-body);
+  font-size: 12px; font-weight: 500; color: var(--meikku-stone);
+}
+.face-lab figcaption small {
+  display: block; margin-top: 7px; font-size: 12px; font-weight: 500;
+  line-height: 1.4; color: var(--meikku-stone);
+}
+.face-lab .lab-close {
+  position: fixed; top: 20px; right: 24px;
+  background: var(--meikku-slate); color: var(--meikku-paper);
+  border: none; padding: 12px 16px; cursor: pointer;
+  font-family: var(--font-display); font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.header-info { display: flex; flex-direction: column; }
+.header-name {
+  font-family: var(--font-display); font-size: 20px;
+  letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+}
+.header-status {
+  font-size: 12px; color: var(--text-tertiary);
+  display: flex; align-items: center; gap: 5px;
+}
+/* 在线状态点：呼吸式提示 AI 处于当前 session */
+.presence-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--legend-arm-target); flex-shrink: 0;
+  animation: presencePulse 2.4s ease-in-out infinite;
+}
+.header-right { display: flex; align-items: center; gap: 2px; }
+.icon-btn {
+  background: none; border: none; color: var(--text-secondary);
+  cursor: pointer; padding: 6px; border-radius: 0; display: flex; align-items: center;
+  transition: background .18s ease, color .18s ease;
+}
+.icon-btn:hover { background: var(--border-light); color: var(--text); }
+.icon-btn.open { background: var(--meikku-slate); color: var(--on-fill); }
+/* 记忆条数角标 */
+.icon-btn.has-badge { position: relative; }
+.icon-badge {
+  position: absolute; top: -1px; right: -3px;
+  min-width: 16px; height: 16px; padding: 0 3px;
+  border-radius: 0; background: var(--meikku-ultramarine); color: var(--meikku-paper);
+  font-size: 12px; font-weight: 700; line-height: 16px; text-align: center;
+  font-variant-numeric: tabular-nums;
+  border: 2px solid var(--surface); box-sizing: content-box;
+}
+
+/* ── Mode tabs (iOS 分段控件：中性轨道 + 白色滑块) ── */
+.mode-tabs {
+  display: flex; gap: 2px;
+  margin: 10px 16px 8px;
+  padding: 2px;
+  background: var(--track);
+  border-radius: 0;
+  flex-shrink: 0;
+}
+.mode-tab {
+  flex: 1; padding: 6px 0;
+  font-family: var(--font-display); font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.mode-tab.active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-pop);
+}
+.mode-tab:not(.active):hover { color: var(--text); }
+
+/* ── Chat body ── */
+.chat-body {
+  flex: 1; overflow-y: auto; padding: 10px 16px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  /* 与右栏工作区同一套点阵：给纸面一点牙口，也把两栏绑成一张桌子。
+     这是地，不是装饰元素。 */
+  background-image: radial-gradient(var(--meikku-grid) 1px, transparent 1px);
+  background-size: 14px 14px;
+  background-position: 7px 7px;
+  /* 顶部渐隐，滚动时不硬切 */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, var(--meikku-slate) 16px);
+  mask-image: linear-gradient(to bottom, transparent 0, var(--meikku-slate) 16px);
+}
+/* 会话分隔：细线 + 居中标签，不再用药丸 */
+.session-divider {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0 8px;
+}
+.session-divider::before, .session-divider::after {
+  content: ""; flex: 1; height: 2px; background: var(--meikku-slate);
+}
+/* 会话分隔：实心印戳，不是灰色小字。海报式的黑块给版面一个支点。 */
+/* 分隔线是信息量最低的元素，用结构色即可。
+   vermilion 留给真正的「记忆被改写」那一刻。 */
+.session-divider span {
+  background: var(--meikku-slate); color: var(--meikku-paper);
+  padding: 4px 10px; border: none; border-radius: 0;
+  font-family: var(--font-display); font-size: 12px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* ── Bubbles ── */
+.message-row {
+  display: none; flex-direction: column; max-width: 82%;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.message-row.visible { opacity: 1; transform: translateY(0); }
+.message-row.human { align-self: flex-end; align-items: flex-end; }
+.message-row.robot { align-self: flex-start; align-items: flex-start; }
+.message-row.material { align-self: center; align-items: center; max-width: 88%; }
+
+/* Same-sender tighten, cross-sender widen */
+.message-row.human + .message-row.human,
+.message-row.robot + .message-row.robot { margin-top: -4px; }
+.message-row.human + .message-row.robot,
+.message-row.robot + .message-row.human,
+.message-row + .memory-recall-card,
+.memory-recall-card + .message-row,
+.message-row + .action-indicator,
+.action-indicator + .message-row { margin-top: 6px; }
+
+.bubble {
+  padding: 11px 14px; border-radius: 0;
+  word-break: break-word; position: relative;
+}
+/* 人的回合：ultramarine 实心块。近黑太严肃，撑不起玩伴定位。
+   深色填充按 DNA 一律配 paper 字。 */
+.message-row.human .bubble {
+  background: var(--meikku-ultramarine); color: var(--meikku-paper);
+}
+/* Meikku：纸底 + 细边。--robot-bubble 与页面底色同为 paper，
+   必须靠边框成形；除此之外不加任何装饰。 */
+.message-row.robot .bubble {
+  background: var(--robot-bubble); color: var(--robot-text);
+  border: var(--border-hair);
+}
+/* 材料的实际反应：陶灰共享场域，硬边但不带投影 —— 它是场地不是发言者 */
+.message-row.material .bubble {
+  background: var(--material-bg); color: var(--material-olive);
+  border: var(--border-hair); border-radius: 0;
+  font-size: 13px; font-style: italic;
+}
+
+/* 出处 pill 降为描边式，退到元信息层 */
+.provenance-pill {
+  font-size: 12px; font-weight: 700; padding: 2px 7px;
+  border-radius: 0; margin-left: 8px; white-space: nowrap;
+}
+.provenance-pill.inferred { background: var(--legend-memory-held); color: var(--on-fill); border: var(--border-hair); }
+.provenance-pill.user-said { background: var(--legend-memory-changed); color: var(--on-fill); border: var(--border-hair); }
+
+/* ── Correction & supersession ── */
+/* 人的纠正：仍是人说的话，沿用墨块本体，只加一个文字徽章。
+   原先的 amber 淡底 + amber 缘 + 黑边 + 投影 = 同一事实编码四遍，已删。 */
+/* 纠正仍然是人说的话 —— 沿用与普通人类气泡完全相同的填充。
+   事件类型只由气泡内的标签表示，绝不改整块颜色，
+   否则同一个说话人会被读成两个角色（这正是之前的问题）。 */
+.message-row.correction .bubble {
+  background: var(--meikku-ultramarine); color: var(--meikku-paper);
+}
+/* badge 独占一行，不与正文串行 */
+
+
+.memory-source-tag svg { width: 12px; height: 12px; }
+
+
+/* ── 内部过程行 ──────────────────────────────────────────────
+   参考 ChatGPT 的 "Thought for 8s"、Claude 的工具调用行、
+   DeepSeek 的 DeepThink 折叠块：AI 的内部动作在流里只占一行摘要，
+   细节点开才有。这样流里就只剩「谁说了什么」一种卡片。
+   ──────────────────────────────────────────────────────────── */
+.process-row {
+  display: none; align-items: center; gap: 7px;
+  align-self: flex-start; max-width: 88%;
+  background: none; border: none; padding: 3px 0;
+  font-family: var(--font-body);
+  font-size: 13px; font-weight: 700;
+  text-transform: none; color: var(--text-secondary);
+  cursor: pointer; text-align: left;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .35s ease, transform .35s ease, color .18s ease;
+}
+.process-row.visible { opacity: 1; transform: translateY(0); }
+.process-row:hover { color: var(--text); }
+.process-chevron {
+  flex-shrink: 0; width: 8px; height: 9px;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transition: transform .2s ease;
+}
+.process-row[aria-expanded="true"] .process-chevron { transform: rotate(90deg); }
+.process-row.is-static { cursor: default; }
+.process-row.is-static .process-chevron { display: none; }
+.process-row.is-static::before {
+  content: ""; width: 8px; height: 8px; flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--meikku-stone);
+}
+/* 记忆事件行：唯一带彩色标记的过程行 */
+.process-row.memory-event { color: var(--legend-memory-changed); }
+.process-row.memory-event::before {
+  content: ""; width: 7px; height: 7px; flex-shrink: 0;
+  background: var(--legend-memory-changed);
+}
+
+.process-detail {
+  display: none; align-self: flex-start; max-width: 88%;
+  margin: 2px 0 4px 16px; padding: 10px 12px;
+  background: var(--meikku-clay); border: var(--border-hair);
+  font-size: 13px; font-weight: 500; line-height: 1.45; color: var(--text);
+}
+.process-detail.open { display: block; }
+.process-detail .detail-meta {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.process-detail .detail-open-btn {
+  margin-top: 10px; width: 100%;
+  background: var(--meikku-slate); color: var(--meikku-paper);
+  border: none; padding: 10px 12px; cursor: pointer;
+  font-family: var(--font-display); font-size: 14px; letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* ── Action indicator：agent 执行步骤行，与气泡分层 ── */
+.action-indicator {
+  align-self: flex-start; display: none; align-items: center; gap: 7px;
+  padding: 1px 0 1px 11px; background: transparent;
+  border: none;
+  border-radius: 0; font-size: 12px; font-weight: 500;
+  color: var(--text-secondary);
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.action-indicator.visible { opacity: 1; transform: translateY(0); }
+.action-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  flex-shrink: 0;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Chat input ── */
+.chat-input {
+  padding: 8px 12px 0; background: var(--surface);
+  border-top: 1px solid var(--border); flex-shrink: 0;
+}
+/* 两行式 composer：文本独占一行，工具下沉到第二行 */
+.composer {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 0; padding: 4px 8px 4px 14px;
+  transition: border-color .2s ease;
+}
+.composer-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 2px;
+}
+.composer-tools, .composer-submit { display: flex; align-items: center; gap: 2px; }
+/* 底部 home indicator，补足真机比例 */
+.home-indicator {
+  height: 24px; background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+}
+.home-indicator::after {
+  content: ""; width: 134px; height: 5px;
+  border-radius: 0; background: var(--meikku-slate);
+}
+.input-action-btn {
+  width: 32px; height: 32px; border-radius: 0;
+  background: none; border: none; color: var(--text-secondary);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  cursor: pointer; transition: background .2s;
+}
+.input-action-btn:hover { background: var(--border-light); }
+.input-field {
+  font-size: 15px; color: var(--text-tertiary);
+  outline: none; min-height: 26px;
+  display: flex; align-items: center; flex-wrap: wrap;
+  padding: 6px 0 2px; position: relative;
+}
+.input-field::before { content: attr(data-placeholder); }
+.input-field.has-text::before { display: none; }
+.input-typing-text {
+  color: var(--text); font-size: 15px;
+}
+.input-typing-cursor {
+  display: inline-block; width: 2px; height: 16px;
+  background: var(--meikku-slate); margin-left: 1px;
+  vertical-align: text-bottom;
+  animation: cursorBlink .6s step-end infinite;
+}
+/* 发送键状态驱动：空态中性灰，有文字才点亮主色 */
+.send-btn {
+  width: 32px; height: 32px; border-radius: 0;
+  background: var(--send-idle); color: var(--on-accent); border: none;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: background .18s ease, transform .18s ease;
+}
+.input-field.has-text ~ .composer-toolbar .send-btn {
+  background: var(--meikku-viridian); color: var(--meikku-paper);
+  transform: scale(1.06);
+}
+
+/* ── Memory panel ── */
+.memory-panel {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-radius: 0;
+  box-shadow: var(--shadow-sheet);
+  /* 固定 detent：高度不随内容变化，否则 Memory(1 卡 / 3 卡) 与 Control
+     切换时外框会跳。iOS UISheetPresentationController 与 Material
+     bottom sheet 都是固定吸附高度 + 内部滚动。 */
+  height: 64%; display: flex; flex-direction: column; z-index: 10;
+  animation: slideUp .3s ease-out;
+}
+.memory-panel[hidden] { display: none; }
+/* sheet 遮罩，明确"面板压在对话之上"的层级 */
+.sheet-scrim {
+  position: absolute; inset: 0; z-index: 9;
+  background: var(--scrim);
+  animation: scrimIn .25s ease-out;
+}
+.sheet-scrim[hidden] { display: none; }
+.sheet-grabber {
+  width: 36px; height: 4px; border-radius: 0;
+  background: var(--grabber); margin: 8px auto 2px; flex-shrink: 0;
+}
+.memory-panel-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px 12px; border-bottom: 1px solid var(--border-light);
+}
+/* sheet 标题：Memory 与 Move the arm 是两个独立目的地，
+   不再共用 tab 容器 —— tab 正是「点哪个入口都一样」的根源。 */
+.sheet-title {
+  flex: 1;
+  font-family: var(--font-display); font-size: 16px;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--meikku-slate);
+}
+.memory-panel-header button {
+  background: none; border: none; font-size: 22px; line-height: 1;
+  color: var(--text-tertiary); cursor: pointer; padding: 0 2px;
+  flex-shrink: 0;
+}
+.memory-panel-body[hidden] { display: none; }
+.memory-panel-body {
+  flex: 1; min-height: 0;          /* 撑满 detent 并在内部滚动 */
+  overflow-y: auto; padding: 16px 20px 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.memory-card { border-radius: 0; padding: 14px 16px; position: relative;
+  background: var(--meikku-paper); border: var(--border-heavy); }
+.memory-card.superseded { opacity: .55; }
+.memory-card.superseded .memory-card-claim { text-decoration: line-through; }
+.memory-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
+.memory-card-source {
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--text-secondary);
+}
+.memory-card-claim { font-size: 15px; line-height: 1.45; color: var(--text); }
+
+/* 改动说明：夹在 before 与 now 之间，交代「是什么让记忆变了」 */
+.memory-change {
+  padding: 10px 14px; margin: 2px 0;
+  border-left: var(--border-heavy);
+}
+.memory-change-kind {
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--legend-memory-changed); margin-bottom: 5px;
+}
+.memory-change-quote {
+  font-size: 13px; font-weight: 500; line-height: 1.45;
+  color: var(--text); font-style: italic;
+}
+
+/* ── Control 面板：手柄式操控 ── */
+.control-status {
+  display: flex; align-items: center; gap: 8px; padding: 0 2px;
+}
+.control-now-label {
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--text-tertiary);
+}
+.control-now-value {
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  color: var(--text); text-transform: uppercase;
+}
+.manual-badge {
+  margin-left: auto; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--meikku-slate); background: var(--meikku-lime);
+  border: 2px solid var(--meikku-slate);
+  padding: 2px 8px; border-radius: 0;
+}
+.manual-badge[hidden] { display: none; }
+
+.pad-row { display: flex; gap: 14px; align-items: stretch; }
+
+/* 摇杆 */
+.joystick {
+  position: relative; flex-shrink: 0;
+  width: 148px; height: 148px; border-radius: 50%;
+  background: var(--bg); border: 1px solid var(--border);
+  box-shadow: var(--shadow-well);
+  touch-action: none; cursor: grab;
+}
+.joystick.active { cursor: grabbing; border-color: var(--meikku-slate); }
+.joystick-axis { position: absolute; background: var(--border); }
+.joystick-axis-h { left: 18px; right: 18px; top: 50%; height: 1px; }
+.joystick-axis-v { top: 18px; bottom: 18px; left: 50%; width: 1px; }
+.joystick-knob {
+  position: absolute; top: 50%; left: 50%;
+  width: 56px; height: 56px; border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--surface);
+  border: 1px solid var(--meikku-grid);
+  box-shadow: var(--shadow-knob);
+  transition: transform .22s cubic-bezier(.2,.9,.3,1.2), background .18s ease;
+}
+.joystick.active .joystick-knob {
+  transition: none;              /* 拖拽时跟手，不做缓动 */
+  background: var(--accent); border-color: var(--accent);
+}
+
+.pad-side { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.speed-tabs { margin: 0; }
+.pad-btn {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 0; color: var(--text-secondary);
+  font-family: var(--font-display); font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase; cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+.pad-btn:hover { background: var(--border-light); color: var(--text); }
+.control-note {
+  font-size: 12px; color: var(--text-tertiary); line-height: 1.45;
+  padding: 2px 2px 0;
+}
+
+/* 人接管期间关掉机械臂的 CSS 缓动，否则摇杆会有 .8s 迟滞 */
+#wsCanvas.manual #armUpper, #wsCanvas.manual #armLower,
+#wsCanvas.manual #armBase, #wsCanvas.manual #armElbow,
+#wsCanvas.manual #armTcp, #wsCanvas.manual #armDir { transition: none; }
+
+/* ── Robot arm smooth transitions ── */
+#armUpper, #armLower { transition: x1 .8s ease, y1 .8s ease, x2 .8s ease, y2 .8s ease; }
+#armBase, #armElbow, #armTcp { transition: cx .8s ease, cy .8s ease; }
+#armDir { transition: transform .8s ease; }
+#clayShape { transition: d .6s ease; }
+#attentionMarker { transition: opacity .5s ease, transform .5s ease; }
+
+/* ── Thinking / scanning states ── */
+.ws-phase.thinking {
+  animation: phasePulse 1.2s ease-in-out infinite;
+}
+#attentionMarker.scanning circle:first-child {
+  stroke-width: .8;
+  animation: scanPulse 1s ease-in-out infinite, scanRotate 3s linear infinite;
+}
+#attentionMarker.scanning circle:last-child {
+  animation: scanDotPulse .8s ease-in-out infinite;
+}
+
+/* ── 思考态 ──────────────────────────────────────────────────
+   ChatGPT / Claude / Bitrig 的思考态都不是气泡，而是背景上的一行裸文字。
+   之前它是 paper 纸卡 + 2px 边，和 Meikku 的真实回复完全同形，
+   所以拉不开差距。这里彻底去掉外壳：无填充、无边框、无投影。
+   ──────────────────────────────────────────────────────────── */
+.typing-indicator {
+  align-self: flex-start; display: flex; align-items: center; gap: 9px;
+  padding: 4px 2px; max-width: 86%;
+  background: none; border: none; box-shadow: none; border-radius: 0;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+.typing-indicator.visible { opacity: 1; transform: translateY(0); }
+.typing-dots { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+/* 文字扫光：让"思考中"可读，而不只是三个点 */
+.thinking-label {
+  font-size: 13px; font-weight: 500; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  background: linear-gradient(90deg, var(--text-tertiary) 25%, var(--text) 45%, var(--text-tertiary) 65%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  animation: shimmer 2.4s linear infinite;
+}
+.typing-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text-tertiary);
+  animation: typingBounce 1.4s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: .2s; }
+.typing-dot:nth-child(3) { animation-delay: .4s; }
+
+/* ── Send flash ── */
+.send-btn.flash,
+.input-field.has-text ~ .composer-toolbar .send-btn.flash {
+  transform: scale(.85);
+  transition: transform .1s;
+}
+
+/* ── Animations ── */
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: .4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes openingCopyIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scrimIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes shimmer {
+  from { background-position: 130% 0; }
+  to { background-position: -60% 0; }
+}
+@keyframes presencePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes phasePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+@keyframes scanPulse {
+  0%, 100% { r: 3.5; stroke-opacity: .7; }
+  50% { r: 5; stroke-opacity: .4; }
+}
+@keyframes scanDotPulse {
+  0%, 100% { r: 1; fill-opacity: .5; }
+  50% { r: 2; fill-opacity: .8; }
+}
+@keyframes scanRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Scrollbar ── */
+.chat-body::-webkit-scrollbar { width: 0; }
+.memory-panel-body::-webkit-scrollbar { width: 4px; }
+.memory-panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 0; }
+
+/* ========================================================================
+   FIXED 16:9 PRESENTATION STAGE
+   Full viewport-base.css contract from the Frontend Slides workflow.
+   Slides stay authored at 1920 x 1080 and scale as one unit.
+   ======================================================================== */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--stage-bg, var(--meikku-slate));
+}
+
+.deck-viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--stage-bg, var(--meikku-slate));
+}
+
+.deck-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  transform-origin: 0 0;
+  background: var(--slide-bg, var(--meikku-paper));
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  background: var(--slide-bg, var(--meikku-paper));
+}
+
+.slide.active,
+.slide.visible {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.deck-controls {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+@media print {
+  html,
+  body {
+    width: 1920px;
+    height: auto;
+    overflow: visible;
+    background: var(--meikku-paper);
+  }
+
+  .deck-viewport {
+    position: static;
+    overflow: visible;
+    background: var(--meikku-paper);
+  }
+
+  .deck-stage {
+    position: static;
+    width: auto;
+    height: auto;
+    transform: none !important;
+    background: none;
+  }
+
+  .slide {
+    position: relative;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    width: 1920px;
+    height: 1080px;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .slide:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .deck-controls,
+  .deck-chrome,
+  .edit-hotzone,
+  .edit-toggle {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* ========================================================================
+   DECK FOUNDATION
+   Slide 01 embeds the original co-making animation. The product UI remains
+   intact inside Slide 02, then the same paper / ink / clay / lime / amber /
+   pink grammar expands into the speaker deck.
+   ======================================================================== */
+body {
+  display: block;
+  min-height: 0;
+  font-size: var(--deck-caption);
+  line-height: 1.4;
+}
+
+.legacy-opening-slide {
+  background: var(--meikku-paper);
+}
+
+.legacy-opening-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--meikku-paper);
+  pointer-events: none;
+}
+
+.opening-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--page-bg);   /* 舞台色统一由 --page-bg 决定 */
+}
+
+.opening-slide .split-view {
+  margin-left: 500px;
+}
+
+.opening-story-hook {
+  position: absolute;
+  z-index: 2;
+  left: 72px;
+  top: 184px;
+  width: 472px;
+  color: var(--meikku-paper);
+}
+
+.opening-kicker {
+  margin-bottom: 24px;
+  color: var(--meikku-cadmium);
+  font-size: var(--deck-meta);
+  font-weight: 700;
+}
+
+.opening-story-hook h1 {
+  font-family: var(--font-display);
+  font-size: var(--deck-section);
+  font-weight: 400;
+  line-height: 1.02;
+}
+
+.opening-lede {
+  margin-top: 28px;
+  max-width: 432px;
+  font-size: var(--deck-body);
+  font-weight: 500;
+  line-height: 1.32;
+}
+
+.opening-beatline {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  color: var(--meikku-paper);
+  font-size: var(--deck-small);
+  font-weight: 700;
+}
+
+.opening-beatline i {
+  height: 4px;
+  background: var(--meikku-lime);
+}
+
+.opening-kicker,
+.opening-story-hook h1,
+.opening-lede,
+.opening-beatline {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: openingCopyIn .72s var(--deck-ease) forwards;
+}
+
+.opening-story-hook h1 { animation-delay: .08s; }
+.opening-lede { animation-delay: .16s; }
+.opening-beatline { animation-delay: .24s; }
+
+.opening-restart {
+  position: absolute;
+  right: 48px;
+  top: 40px;
+  color: var(--meikku-paper);
+  font-size: var(--deck-small);
+  font-weight: 700;
+  opacity: .5;
+  transition: opacity .3s ease;
+}
+.opening-complete .opening-restart { opacity: 1; }
+
+/* D1 is the product UI / UX demonstration surface, not the marketing deck. */
+.d1-demo-only .legacy-opening-slide,
+.d1-demo-only .story-slide,
+.d1-demo-only .opening-story-hook,
+.d1-demo-only .opening-restart,
+.d1-demo-only .deck-chrome,
+.d1-demo-only .edit-hotzone,
+.d1-demo-only .edit-toggle {
+  display: none !important;
+}
+
+.d1-demo-only .opening-slide .split-view {
+  margin-left: 0;
+}
+
+.story-slide {
+  color: var(--meikku-slate);
+  background-color: var(--meikku-paper);
+  background-image: radial-gradient(circle, var(--meikku-grid) 1.5px, transparent 1.6px);
+  background-size: 24px 24px;
+}
+
+.story-slide::before {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border: var(--border-heavy);
+  pointer-events: none;
+}
+
+.slide-shell {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 72px var(--deck-gutter) 112px;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-meta {
+  min-height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: var(--border-heavy);
+  padding-bottom: 16px;
+  margin-bottom: 40px;
+  font-size: var(--deck-meta);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.slide-kicker {
+  color: var(--meikku-slate);
+  font-size: var(--deck-meta);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.display-title {
+  font-family: var(--font-display);
+  font-size: var(--deck-display);
+  font-weight: 400;
+  line-height: .98;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  max-width: 1120px;
+}
+
+.title-wide {
+  max-width: 1680px;
+  font-size: var(--deck-display-wide);
+}
+
+.deck-lede {
+  max-width: 880px;
+  margin-top: 32px;
+  font-size: var(--deck-subhead);
+  font-weight: 500;
+  line-height: 1.28;
+}
+
+.narrow-lede { max-width: 760px; }
+
+.slide-foot,
+.poster-note,
+.proof-line {
+  margin-top: auto;
+  border-top: var(--border-heavy);
+  padding-top: 16px;
+  font-size: var(--deck-caption);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity var(--deck-duration) var(--deck-ease), transform var(--deck-duration) var(--deck-ease);
+}
+
+.slide.visible .reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide.visible .reveal:nth-child(2) { transition-delay: .08s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: .16s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: .24s; }
+
+/* deck 编辑模式的可编辑高亮。聊天界面里的输入框与记忆编辑框
+   也是 contenteditable，但它们是产品控件不是 deck 可编辑文字，
+   必须排除，否则会永久顶着一圈红虚线。 */
+[contenteditable="true"]:not(.input-field):not(.mem-edit-field) {
+  outline: 4px dashed var(--meikku-pink);
+  outline-offset: 8px;
+  cursor: text;
+}
+.input-field, .mem-edit-field { cursor: text; }
+
+/* ========================================================================
+   SLIDE 02 / HUMAN-ROBOT-MATERIAL SCENE
+   ======================================================================== */
+.scene-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.scene-copy { padding-bottom: 40px; }
+
+.relationship-stage {
+  position: relative;
+  height: 680px;
+  border: var(--border-heavy);
+  background: var(--meikku-clay);
+  box-shadow: var(--shadow-block);
+  overflow: hidden;
+}
+
+.relationship-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--meikku-grid) 2px, transparent 2.1px);
+  background-size: 32px 32px;
+}
+
+.relationship-clay {
+  position: absolute;
+  width: 82%;
+  left: 9%;
+  bottom: 72px;
+  overflow: visible;
+}
+
+.relationship-clay path:first-child {
+  fill: var(--meikku-paper);
+  stroke: var(--meikku-slate);
+  stroke-width: 8;
+}
+
+.relationship-clay .clay-fold {
+  fill: none;
+  stroke: var(--meikku-slate);
+  stroke-width: 7;
+  stroke-dasharray: 16 12;
+}
+
+.dialogue-stamp {
+  position: absolute;
+  z-index: 2;
+  max-width: 360px;
+  padding: 16px 20px;
+  border: var(--border-heavy);
+  box-shadow: var(--shadow-block-sm);
+  font-size: var(--deck-caption);
+  font-weight: 700;
+}
+
+.human-stamp { left: 32px; top: 40px; background: var(--meikku-amber); }
+.robot-stamp { right: 32px; top: 152px; background: var(--meikku-lime); }
+.material-whisper {
+  position: absolute;
+  z-index: 2;
+  left: 64px;
+  right: 64px;
+  bottom: 32px;
+  padding-top: 16px;
+  border-top: var(--border-heavy);
+  font-size: var(--deck-small);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ========================================================================
+   SLIDE 03 / COMMAND VS CONVERSATION
+   ======================================================================== */
+.comparison-lanes {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+  padding: 48px 0 16px;
+}
+
+.command-lane,
+.conversation-lane {
+  position: relative;
+  border: var(--border-heavy);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.command-lane { background: var(--meikku-slate); color: var(--meikku-paper); }
+.conversation-lane { background: var(--meikku-lime); color: var(--meikku-slate); box-shadow: var(--shadow-block); }
+.lane-label { font-size: var(--deck-meta); font-weight: 700; }
+.lane-sequence {
+  margin: auto 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-display);
+  font-size: var(--deck-subhead);
+}
+.lane-sequence i { flex: 1; height: 4px; background: currentColor; }
+.lane-end { font-size: var(--deck-body); line-height: 1.35; max-width: 640px; }
+
+.loop-words {
+  position: relative;
+  flex: 1;
+  min-height: 360px;
+  margin: 16px 0;
+}
+.loop-words span {
+  position: absolute;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: var(--deck-subhead);
+}
+.loop-words span:nth-child(1) { left: 16px; top: 144px; }
+.loop-words span:nth-child(2) { left: 216px; top: 32px; }
+.loop-words span:nth-child(3) { right: 8px; top: 144px; }
+.loop-words span:nth-child(4) { left: 208px; bottom: 16px; }
+.loop-words svg { position: absolute; inset: 24px 0 0; width: 100%; height: 100%; }
+.loop-words svg path { fill: none; stroke: var(--meikku-slate); stroke-width: 7; stroke-dasharray: 16 12; }
+
+/* ========================================================================
+   SLIDE 04 / MATERIAL DISCOVERY
+   ======================================================================== */
+.discovery-copy {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 64px;
+  align-items: end;
+}
+.discovery-copy .deck-lede { margin: 0 0 8px; }
+.material-triptych {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 120px 1fr 120px 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 32px 0;
+}
+.material-step {
+  height: 336px;
+  border: var(--border-heavy);
+  background: var(--meikku-clay);
+  box-shadow: var(--shadow-block-sm);
+  padding: 24px;
+}
+.material-step span { font-weight: 700; font-size: var(--deck-meta); }
+.material-step svg { display: block; width: 100%; height: 240px; margin-top: 16px; }
+.material-step path { fill: var(--meikku-paper); stroke: var(--meikku-slate); stroke-width: 7; }
+.surprise-step { background: var(--meikku-pink); }
+.next-step { background: var(--meikku-lime); }
+.material-arrow {
+  font-family: var(--font-display);
+  font-size: var(--deck-caption);
+  text-align: center;
+  border-top: 4px solid var(--meikku-slate);
+  padding-top: 8px;
+}
+
+/* ========================================================================
+   SLIDE 05 / SHARED RHYTHM
+   ======================================================================== */
+.verb-rail {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding-top: 24px;
+}
+.verb-rail::before {
+  content: "";
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  top: 50%;
+  height: 6px;
+  background: var(--meikku-slate);
+}
+.verb {
+  position: relative;
+  min-height: 292px;
+  border: var(--border-heavy);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-block-sm);
+}
+.verb span { font-size: var(--deck-meta); font-weight: 700; }
+.verb strong { margin: auto 0; font-family: var(--font-display); font-size: var(--deck-section); font-weight: 400; }
+.verb small { font-size: var(--deck-caption); font-weight: 700; line-height: 1.3; }
+.human-verb { background: var(--meikku-amber); }
+.robot-verb { background: var(--meikku-lime); }
+.clay-verb { background: var(--meikku-clay); }
+.rhythm-statement {
+  align-self: flex-end;
+  background: var(--meikku-slate);
+  color: var(--meikku-paper);
+  border: var(--border-heavy);
+  padding: 16px 24px;
+  font-family: var(--font-display);
+  font-size: var(--deck-subhead);
+}
+
+/* ========================================================================
+   SLIDE 06 / MATERIAL VOTE
+   ======================================================================== */
+.material-vote-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: .9fr 1.1fr;
+  gap: 56px;
+  align-items: center;
+}
+.claim-rule {
+  margin-top: 48px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.claim-rule span {
+  padding: 12px 16px;
+  border: var(--border-heavy);
+  background: var(--meikku-paper);
+  font-size: var(--deck-meta);
+  font-weight: 700;
+}
+.vote-graphic {
+  position: relative;
+  height: 720px;
+  border: var(--border-heavy);
+  background: var(--meikku-clay);
+  box-shadow: var(--shadow-block);
+}
+.vote-graphic > span {
+  position: absolute;
+  top: 32px;
+  z-index: 2;
+  padding: 12px 16px;
+  border: var(--border-heavy);
+  font-family: var(--font-display);
+  font-size: var(--deck-caption);
+}
+.vote-human { left: 32px; background: var(--meikku-amber); }
+.vote-robot { right: 32px; background: var(--meikku-lime); }
+.vote-graphic svg { width: 100%; height: 620px; margin-top: 56px; }
+.vote-path,
+.vote-return { fill: none; stroke-width: 8; }
+.human-path { stroke: var(--meikku-amber); }
+.robot-path { stroke: var(--meikku-lime); }
+.vote-clay { fill: var(--meikku-paper); stroke: var(--meikku-slate); stroke-width: 8; }
+.vote-return { stroke: var(--meikku-slate); stroke-dasharray: 14 12; }
+.vote-graphic p {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  bottom: 24px;
+  border-top: var(--border-heavy);
+  padding-top: 12px;
+  text-align: center;
+  font-size: var(--deck-meta);
+  font-weight: 700;
+}
+
+/* ========================================================================
+   SLIDE 07 / MEMORY REPAIR
+   ======================================================================== */
+.memory-story {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr .72fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.memory-panel-card,
+.memory-repair {
+  min-height: 344px;
+  border: var(--border-heavy);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-block-sm);
+}
+.old-memory { background: var(--meikku-clay); }
+.new-memory { background: var(--meikku-lime); }
+.memory-state { font-size: var(--deck-meta); font-weight: 700; }
+.memory-panel-card p,
+.memory-repair p { margin: auto 0; font-size: var(--deck-subhead); font-weight: 700; line-height: 1.25; }
+.memory-panel-card small { font-size: var(--deck-small); font-weight: 700; }
+.memory-repair { min-height: 424px; background: var(--meikku-amber); transform: rotate(-2deg); }
+.memory-repair span { font-family: var(--font-display); font-size: var(--deck-caption); line-height: 1.2; }
+.memory-consequence {
+  align-self: center;
+  margin-top: -8px;
+  padding: 16px 24px;
+  background: var(--meikku-slate);
+  color: var(--meikku-paper);
+  font-family: var(--font-display);
+  font-size: var(--deck-subhead);
+}
+
+/* ========================================================================
+   SLIDE 08 / PRODUCT UI
+   ======================================================================== */
+.ui-anatomy {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 420px 96px 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-top: 24px;
+}
+.ui-phone-mini,
+.ui-workspace-mini {
+  height: 596px;
+  border: var(--border-heavy);
+  background: var(--meikku-paper);
+  box-shadow: var(--shadow-block-sm);
+  overflow: hidden;
+}
+.ui-phone-mini { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.mini-header { display: flex; align-items: center; gap: 16px; border-bottom: var(--border-heavy); padding-bottom: 16px; }
+.mini-header b { width: 48px; height: 48px; display: grid; place-items: center; border: var(--border-heavy); background: var(--meikku-lime); font-family: var(--font-display); }
+.mini-header span { font-family: var(--font-display); font-size: var(--deck-caption); display: flex; flex-direction: column; }
+.mini-header small { margin-top: 4px; font-family: var(--font-body); font-size: var(--deck-small); color: var(--meikku-slate); }
+.mini-message { max-width: 84%; padding: 16px; border: var(--border-heavy); font-size: var(--deck-caption); font-weight: 700; }
+.human-mini { align-self: flex-end; background: var(--meikku-slate); color: var(--meikku-paper); }
+.robot-mini { align-self: flex-start; box-shadow: var(--shadow-block-sm); }
+.mini-process { font-size: var(--deck-small); font-weight: 700; color: var(--meikku-slate); }
+.mini-composer { margin-top: auto; border: var(--border-heavy); padding: 16px; color: var(--meikku-slate); }
+.ui-bridge { display: flex; flex-direction: column; gap: 48px; align-items: stretch; }
+.ui-bridge span { height: 6px; background: var(--meikku-slate); }
+.ui-bridge span:nth-child(2) { background: var(--meikku-lime); }
+.ui-workspace-mini { position: relative; }
+.mini-ws-head { height: 64px; padding: 16px 20px; border-bottom: var(--border-heavy); display: flex; justify-content: space-between; align-items: center; font-size: var(--deck-small); font-weight: 700; }
+.mini-ws-head b { background: var(--meikku-lime); border: 2px solid var(--meikku-slate); padding: 8px 12px; }
+.ui-workspace-mini svg { width: 100%; height: 472px; }
+#miniGrid circle { fill: var(--meikku-grid); }
+.mini-clay { fill: var(--meikku-clay); stroke: var(--meikku-slate); stroke-width: 7; }
+.mini-arm { fill: none; stroke: var(--meikku-slate); stroke-width: 12; stroke-linecap: square; }
+.mini-attention { fill: none; stroke: var(--meikku-lime); stroke-width: 8; stroke-dasharray: 10 8; }
+.mini-action { fill: none; stroke: var(--meikku-lime); stroke-width: 9; }
+.mini-ws-foot { position: absolute; left: 20px; right: 20px; bottom: 16px; border-top: var(--border-heavy); padding-top: 8px; font-size: var(--deck-small); font-weight: 700; }
+.ui-callout {
+  position: absolute;
+  padding: 8px 12px;
+  border: 2px solid var(--meikku-slate);
+  font-size: var(--deck-small);
+  font-weight: 700;
+  box-shadow: var(--shadow-block-sm);
+}
+.callout-chat { left: 32px; top: 184px; background: var(--meikku-amber); }
+.callout-space { left: 584px; top: 32px; background: var(--meikku-paper); }
+.callout-attention { right: 48px; top: 208px; background: var(--meikku-lime); }
+
+/* ========================================================================
+   SLIDE 09 / PRODUCT UX
+   ======================================================================== */
+.ux-journey {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  align-items: stretch;
+  margin-top: 40px;
+  border: var(--border-heavy);
+  box-shadow: var(--shadow-block-sm);
+}
+.ux-beat {
+  position: relative;
+  min-width: 0;
+  padding: 24px 20px;
+  border-right: var(--border-heavy);
+  display: flex;
+  flex-direction: column;
+}
+.ux-beat:last-child { border-right: 0; }
+.ux-beat span { font-size: var(--deck-meta); font-weight: 700; }
+.ux-beat strong { margin: auto 0; font-family: var(--font-display); font-size: var(--deck-ux-verb); font-weight: 400; line-height: 1.08; }
+.ux-beat small { min-height: 64px; font-size: var(--deck-caption); line-height: 1.3; }
+.human-beat { background: var(--meikku-amber); }
+.robot-beat { background: var(--meikku-lime); }
+.clay-beat { background: var(--meikku-clay); }
+.agency-line { display: flex; align-items: center; gap: 24px; margin-top: 32px; }
+.honesty-badge { flex-shrink: 0; padding: 12px 16px; border: var(--border-heavy); background: var(--meikku-paper); font-size: var(--deck-small); font-weight: 700; }
+.agency-line p { font-size: var(--deck-body); font-weight: 700; }
+
+/* ========================================================================
+   SLIDE 10 / SIGNIFICANCE
+   ======================================================================== */
+.impact-slide { background-color: var(--meikku-slate); color: var(--meikku-paper); }
+.impact-slide::before { border-color: var(--meikku-paper); }
+.impact-slide .slide-meta { border-color: var(--meikku-paper); }
+.impact-bands { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 24px 0; }
+.impact-band {
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: 72px 1fr 120px 64px 1.25fr;
+  gap: 16px;
+  align-items: center;
+  border: 4px solid var(--meikku-paper);
+  padding: 16px 24px;
+}
+/* 深底上只有 cadmium 与 paper 能当文字，三条带无法各用一色，
+   故文字统一 paper，区分改由下方色条承担（色条是图形，门槛 3:1）。 */
+.impact-band { color: var(--meikku-paper); }
+.impact-band:nth-child(1) { --band-mark: var(--meikku-cadmium); }   /* 9.76 */
+.impact-band:nth-child(2) { --band-mark: var(--meikku-vermilion); } /* 3.07 */
+.impact-band:nth-child(3) { --band-mark: var(--meikku-paper); }     /* 15.31 */
+.impact-band span { font-size: var(--deck-meta); font-weight: 700; }
+.impact-band strong { font-family: var(--font-display); font-size: var(--deck-section); font-weight: 400; line-height: 1; }
+.impact-band i { height: 5px; background: var(--band-mark, currentColor); }
+.impact-note { max-width: 1160px; font-size: var(--deck-subhead); font-weight: 500; line-height: 1.25; }
+
+/* ========================================================================
+   SLIDE 11 / DEMO VS CORE
+   ======================================================================== */
+.reality-split { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 32px 0 24px; }
+.reality-now,
+.reality-core { border: var(--border-heavy); padding: 32px; display: flex; flex-direction: column; box-shadow: var(--shadow-block-sm); }
+.reality-now { background: var(--meikku-clay); }
+.reality-core { background: var(--meikku-lime); }
+.reality-label { align-self: flex-start; padding: 8px 12px; border: var(--border-heavy); font-size: var(--deck-small); font-weight: 700; }
+.demo-label { background: var(--meikku-paper); }
+.core-label { background: var(--meikku-slate); color: var(--meikku-paper); }
+.reality-split h3 { max-width: 620px; margin: 32px 0 24px; font-family: var(--font-display); font-size: var(--deck-section); font-weight: 400; line-height: 1.05; }
+.reality-split p { max-width: 660px; font-size: var(--deck-body); line-height: 1.38; }
+.claim-stamps,
+.core-loop { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; }
+.claim-stamps span,
+.core-loop span { border: 2px solid var(--meikku-slate); padding: 8px 12px; font-size: var(--deck-small); font-weight: 700; }
+.core-loop { align-items: center; }
+.core-loop i { width: 24px; height: 4px; background: var(--meikku-slate); }
+
+/* ========================================================================
+   SLIDE 12 / CLOSING
+   ======================================================================== */
+.closing-slide { background: var(--meikku-lime); color: var(--meikku-slate); }
+.closing-slide::before { content: ""; position: absolute; inset: 24px; border: var(--border-heavy); }
+.closing-field { position: relative; z-index: 1; height: 100%; padding: 64px var(--deck-gutter) 112px; display: flex; flex-direction: column; }
+.closing-brand { align-self: flex-start; border: var(--border-heavy); background: var(--meikku-paper); box-shadow: var(--shadow-block-sm); padding: 12px 20px; font-family: var(--font-display); font-size: var(--deck-subhead); }
+.closing-title { margin: 40px 0 16px; font-family: var(--font-display); font-size: var(--deck-closing); font-weight: 400; line-height: .98; }
+.closing-scene { position: relative; height: 304px; border-top: var(--border-heavy); border-bottom: var(--border-heavy); }
+.closing-scene svg { position: absolute; left: 50%; top: 16px; width: 680px; height: 272px; transform: translateX(-50%); }
+.closing-scene svg path:first-child { fill: var(--meikku-clay); stroke: var(--meikku-slate); stroke-width: 8; }
+.closing-fold { fill: none; stroke: var(--meikku-slate); stroke-width: 7; stroke-dasharray: 16 12; }
+.closing-person,
+.closing-robot { position: absolute; top: 120px; padding: 12px 16px; border: var(--border-heavy); font-family: var(--font-display); font-size: var(--deck-caption); }
+.closing-person { left: 80px; background: var(--meikku-amber); }
+.closing-robot { right: 80px; background: var(--meikku-paper); }
+.closing-sub { margin-top: auto; font-size: var(--deck-subhead); font-weight: 700; }
+
+/* ========================================================================
+   PRESENTATION CHROME + INLINE COPY EDITING
+   ======================================================================== */
+.deck-chrome {
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  bottom: 16px;
+  width: min(880px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: auto 1fr minmax(160px, auto) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--meikku-slate);
+  color: var(--meikku-paper);
+  border: 2px solid var(--meikku-paper);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.deck-progress-track { height: 4px; background: var(--meikku-slate); overflow: hidden; }
+.deck-progress-track i { display: block; width: 7.692%; height: 100%; background: var(--meikku-lime); transition: width .28s ease; }
+.deck-slide-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deck-keys { color: var(--meikku-grid); }
+.edit-hotzone { position: fixed; top: 0; left: 0; width: 80px; height: 80px; z-index: 10000; cursor: pointer; }
+.edit-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10001;
+  opacity: 0;
+  pointer-events: none;
+  padding: 8px 12px;
+  border: 2px solid var(--meikku-paper);
+  background: var(--meikku-slate);
+  color: var(--meikku-paper);
+  font-size: 12px;
+  font-weight: 700;
+  transition: opacity .3s ease;
+}
+.edit-toggle.show,
+.edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active { background: var(--meikku-pink); }
+
+/* Product-only surface used by the public website. */
+.embed-mode,
+.embed-mode body {
+  overflow: hidden;
+  background: var(--page-bg);
+}
+
+.embed-mode .deck-chrome,
+.embed-mode .edit-hotzone,
+.embed-mode .edit-toggle,
+.embed-mode .opening-story-hook,
+.embed-mode .opening-restart {
+  display: none !important;
+}
+
+.embed-mode .opening-slide .split-view {
+  margin-left: 0;
+  transform: scale(1.08);
+  transform-origin: center;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   深色填充的文字色统一校正
+   DNA §2：「Blue, green, red and slate are dark: wherever they
+   become a filled field, text on them is --meikku-paper.」
+   旧 lime(#A3FF00) 是亮霓虹，配的是 slate 文字；改用 ultramarine
+   后 slate 压蓝只有 2.10 对比度，故一次性纠正。
+   ═══════════════════════════════════════════════════════════ */
+.ws-phase.role-cognition,
+.manual-badge,
+.conversation-lane,
+.closing-slide,
+.robot-stamp,
+.robot-verb,
+.vote-robot,
+.new-memory,
+.callout-attention,
+.robot-beat,
+.reality-core,
+.next-step,
+.surprise-step,
+.edit-toggle.active,
+.mini-header b,
+.mini-ws-head b,
+.ui-bridge span {
+  color: var(--meikku-paper);
+}
+
+/* closing 页整页填 ultramarine 配 paper 字，但页内这些块是浅色填充，
+   必须把文字改回 slate，否则 paper 压 paper / paper 压 cadmium 全不可读。 */
+.closing-brand,
+.closing-robot,
+.closing-person {
+  color: var(--meikku-slate);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   产品化补全：设置面板 / 录音态 / 附件菜单
+   全部遵循 DNA：0 圆角、slate 重边、实心块投影、两字族、
+   面板文字不低于 12px、主控件不低于 44px、无霓虹。
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 设置 sheet ── */
+.settings-sheet {
+  position: absolute; inset: 0; z-index: 11;
+  background: var(--meikku-paper);
+  border-top: var(--border-heavy);
+  display: flex; flex-direction: column;
+  animation: sheetUp .28s cubic-bezier(.2,.8,.3,1);
+}
+.settings-sheet[hidden] { display: none; }
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.settings-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 16px 12px; border-bottom: var(--border-heavy); flex-shrink: 0;
+}
+.settings-title {
+  font-family: var(--font-display); font-size: 20px;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--meikku-slate);
+}
+.sheet-close {
+  width: 44px; height: 44px; margin-right: -10px;
+  background: none; border: none; cursor: pointer;
+  font-size: 20px; line-height: 1; color: var(--meikku-slate);
+}
+.settings-body { flex: 1; overflow-y: auto; padding: 4px 0 28px; }
+
+.set-group { margin-top: 20px; }
+.set-group:first-child { margin-top: 8px; }
+.set-group-label {
+  padding: 0 16px 7px;
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--meikku-stone);
+}
+.set-row {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  min-height: 48px; padding: 10px 16px; text-align: left;
+  background: var(--meikku-paper);
+  border: none; border-top: 2px solid var(--meikku-slate);
+  font-family: var(--font-body); color: var(--meikku-slate);
+}
+.set-group .set-row:last-child { border-bottom: 2px solid var(--meikku-slate); }
+button.set-row { cursor: pointer; }
+button.set-row:hover { background: var(--meikku-clay); }
+.set-label { font-size: 15px; font-weight: 500; flex: 1; }
+.set-value {
+  font-size: 15px; font-weight: 700; color: var(--meikku-stone);
+  font-variant-numeric: tabular-nums;
+}
+.set-value-off { color: var(--meikku-vermilion); }
+.set-count {
+  min-width: 22px; height: 22px; padding: 0 6px;
+  background: var(--legend-memory-held); color: var(--meikku-paper);
+  font-size: 12px; font-weight: 700; line-height: 22px; text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.set-chevron {
+  width: 8px; height: 9px; flex-shrink: 0;
+  background: var(--meikku-stone);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+.set-row.is-danger .set-label { color: var(--meikku-vermilion); }
+.set-row.is-segment { display: flex; }
+.set-tabs { margin: 0; flex: 0 0 150px; }
+.set-tabs .mode-tab { padding: 7px 0; }   /* 字号继承 T3，不自带 */
+
+/* 方形开关 —— 不用圆角胶囊 */
+.set-switch {
+  position: relative; flex-shrink: 0;
+  width: 52px; height: 28px;
+  background: var(--meikku-grid);
+  border: 2px solid var(--meikku-slate);
+  transition: background .16s ease;
+}
+.set-switch::after {
+  content: ""; position: absolute; top: 0; left: 0;
+  width: 24px; height: 24px; background: var(--meikku-paper);
+  border-right: 2px solid var(--meikku-slate);
+  transition: transform .16s ease;
+}
+.set-row[aria-pressed="true"] .set-switch { background: var(--legend-memory-held); }
+.set-row[aria-pressed="true"] .set-switch::after {
+  transform: translateX(24px);
+  border-right: none; border-left: 2px solid var(--meikku-slate);
+}
+
+/* 可信度标注条（DNA §4） */
+.claim-strip {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin: 24px 16px 0;
+}
+.claim-strip span {
+  padding: 5px 9px;
+  border: 2px solid var(--meikku-slate);
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--meikku-slate);
+}
+
+/* ── 按住录音态 ── */
+.chat-input { position: relative; }
+.recorder {
+  position: absolute; left: 12px; right: 12px; top: 8px;
+  height: 74px; z-index: 4;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 14px;
+  background: var(--meikku-paper);
+  border: var(--border-heavy);
+  box-shadow: var(--shadow-block-sm);
+}
+.recorder[hidden] { display: none; }
+.rec-dot {
+  width: 11px; height: 11px; flex-shrink: 0;
+  background: var(--meikku-vermilion);
+  animation: recBlink 1s steps(1) infinite;
+}
+@keyframes recBlink { 0%,50% { opacity: 1; } 51%,100% { opacity: .25; } }
+.rec-time {
+  font-size: 15px; font-weight: 700; color: var(--meikku-slate);
+  font-variant-numeric: tabular-nums; flex-shrink: 0;
+}
+.rec-wave {
+  flex: 1; height: 30px; display: flex; align-items: center;
+  gap: 2px; overflow: hidden;
+}
+.rec-wave i {
+  flex: 1; min-width: 2px; height: 3px;
+  background: var(--meikku-slate);
+  transform-origin: center;
+}
+.rec-hint {
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--meikku-stone); flex-shrink: 0;
+}
+/* 滑动越过阈值 → 取消态 */
+.recorder.will-cancel { border-color: var(--meikku-vermilion); }
+.recorder.will-cancel .rec-wave i { background: var(--meikku-vermilion); }
+.recorder.will-cancel .rec-hint { color: var(--meikku-vermilion); }
+/* 录音中麦克风键变实心 */
+.input-action-btn.recording {
+  background: var(--meikku-vermilion); color: var(--meikku-paper);
+}
+
+/* ── 附件动作 sheet：单行、单名词、无副标题 ── */
+.action-sheet {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 12;
+  background: var(--meikku-paper);
+  border-top: var(--border-heavy);
+  animation: slideUp .28s cubic-bezier(.2,.8,.3,1);
+}
+.action-sheet[hidden] { display: none; }
+.action-item {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; min-height: 52px; padding: 0 18px;
+  background: var(--meikku-paper); border: none;
+  border-top: 2px solid var(--meikku-slate);
+  text-align: left; cursor: pointer;
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: var(--meikku-slate);
+}
+.action-item:first-of-type { border-top: none; }
+/* 分组：上组＝带进来的东西，下组＝一起做的事 */
+.action-divider { height: 0; border-top: var(--border-heavy); }
+.action-item:hover { background: var(--meikku-clay); }
+.action-item svg { width: 21px; height: 21px; flex-shrink: 0; }
+.action-cancel {
+  width: 100%; min-height: 50px;
+  background: var(--meikku-slate); color: var(--meikku-paper);
+  border: none; cursor: pointer;
+  font-family: var(--font-display); font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* ── header 在 slate band 上：全部前景压 paper ── */
+.chat-header .header-name,
+.chat-header .back-btn,
+.chat-header .icon-btn { color: var(--meikku-paper); }
+.chat-header .header-status { color: var(--meikku-grid); }
+.chat-header .icon-btn:hover { background: rgb(252 252 250 / .12); }
+.chat-header .icon-btn.open { background: var(--meikku-cadmium); color: var(--meikku-slate); }
+.icon-badge { border-color: var(--meikku-slate); }
+/* 脸是 header 里唯一的暖色块，深底上不再需要重边 */
+.chat-header .robot-avatar { border-width: 2px; border-color: var(--meikku-slate); }
+
+
+/* ── 记忆面板分区：借 supermemory 的 used / forgotten 拆法 ── */
+.mem-section-label {
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--meikku-stone);
+  padding-top: 4px;
+}
+.mem-section-label:not(:first-child) { padding-top: 14px; }
+
+/* ── 记忆卡的手动操作：用户主动改记忆的唯一入口 ── */
+.mem-actions { display: flex; gap: 8px; margin-top: 12px; }
+.mem-action {
+  flex: 1; min-height: 40px;
+  background: var(--meikku-paper); color: var(--meikku-slate);
+  border: var(--border-hair); cursor: pointer;
+  font-family: var(--font-display); font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.mem-action:hover { background: var(--meikku-clay); }
+.mem-action.is-danger { color: var(--meikku-vermilion); }
+.mem-edit { margin-top: 12px; }
+.mem-edit[hidden] { display: none; }
+.mem-edit-label {
+  display: block; margin-bottom: 6px;
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--meikku-stone);
+}
+.mem-edit-field {
+  min-height: 64px; padding: 10px 12px;
+  background: var(--meikku-paper); border: var(--border-hair);
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  line-height: 1.45; color: var(--meikku-slate); outline: none;
+}
+.mem-edit-field:focus { border-color: var(--meikku-ultramarine); }
+.mem-edit-save {
+  width: 100%; min-height: 44px; margin-top: 8px;
+  background: var(--meikku-slate); color: var(--meikku-paper);
+  border: none; cursor: pointer;
+  font-family: var(--font-display); font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   排版层级 —— 唯一权威，写在文件末尾所以优先级最高
+   聊天 UI 与其面板只允许下面 7 级。加第 8 级前先问自己
+   是否真的有第 8 种信息角色。
+   依据 DNA 紧凑面板规则（20/16/14/13/12）+ 通用大写字距下限 .04em：
+     · 句子格字距 0
+     · 大写一律 .06em（同时满足两条规则，且只有一个值）
+     · Space Grotesk 只用 500 与 700
+     · Bungee 不得低于 14px，且永远大写
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Bungee：4 级 ── */
+/* T0 展示词：workspace 底部那个大字 */
+.ws-chapter {
+  font-family: var(--font-display); font-size: 24px; font-weight: 400;
+  letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+}
+/* T1 标题：应用名、面板标题 */
+.header-name,
+.settings-title,
+.face-lab h2 {
+  font-family: var(--font-display); font-size: 20px; font-weight: 400;
+  letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+}
+/* T2 区块标题 */
+.sheet-title {
+  font-family: var(--font-display); font-size: 16px; font-weight: 400;
+  letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+}
+/* T3 动作：按钮、tab、命令、状态徽章、印戳 */
+.ws-phase,
+.mode-tab,
+.session-divider span,
+.process-detail .detail-open-btn,
+.pad-btn,
+.action-cancel,
+.mem-action,
+.mem-edit-save,
+.face-lab figcaption b,
+.face-lab .lab-close {
+  font-family: var(--font-display); font-size: 14px; font-weight: 400;
+  letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+}
+
+/* ── Space Grotesk：3 级 ── */
+/* T4 正文：对话、面板正文、输入 */
+.bubble,
+.input-field,
+.set-label,
+.action-item,
+.mem-edit-field,
+.memory-card-claim,
+.ws-caption,
+.process-detail,
+.face-lab p {
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  letter-spacing: normal; text-transform: none;
+}
+/* T5 次级：数据、说明、提示、材料旁白 */
+.header-status,
+.thinking-label,
+.memory-change-quote,
+.message-row.material .bubble,
+.set-value,
+.rec-time,
+.control-note,
+.face-lab figcaption small,
+.face-lab figcaption code {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  letter-spacing: normal; text-transform: none;
+}
+/* T6 标签：一律大写，用于字段名与状态 */
+.ws-label,
+.ws-clay-label, .ws-pose-label,
+.provenance-pill,
+.memory-card-source,
+.memory-change-kind,
+.control-now-label, .control-now-value,
+.manual-badge,
+.set-group-label,
+.claim-strip span,
+.rec-hint,
+.mem-section-label,
+.mem-edit-label,
+.process-row,
+.action-indicator {
+  font-family: var(--font-body); font-size: 12px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+/* 数字角标：等宽数字，不参与上面的层级 */
+.icon-badge, .set-count {
+  font-family: var(--font-body); font-size: 12px; font-weight: 700;
+  letter-spacing: normal; text-transform: none;
+  font-variant-numeric: tabular-nums;
+}
+/* 关闭按钮的 × 是字形不是文字层级，统一一个尺寸 */
+.sheet-close, .memory-panel-header button {
+  font-family: var(--font-body); font-size: 22px; font-weight: 400;
+  letter-spacing: normal;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   形状图例 —— Bauhaus 的圆 / 方 / 三角，各自承担一种含义。
+   DNA 要求局部图例要有非颜色载体（labels, shapes, patterns, position），
+   形状这一维之前是空的，现在补上：
+
+     ● 圆    Meikku 自己做的一件事（尝试、思考、在线）
+     ■ 方    记录与状态（记忆、出处、可信度标注、身份）
+     ▶ 三角  方向与「将要发生」（展开、跳转、下一步）
+
+   Radius 0 的 DNA 约束针对的是容器，不是图元；圆和三角只做标记，
+   不做容器。
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 圆 —— Meikku 的动作 */
+.presence-dot,
+.typing-dot,
+.action-dot,
+.process-row.is-static::before { border-radius: 50%; }
+
+/* 三角 —— 方向 */
+.process-chevron,
+.set-chevron { clip-path: polygon(0 0, 100% 50%, 0 100%); }
+
+/* 方 —— 记录与状态：保持直角，不加 radius */
+.provenance-pill,
+.claim-strip span,
+.icon-badge,
+.robot-avatar .eye,
+.robot-avatar .mouth { border-radius: 0; }
+
+/* ═══════════════════════════════════════════════════════════════
+   MEIKKU ICON SET
+   全部图标只由圆 / 方 / 三角 / 直线构成，画在 24×24 栅格上。
+   描边统一 1.9，方头方角（不用圆头），和 DNA 的 radius 0 一致。
+   颜色一律 currentColor —— 图标不自带颜色，由所在语境决定。
+   ═══════════════════════════════════════════════════════════════ */
+.mk-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.mk-ic {
+  width: 20px; height: 20px; flex-shrink: 0;
+  fill: none; stroke: currentColor; stroke-width: 1.9;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+/* 三角与实心块用填充，不描边 */
+.mk-ic use { pointer-events: none; }
+#ic-back polygon, #ic-next polygon, #ic-send polygon,
+#ic-reference polygon, #ic-scan polygon, #ic-handback polygon,
+#ic-photos polygon, #ic-point circle, #ic-arm circle {
+  fill: currentColor; stroke: none;
+}
+.back-btn .mk-ic { width: 14px; height: 14px; }
+.send-btn .mk-ic { width: 17px; height: 17px; }
+.action-item .mk-ic { width: 21px; height: 21px; }
+.pad-btn .mk-ic { width: 18px; height: 18px; }
+
+/* ── 图标台：?icons=1 或 Shift+I ── */
+.icon-lab { position: fixed; inset: 0; z-index: 999; overflow: auto;
+  background: var(--meikku-paper); color: var(--meikku-slate);
+  padding: 40px 32px 64px;
+  background-image: radial-gradient(var(--meikku-grid) 1px, transparent 1px);
+  background-size: 14px 14px; background-position: 7px 7px; }
+.icon-lab[hidden] { display: none; }
+.icon-lab h2 { max-width: 1180px; margin: 0 auto 10px;
+  font-family: var(--font-display); font-size: 20px;
+  letter-spacing: .06em; text-transform: uppercase; }
+.icon-lab p { max-width: 62ch; margin: 0 auto 26px;
+  font-size: 15px; font-weight: 500; line-height: 1.55; color: var(--meikku-stone); }
+.icon-lab .ic-grid { max-width: 1180px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px; }
+.icon-lab figure { border: 3px solid var(--meikku-slate); padding: 20px 12px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  background: var(--meikku-paper); }
+.icon-lab .mk-ic { width: 48px; height: 48px; stroke-width: 1.9; }
+.icon-lab figcaption { text-align: center; }
+.icon-lab figcaption b { display: block; font-family: var(--font-display);
+  font-size: 14px; letter-spacing: .06em; text-transform: uppercase; }
+.icon-lab figcaption code { display: block; margin-top: 5px;
+  font-family: var(--font-body); font-size: 12px; font-weight: 500; color: var(--meikku-stone); }
+/* 四种语境验证：纸底 / 墨底 / 黄底 / 蓝底 */
+.icon-lab .ic-ctx { display: flex; gap: 0; margin: 26px auto 0; max-width: 1180px; }
+.icon-lab .ic-ctx div { flex: 1; padding: 20px; display: flex; gap: 16px;
+  align-items: center; justify-content: center; border: 3px solid var(--meikku-slate); border-left: none; }
+.icon-lab .ic-ctx div:first-child { border-left: 3px solid var(--meikku-slate); }
+.icon-lab .ic-ctx .on-paper { background: var(--meikku-paper); color: var(--meikku-slate); }
+.icon-lab .ic-ctx .on-slate  { background: var(--meikku-slate);  color: var(--meikku-paper); }
+.icon-lab .ic-ctx .on-cadmium{ background: var(--meikku-cadmium);color: var(--meikku-slate); }
+.icon-lab .ic-ctx .on-blue   { background: var(--meikku-ultramarine); color: var(--meikku-paper); }
+.icon-lab .ic-ctx .mk-ic { width: 26px; height: 26px; }
+.icon-lab .lab-close { position: fixed; top: 20px; right: 24px;
+  background: var(--meikku-slate); color: var(--meikku-paper); border: none;
+  padding: 12px 16px; cursor: pointer;
+  font-family: var(--font-display); font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase; }
+
+/* ═══════════════════════════════════════════════════════════════
+   接入态：消息状态 / 停止 / 断连 / 新消息 / 空态
+   ═══════════════════════════════════════════════════════════════ */
+.msg-status {
+  margin-top: 4px; align-self: flex-end;
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--meikku-stone);
+}
+.message-row.is-sending .bubble { opacity: .6; }
+.message-row.is-failed .bubble { border: var(--border-hair); border-color: var(--meikku-vermilion); }
+.message-row.is-failed .msg-status { color: var(--meikku-vermilion); cursor: pointer; }
+
+.stop-btn {
+  width: 32px; height: 32px; flex-shrink: 0;
+  background: var(--meikku-slate); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.stop-btn[hidden] { display: none; }
+.stop-square { width: 11px; height: 11px; background: var(--meikku-paper); }
+.send-btn[disabled] { opacity: .45; cursor: default; }
+.send-btn[hidden] { display: none; }
+
+.conn-bar {
+  padding: 8px 16px; flex-shrink: 0;
+  background: var(--meikku-vermilion); color: var(--meikku-paper);
+  font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+.conn-bar[hidden] { display: none; }
+
+.jump-latest {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: 132px; z-index: 7;
+  background: var(--meikku-slate); color: var(--meikku-paper);
+  border: none; padding: 9px 14px; cursor: pointer;
+  font-family: var(--font-display); font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.jump-latest[hidden] { display: none; }
+
+.empty-state {
+  margin: auto 0; padding: 0 8px; text-align: center;
+  font-size: 15px; font-weight: 500; color: var(--meikku-stone);
+}
+.chat-body:not(.is-empty) .empty-state { display: none; }
+
+/* 键盘可达性：全局焦点环 */
+:focus-visible { outline: 3px solid var(--meikku-ultramarine); outline-offset: 2px; }

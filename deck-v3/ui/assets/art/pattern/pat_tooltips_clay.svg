@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <title>Meikku wallpaper - tool tips</title>
+  <g fill="none" stroke="#DCD9D0" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M 30 56 L 44 26 L 58 56 Z"/>
+    <path d="M 140 24 L 140 40 M 126 40 L 154 40 L 154 56 L 126 56 Z"/>
+    <path d="M 48 124 L 48 136"/><circle cx="48" cy="152" r="15"/>
+    <path d="M 148 122 L 148 134 M 132 140 L 164 140"/><circle cx="148" cy="152" r="13"/>
+  </g>
+</svg>

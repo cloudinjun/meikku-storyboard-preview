@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku sound-on icon">
+  <title>Meikku sound-on icon</title>
+  <polyline points="12,26 22,26 33,15 33,49 22,38 12,38 12,26" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="41.59,25.45 42.66,26.34 43.55,27.41 44.25,28.62 44.73,29.93 44.97,31.3 44.97,32.7 44.73,34.07 44.25,35.38 43.55,36.59 42.66,37.66 41.59,38.55" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="45.6,19.71 47.61,21.39 49.29,23.4 50.59,25.66 51.49,28.12 51.94,30.69 51.94,33.31 51.49,35.88 50.59,38.34 49.29,40.6 47.61,42.61 45.6,44.29" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

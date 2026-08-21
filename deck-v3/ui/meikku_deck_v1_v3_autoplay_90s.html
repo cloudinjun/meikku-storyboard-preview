@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<!-- Backup of the v3-recorded deck source (commit 01c097e; source SHA-256
+     5D6D06A6C9CE719B8AE98F8839F747250EE24FD101926C492EAB2886FFB50556),
+     with a separate click-to-start 90-second autoplay controller added. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meikku — 90 Second Autoplay Deck</title>
+<style>
+  @font-face {
+    font-family: 'Bungee';
+    src: url('assets/storyboard/fonts/Bungee-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Space Grotesk';
+    src: url('assets/storyboard/fonts/SpaceGrotesk-wght.ttf') format('truetype');
+    font-weight: 300 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    /* ── Meikku Design DNA §7：五级中性阶 + 四支共享颜料 ───────────────
+       色值只在这里出现一次。纯黑已移出系统，slate 接管键线／正文／投影；
+       中间灰一律取自中性阶，不用透明度现调；无霓虹荧光色。
+       ──────────────────────────────────────────────────────────────── */
+    --paper: #FCFCFA;   /* 亮极：画幅底、卡片 */
+    --clay:  #EBEBE7;   /* 材料场域、静默填充 */
+    --grid:  #D8D8D3;   /* 纹理、细分隔线 */
+    --stone: #5C5C58;   /* 说明文字、署名、休眠的物 */
+    --slate: #232322;   /* 暗极：键线、正文、块投影 */
+
+    --blue:   #1052CC;  /* 实心块配 paper 字 */
+    --green:  #0E7A42;  /* 实心块配 paper 字 */
+    --yellow: #F7C600;  /* 实心块配 slate 字；绝不做浅底上的字色 */
+    --red:    #D42718;  /* 实心块配 paper 字 */
+
+    /* ── 本 deck 的 LOCAL LEGEND（只在本文件内成立）──────────────────
+       human          blue：HUMAN 节点、闭幕片里人的消息
+       AI             yellow：AI 节点、AI companion、闭幕片里 Meikku 的消息
+       robot hardware green：机械臂节点、开屏机械臂提示、social robot
+       material/proof red：材料节点、创作行为、Support System 证据圈注
+       labels         slate：页面 kicker 与结构标签，不占用任何角色色
+       颜色始终与文字、位置和形状共同出现；去掉颜色后仍能辨认语义。 */
+    --role-human: var(--blue);
+    --role-ai: var(--yellow);
+    --role-robot: var(--green);
+    --role-material: var(--red);
+    --role-label: var(--slate);
+    --font-display: 'Bungee', Impact, sans-serif;
+    --font-sans: 'Space Grotesk', Inter, Arial, sans-serif;
+    --text-share-eyebrow: 14px;
+    --text-share-title: clamp(32px, 8vw, 48px);
+    --text-share-body: 16px;
+    --space-share-card: clamp(24px, 6vw, 48px);
+    --motion-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    /* 竖版画幅 9:16：竖屏满屏；横屏预览居中，两侧黑场 */
+    --stage-w: min(100vw, calc(100vh * 9 / 16));
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* 根字号随画幅缩放：1rem = 画幅高度的 1.6%（竖屏取 vh，被 vw 限宽时取 vw 换算），
+     从 1080p 到 4K 版面比例恒定 */
+  html { font-size: calc(min(1vh, 1.7778vw) * 1.6); }
+  html, body { height: 100%; }
+  body { font-family: var(--font-sans); background: var(--slate); color: var(--slate); }
+
+  /* ---- deck scaffold ---- */
+  .deck { height: 100vh; overflow-y: scroll; scroll-snap-type: y proximity; }
+  .slide {
+    position: relative;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    width: var(--stage-w);
+    height: 100vh;
+    margin: 0 auto;
+    background: var(--paper);
+    /* 百分比 padding 相对父容器(视口)解析，横屏窗口会被撑爆——必须相对画幅计算 */
+    padding: 4.5vh calc(var(--stage-w) * .07);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.2vh;
+    overflow: hidden;
+  }
+
+  /* ---- 三页解释内容的轻量进退场：只动 opacity / transform，不改版面 ---- */
+  .deck.motion-enabled [data-motion-item] {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 300ms var(--motion-ease-out),
+      transform 300ms var(--motion-ease-out);
+    transition-delay: 0ms;
+  }
+  .deck.motion-enabled .motion-slide.is-active [data-motion-item] {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: var(--motion-delay, 0ms);
+  }
+  .motion-step-1 { --motion-delay: 0ms; }
+  .motion-step-2 { --motion-delay: 50ms; }
+  .motion-step-3 { --motion-delay: 100ms; }
+  .motion-step-4 { --motion-delay: 150ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deck.motion-enabled [data-motion-item],
+    .deck.motion-enabled .motion-slide.is-active [data-motion-item] {
+      transform: none;
+      transition: opacity 200ms var(--motion-ease-out);
+      transition-delay: 0ms;
+    }
+  }
+
+  /* ---- type system（Meikku DNA：Bungee 展示体 + Space Grotesk 正文） ---- */
+  .kicker {
+    align-self: flex-start;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--paper);
+    background: var(--role-label);
+    border: .19rem solid var(--slate);
+    padding: .44rem .75rem .31rem;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.55rem;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .big-line {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .sub { font-size: .95rem; font-weight: 500; color: var(--stone); line-height: 1.55; }
+  .footnote { font-size: .8rem; font-weight: 500; color: var(--stone); line-height: 1.55; }
+  .footnote b, .sub b { color: var(--slate); }
+
+  /* ---- media placeholder（陶泥色 + 墨线虚线框） ---- */
+  .media {
+    border: .19rem dashed var(--slate);
+    background: var(--clay);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: .44rem; text-align: center; padding: .75rem; min-height: 3.5rem; color: var(--slate);
+  }
+  .media .tag {
+    font-family: var(--font-display); font-size: .55rem; text-transform: uppercase;
+    background: var(--paper); border: .13rem solid var(--slate); padding: .25rem .56rem .13rem;
+  }
+  .media .desc { font-size: .68rem; font-weight: 500; line-height: 1.5; max-width: 34ch; color: var(--stone); }
+
+  /* ---- layout helpers ---- */
+  .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4vh; }
+  .stack { display: flex; flex-direction: column; gap: 1.4vh; }
+  .stack > * { min-height: 0; }
+  .row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4vh; }
+  .card { background: var(--paper); border: .19rem solid var(--slate); padding: 1.5vh 4.5%; display: flex; flex-direction: column; gap: .7vh; min-height: 0; overflow: hidden; }
+  .card h3 { font-family: var(--font-display); font-weight: 400; font-size: .92rem; text-transform: uppercase; display: flex; align-items: center; gap: 9px; }
+  .card p { font-size: .78rem; font-weight: 500; color: var(--stone); line-height: 1.45; }
+  .chip { display: inline-block; width: .85em; height: .85em; border: .16rem solid var(--slate); flex: none; }
+  .card-row { flex-direction: row; gap: 4%; align-items: center; }
+  .card-row .media { width: 33%; flex: none; aspect-ratio: 3 / 4; align-self: center; }
+  /* 参考图槽位：与原占位同尺寸（33% 宽、3:4），墨线实框 */
+  .ref {
+    width: 33%; flex: none; aspect-ratio: 3 / 4; align-self: center;
+    position: relative; overflow: hidden;
+    border: .19rem solid var(--slate); background: var(--clay);
+  }
+  .ref img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ref img.fit { object-fit: contain; padding: .4rem; }
+  /* 来源接在各格正文后面：署名跟着它说明的那张图，不占图面也不另起页脚 */
+  .card p.credit { font-size: .55rem; line-height: 1.4; color: var(--stone); }
+  .card-row .txt { flex: 1; display: flex; flex-direction: column; gap: .7vh; justify-content: center; }
+  .verdict {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: .95rem; line-height: 1.35; text-transform: uppercase;
+    color: var(--slate);
+    flex: none; overflow-wrap: break-word;
+  }
+
+  /* ================= P1+P2 · 钉住转场：气泡包裹真实开屏动画 =================
+     .drop-wrap 高 260vh，内部 .drop-sticky 钉住一屏。下滚时：
+     ① 气泡遮罩淡入——气泡外被纸色盖住，真实动画只留在泡内继续播放；
+     ② 整个气泡（含活动画）缩进尾巴消失；③ 露出底下的空手与虚线。 */
+  .drop-wrap { position: relative; width: var(--stage-w); margin: 0 auto; height: 380vh; }
+  .drop-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: var(--paper); }
+  .dream2 {
+    position: absolute; inset: 0; z-index: 2;
+    transform-origin: 0 0;
+    will-change: transform;
+    overflow: hidden;
+  }
+  .dream2 .opening-frame {
+    position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none;
+    /* 裁掉 GPU 缩放 iframe 时的边缘亚像素渗出 */
+    clip-path: inset(1.5px);
+  }
+  .bubble-overlay { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; will-change: opacity; }
+  .reality2 { position: absolute; inset: 0; z-index: 1; }
+  .reality2 svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .reality2 .after-ghost { opacity: 0; will-change: opacity; }
+  /* 第三幕：机械臂牵手后浮现的命题文字 */
+  .punchline {
+    position: absolute; top: 73.5vh; left: 10%; right: 10%; text-align: center; z-index: 3;
+    opacity: 0; will-change: opacity, transform;
+  }
+  .punchline .big-line { font-size: 2.2rem; }
+  .punchline .sub { margin-top: 1.6vh; font-size: 1rem; }
+  /* 手机 feed 无限上滚（无聊地刷） */
+  .feed { animation: feedScroll 2.6s linear infinite; }
+  @keyframes feedScroll { to { transform: translateY(-160px); } }
+  @media (prefers-reduced-motion: reduce) { .feed { animation: none; } }
+
+  /* ================= P1 · 开屏（原版 frame-01，iframe 原样嵌入） ================= */
+  .opening { padding: 0; }
+  .opening-frame {
+    position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
+    /* 只作为动画播放，防止在 deck 里误滚动 world 页内部 */
+    pointer-events: none;
+  }
+
+  /* ---- P08 · 产品 demo 嵌入（D1 evidence slice） ----
+     iframe 固定 1920×1080（demo 原生舞台，内部缩放系数恰为 1），
+     在 deck 侧裁窗到 phone-frame（产品 UI）的实测包围盒 (353,72,445×936)，
+     只取手机容器，竖幅居中。--demo-scale 由 JS 按裁窗实际宽度设置。 */
+  .cyber-map {
+    height: 76vh; aspect-ratio: 440 / 852; flex: none; align-self: center;
+  }
+  .demo-crop {
+    height: 79vh; aspect-ratio: 445 / 936; flex: none; align-self: center;
+    position: relative; overflow: hidden;
+    border: .19rem solid var(--slate); background: var(--paper);
+  }
+  .demo-crop iframe {
+    position: absolute; left: 0; top: 0;
+    width: 1920px; height: 1080px; border: 0;
+    transform-origin: 0 0;
+    transform: scale(var(--demo-scale, .35)) translate(-353px, -72px);
+  }
+  /* ---- P09 · Film：9:16 闭幕短片满幅播放（画幅与片幅同比，正常预览无黑边） ---- */
+  /* 片幅整体下移让出顶部对白区；露出的顶条由取自片子首行像素的横向渐变补上，
+     与片内天光同色，接缝不可见。缩放以片顶为原点，底部超出部分裁掉即可。 */
+  .film-slide {
+    padding: 0; gap: 0;
+    background: linear-gradient(90deg, #E4E6E6 0%, #DFE1E1 30%, #D8DADA 52%, #DDDFDD 72%, #E4E6E6 100%);
+  }
+  .film-slide video {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; background: transparent;
+    transform-origin: 50% 0;
+    transform: translateY(6%) scale(1.1);
+    filter: blur(.75rem);
+    transition: filter .55s ease;
+  }
+  /* 合焦只发生在开播那一刻；对白与这层模糊同生同灭 */
+  .film-slide video.sharp { filter: blur(0); }
+  .film-chat {
+    position: absolute; z-index: 3;
+    top: 5vh; left: calc(var(--stage-w) * .07); right: calc(var(--stage-w) * .07);
+    display: flex; flex-direction: column; gap: 1vh;
+    pointer-events: none;
+  }
+  .film-chat .row {
+    max-width: 76%;
+    opacity: 0; transform: translateY(.55rem);
+    transition: opacity .55s ease, transform .55s ease;
+  }
+  .film-chat .row.on { opacity: 1; transform: translateY(0); }
+  .film-chat .row.human { align-self: flex-end; }
+  .film-chat .row.robot { align-self: flex-start; }
+  .film-chat .msg {
+    font-family: var(--font-sans); font-size: 1.05rem; font-weight: 500; line-height: 1.35;
+    padding: .5rem .68rem; border-radius: 0;
+  }
+  .film-chat .human .msg { background: var(--role-human); color: var(--paper); }
+  .film-chat .robot .msg { background: var(--role-ai); color: var(--slate); border: .13rem solid var(--slate); }
+
+  /* ---- Support System：Blender 截图裁窗（横图取竖排所需区域） ---- */
+  .crop { position: relative; overflow: hidden; flex: none; border: .13rem solid var(--slate); }
+  .crop img { position: absolute; display: block; }
+  .focus { position: absolute; border: .16rem solid var(--role-material); }
+  .num {
+    position: absolute; width: 1.3rem; height: 1.3rem; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: .7rem; color: var(--paper);
+    background: var(--role-material); border: .13rem solid var(--slate);
+  }
+  .legend { display: flex; flex-direction: column; gap: .5vh; flex: none; }
+  .legend span { font-size: .75rem; font-weight: 500; color: var(--stone); }
+  .legend b {
+    display: inline-flex; width: 1.1rem; height: 1.1rem; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 400; font-size: .6rem; color: var(--paper);
+    background: var(--role-material); border: .13rem solid var(--slate); margin-right: .5rem; vertical-align: middle;
+  }
+  .stamps { display: flex; gap: .5rem; flex: none; }
+  .stamps span {
+    font-family: var(--font-display); font-size: .55rem; text-transform: uppercase;
+    border: .13rem solid var(--slate); background: var(--paper); padding: .25rem .5rem .13rem;
+  }
+
+  /* ---- Share mode: one user gesture unlocks a deterministic 90-second run ---- */
+  .autoplay-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: var(--slate);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 240ms var(--motion-ease-out), visibility 240ms step-end;
+  }
+  .autoplay-gate.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .autoplay-card {
+    width: min(440px, 88vw);
+    padding: var(--space-share-card);
+    color: var(--slate);
+    background: var(--paper);
+    border: 4px solid var(--paper);
+    box-shadow: 12px 12px 0 var(--role-ai);
+  }
+  .autoplay-eyebrow {
+    display: inline-block;
+    margin-bottom: 16px;
+    padding: 8px 12px 4px;
+    font-family: var(--font-display);
+    font-size: var(--text-share-eyebrow);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background: var(--role-label);
+  }
+  .autoplay-card h1 {
+    margin: 0 0 12px;
+    font-family: var(--font-display);
+    font-size: var(--text-share-title);
+    font-weight: 400;
+    line-height: .98;
+    text-transform: uppercase;
+  }
+  .autoplay-card p {
+    margin: 0 0 24px;
+    font-family: var(--font-sans);
+    font-size: var(--text-share-body);
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--stone);
+  }
+  .autoplay-button,
+  .autoplay-replay {
+    min-height: 56px;
+    border: 3px solid var(--slate);
+    border-radius: 0;
+    font-family: var(--font-sans);
+    font-size: var(--text-share-body);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--slate);
+    background: var(--role-ai);
+    cursor: pointer;
+  }
+  .autoplay-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 16px;
+  }
+  .autoplay-button:hover,
+  .autoplay-button:focus-visible,
+  .autoplay-replay:hover,
+  .autoplay-replay:focus-visible {
+    color: var(--paper);
+    background: var(--role-human);
+    outline: 3px solid var(--paper);
+    outline-offset: 3px;
+  }
+  .autoplay-replay {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 900;
+    padding: 0 20px;
+    box-shadow: 7px 7px 0 var(--slate);
+  }
+  body.autoplay-running .deck { overflow-y: hidden; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .autoplay-gate { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="autoplay-gate" id="autoplayGate" role="dialog" aria-modal="true" aria-labelledby="autoplayTitle">
+  <div class="autoplay-card">
+    <span class="autoplay-eyebrow">Meikku · 90 second deck</span>
+    <h1 id="autoplayTitle">Click to play</h1>
+    <p>One tap starts the complete presentation from the beginning.</p>
+    <button class="autoplay-button" id="autoplayStart" type="button">
+      <span>Play from beginning</span><span aria-hidden="true">01:30</span>
+    </button>
+  </div>
+</div>
+<button class="autoplay-replay" id="autoplayReplay" type="button" hidden>Replay 01:30</button>
+<div class="deck">
+
+  <!-- ============ ACT 1 · 开场 ============ -->
+
+  <!-- P1+P2 · 开屏动画 + 理想跌回现实：气泡包裹真实动画本体，缩小消失后只剩空手 -->
+  <div class="drop-wrap" id="dropWrap">
+    <div class="drop-sticky">
+
+      <!-- 现实层（在下）：空空的双手，中间只有泥"本该在"的虚线位置 -->
+      <div class="reality2">
+        <svg viewBox="0 0 900 1600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <filter id="crayonDrop" x="-25%" y="-25%" width="150%" height="150%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.032" numOctaves="3" seed="4" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="5.5"/>
+            </filter>
+            <!-- 泡罩合拢后套在 dream 层上的裁剪形（气泡+尾巴，objectBoundingBox 坐标，
+                 比泡的描边略大一圈，给蜡笔抖动的描边留余量） -->
+            <clipPath id="dreamClip" clipPathUnits="objectBoundingBox">
+              <path d="
+                M .9784 .5875
+                Q 1.0643 .6856 .8876 .7381 Q .8488 .8436 .6478 .8307
+                Q .5 .9043 .3522 .8307 Q .1512 .8436 .1124 .7381
+                Q -.0643 .6856 .0216 .5875 Q -.0643 .4894 .1124 .4369
+                Q .1512 .3314 .3522 .3443 Q .5 .2707 .6478 .3443
+                Q .8488 .3314 .8876 .4369 Q 1.0643 .4894 .9784 .5875 Z"/>
+              <ellipse cx=".3222" cy=".875" rx=".0578" ry=".0325"/>
+              <ellipse cx=".2644" cy=".9338" rx=".0422" ry=".0238"/>
+              <ellipse cx=".2267" cy=".9763" rx=".0289" ry=".0163"/>
+            </clipPath>
+          </defs>
+          <g filter="url(#crayonDrop)">
+            <circle class="after-ghost" cx="450" cy="900" r="230" fill="none" stroke="var(--grid)"
+                    stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round"/>
+            <!-- 手机：放大居中，微倾，屏内 feed 无限上滚（无聊感） -->
+            <g transform="translate(465,900) rotate(-4)">
+              <rect x="-125" y="-205" width="250" height="410" rx="26"
+                    fill="var(--paper)" stroke="var(--slate)" stroke-width="4.5"/>
+              <clipPath id="screenClip"><rect x="-105" y="-180" width="210" height="360" rx="12"/></clipPath>
+              <g clip-path="url(#screenClip)">
+                <g class="feed" stroke-linecap="round">
+                  <g>
+                    <rect x="-85" y="-170" width="170" height="64" rx="8" fill="var(--clay)" stroke="var(--grid)" stroke-width="2.5"/>
+                    <line x1="-85" y1="-88" x2="65" y2="-88" stroke="var(--grid)" stroke-width="6"/>
+                    <line x1="-85" y1="-64" x2="85" y2="-64" stroke="var(--grid)" stroke-width="6"/>
+                  </g>
+                  <g>
+                    <rect x="-85" y="-10" width="170" height="64" rx="8" fill="var(--clay)" stroke="var(--grid)" stroke-width="2.5"/>
+                    <line x1="-85" y1="72" x2="65" y2="72" stroke="var(--grid)" stroke-width="6"/>
+                    <line x1="-85" y1="96" x2="85" y2="96" stroke="var(--grid)" stroke-width="6"/>
+                  </g>
+                  <g>
+                    <rect x="-85" y="150" width="170" height="64" rx="8" fill="var(--clay)" stroke="var(--grid)" stroke-width="2.5"/>
+                    <line x1="-85" y1="232" x2="65" y2="232" stroke="var(--grid)" stroke-width="6"/>
+                    <line x1="-85" y1="256" x2="85" y2="256" stroke="var(--grid)" stroke-width="6"/>
+                  </g>
+                  <g>
+                    <rect x="-85" y="310" width="170" height="64" rx="8" fill="var(--clay)" stroke="var(--grid)" stroke-width="2.5"/>
+                    <line x1="-85" y1="392" x2="65" y2="392" stroke="var(--grid)" stroke-width="6"/>
+                    <line x1="-85" y1="416" x2="85" y2="416" stroke="var(--grid)" stroke-width="6"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <!-- 现实：双臂从左右竖边下段斜伸进来，自然持机姿势（手在手机后，拇指另作前层） -->
+            <g transform="translate(398,985) rotate(54)">
+              <path fill="var(--paper)" stroke="var(--slate)" stroke-width="4.5"
+                    stroke-linecap="round" stroke-linejoin="round" transform="scale(-1,1)" d="
+                M -54 760 C -62 600 -54 430 -48 300 C -52 250 -50 175 -46 138
+                Q -56 122 -68 108 Q -95 88 -96 68 Q -96 52 -84 52 Q -72 54 -66 70
+                Q -58 86 -48 94 Q -44 72 -42 50 L -40 18 Q -40 4 -30 4 Q -20 5 -20 18
+                L -16 54 Q -12 64 -9 52 L -6 8 Q -5 -6 4 -5 Q 12 -4 11 10 L 14 54
+                Q 17 66 21 54 L 27 16 Q 30 4 39 7 Q 47 10 44 22 L 38 62 Q 40 74 45 64
+                L 55 38 Q 60 27 68 32 Q 75 37 71 47 L 58 92 Q 55 108 48 118
+                Q 46 150 44 170 C 46 195 50 250 47 300 C 52 430 58 600 52 760 Z"/>
+            </g>
+            <g id="handRGroup">
+              <g transform="translate(532,985) rotate(-54)">
+                <path fill="var(--paper)" stroke="var(--slate)" stroke-width="4.5"
+                      stroke-linecap="round" stroke-linejoin="round" d="
+                  M -54 760 C -62 600 -54 430 -48 300 C -52 250 -50 175 -46 138
+                  Q -56 122 -68 108 Q -95 88 -96 68 Q -96 52 -84 52 Q -72 54 -66 70
+                  Q -58 86 -48 94 Q -44 72 -42 50 L -40 18 Q -40 4 -30 4 Q -20 5 -20 18
+                  L -16 54 Q -12 64 -9 52 L -6 8 Q -5 -6 4 -5 Q 12 -4 11 10 L 14 54
+                  Q 17 66 21 54 L 27 16 Q 30 4 39 7 Q 47 10 44 22 L 38 62 Q 40 74 45 64
+                  L 55 38 Q 60 27 68 32 Q 75 37 71 47 L 58 92 Q 55 108 48 118
+                  Q 46 150 44 170 C 46 195 50 250 47 300 C 52 430 58 600 52 760 Z"/>
+              </g>
+            </g>
+            <!-- 第三幕：机械臂从右上入画，牵起刷手机的右手（初始位置在画布外，JS 驱动） -->
+            <g id="armGroup">
+              <g transform="translate(570,948) rotate(33)">
+                <g transform="scale(-1,1)" fill="var(--paper)" stroke="var(--slate)" stroke-width="4.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M -1 -156 C -10 -330 8 -540 -2 -860 L 36 -860 C 28 -540 44 -330 35 -150 Z"/>
+                  <circle cx="16" cy="-148" r="25"/>
+                  <circle cx="16" cy="-148" r="10" fill="none" stroke="var(--role-robot)" stroke-width="6"/>
+                  <path d="M 2 -152 L 30 -150 L 24 -64 L -4 -66 Z"/>
+                  <rect x="-2" y="-108" width="15" height="15" fill="var(--role-robot)"
+                        stroke="var(--slate)" stroke-width="3" transform="rotate(8 5 -100)"/>
+                  <path d="M -46 -68 L 54 -64 L 52 -44 L -48 -48 Z"/>
+                  <path d="M -42 -50 L -36 -4 Q -35 6 -25 3 L -25 -48 Z"/>
+                  <path d="M 31 -48 L 32 -2 Q 33 8 43 4 L 48 -46 Z"/>
+                  <circle cx="-32" cy="-57" r="4.5" fill="var(--slate)" stroke="none"/>
+                  <circle cx="40" cy="-55" r="4.5" fill="var(--slate)" stroke="none"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>
+        <div class="punchline" id="punchline">
+          <p class="big-line">"This would be better with&nbsp;someone."</p>
+          <p class="sub">Not because anyone is missing — a plus one just turns
+          something you <b>do</b> into something you <b>share</b>.</p>
+        </div>
+      </div>
+
+      <!-- 想象层（在上）：真实开屏动画 + 气泡遮罩，整层一起缩小消失 -->
+      <div class="dream2" id="dream2">
+        <iframe class="opening-frame" data-src="meikku_world.html" scrolling="no"
+                title="Meikku opening animation"></iframe>
+        <svg class="bubble-overlay" id="bubbleOverlay" viewBox="0 0 900 1600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <filter id="crayonWrap" x="-15%" y="-15%" width="130%" height="130%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="11" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+            </filter>
+            <!-- 只圈住泥的动画区域（实际中心约 450,940），文字都在泡外 -->
+            <path id="bubblePath2" d="
+              M 845 940
+              Q 916 1084 770 1161 Q 738 1316 572 1297 Q 450 1405 328 1297
+              Q 162 1316 130 1161 Q -16 1084 55 940 Q -16 796 130 719
+              Q 162 564 328 583 Q 450 475 572 583 Q 738 564 770 719
+              Q 916 796 845 940 Z"/>
+          </defs>
+          <mask id="bubbleHoleMask">
+            <rect x="-200" y="-200" width="1300" height="2000" fill="white"/>
+            <use href="#bubblePath2" fill="black"
+                 transform="translate(450,940) scale(1.06) translate(-450,-940)"/>
+          </mask>
+          <g filter="url(#crayonWrap)">
+            <!-- 气泡本体 + 随动遮罩：整组以泥心缩放。遮罩的"洞"就是泡的当前大小——
+                 泡圈扫过之处，泡外一切即刻盖上纸色（泡整体收 .93 保证完整落在画布内） -->
+            <g id="bubbleShape">
+              <rect x="-70" y="-70" width="1040" height="1740" fill="var(--paper)" mask="url(#bubbleHoleMask)"/>
+              <use href="#bubblePath2" fill="none" stroke="var(--slate)" stroke-width="7" stroke-linejoin="round"
+                   transform="translate(450,940) scale(1.06) translate(-450,-940)"/>
+              <g fill="var(--paper)" stroke="var(--slate)" stroke-width="6">
+                <circle cx="290" cy="1400" r="46"/>
+                <circle cx="238" cy="1494" r="32"/>
+                <circle cx="204" cy="1562" r="20"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ ACT 2 · Problem ============ -->
+
+  <!-- P4 · 三条线索都差一块（已并入"AI 隔着屏幕"页的论点） -->
+  <section class="slide motion-slide">
+    <div class="kicker motion-step-1" data-motion-item>Where AI Is Today</div>
+    <div class="stack" style="flex:1; min-height:0;">
+      <div class="card card-row motion-step-2" data-motion-item style="flex:1;">
+        <div class="ref">
+          <img src="assets/storyboard/refs/aibo_mikiyoshihito.jpg" style="object-position: 60% 55%;"
+               alt="Sony AIBO ERS-1000 robot dog standing on a carpet, with an earlier AIBO model resting behind it">
+        </div>
+        <div class="txt">
+          <h3><span class="chip" style="background:var(--role-robot);"></span>Social robots</h3>
+          <p>AIBO proved people form real bonds with robots — owners even held funerals for theirs. But the emotion is performed, and it never makes anything with you.</p>
+          <p class="credit">Sony AIBO &#183; MIKI Yoshihito, CC BY 2.0</p>
+        </div>
+      </div>
+      <div class="card card-row motion-step-3" data-motion-item style="flex:1;">
+        <div class="ref">
+          <img src="assets/storyboard/refs/robotlab_bios_writing_arm.jpg" style="object-position: 45% 50%;"
+               alt="A KUKA industrial robot arm holding a calligraphy pen, writing a page of text by hand — robotlab's bios [bible]">
+        </div>
+        <div class="txt">
+          <h3><span class="chip" style="background:var(--role-material);"></span>Robots as creative partners</h3>
+          <p>An industrial arm hand-writes a whole bible; Sougwen Chung paints beside one. Robots can make real work — but it stays a performance, with no next session once it ends.</p>
+          <p class="credit">robotlab, <i>bios [bible]</i> &#183; Mirko Tobias Schaefer, CC BY 2.0</p>
+        </div>
+      </div>
+      <div class="card card-row motion-step-4" data-motion-item style="flex:1;">
+        <div class="ref">
+          <img class="fit" src="assets/storyboard/refs/replika_avatar.png"
+               alt="A Replika companion avatar rendered sitting on a stool, the figure users meet through the app screen">
+        </div>
+        <div class="txt">
+          <h3><span class="chip" style="background:var(--role-ai);"></span>AI companions</h3>
+          <p>Replika proved millions will welcome an AI into daily life — but it stays behind a screen: no hands, no shared table, nothing left behind when the conversation ends.</p>
+          <p class="credit">Replika companion &#183; &#169; Luka, Inc.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ACT 4 · 我搭建了什么 ============ -->
+
+  <!-- P05 · Cybernetics Map（What I Built 系列首页）：竖版闭环。左轨 = 人直接上手捏泥的路径；右轨 = 数据集反馈回 AI -->
+  <section class="slide motion-slide">
+    <div class="kicker motion-step-1" data-motion-item>Cybernetics Map</div>
+    <svg class="cyber-map motion-step-2" data-motion-item viewBox="0 56 440 852" preserveAspectRatio="xMidYMid meet"
+         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cybernetics map: human, AI, robot arm, material, sensor, dataset in a closed loop; the human also shapes the material directly by hand">
+      <defs>
+        <pattern id="cyDots" width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="11" cy="11" r="1.1" fill="var(--grid)"/>
+        </pattern>
+      </defs>
+      <rect y="56" width="440" height="852" fill="var(--paper)"/>
+      <rect y="56" width="440" height="852" fill="url(#cyDots)"/>
+
+      <!-- 主链箭头（盒间） -->
+      <g stroke="var(--slate)" stroke-width="5">
+        <line x1="216" y1="162" x2="216" y2="204"/>
+        <line x1="216" y1="308" x2="216" y2="350"/>
+        <line x1="216" y1="454" x2="216" y2="496"/>
+        <line x1="216" y1="600" x2="216" y2="642"/>
+        <line x1="216" y1="746" x2="216" y2="788"/>
+      </g>
+      <g fill="var(--slate)">
+        <polygon points="216,212 207,198 225,198"/>
+        <polygon points="216,358 207,344 225,344"/>
+        <polygon points="216,504 207,490 225,490"/>
+        <polygon points="216,650 207,636 225,636"/>
+        <polygon points="216,796 207,782 225,782"/>
+      </g>
+      <g font-family="'Space Grotesk', Arial, sans-serif" font-size="14" font-weight="700" fill="var(--slate)">
+        <text x="230" y="192">Natural Language</text>
+        <text x="230" y="338">Tool Path</text>
+        <text x="230" y="484">Execute Tool Path</text>
+        <text x="230" y="630">Material State</text>
+        <text x="230" y="776">Sensor Data</text>
+      </g>
+
+      <!-- 右轨反馈：DATASET → AI -->
+      <path d="M 386 844 H 414 V 260 H 398" fill="none" stroke="var(--slate)" stroke-width="5"/>
+      <polygon points="390,260 404,251 404,269" fill="var(--slate)"/>
+      <text x="428" y="560" font-family="'Space Grotesk', Arial, sans-serif" font-size="14" font-weight="700"
+            fill="var(--slate)" text-anchor="middle" transform="rotate(-90 428 560)">Dataset Context</text>
+
+      <!-- 左轨直接路径：HUMAN → MATERIAL（人上手捏泥，不经 AI/机械臂） -->
+      <path d="M 46 120 H 22 V 552 H 32" fill="none" stroke="var(--slate)" stroke-width="5"/>
+      <polygon points="40,552 26,543 26,561" fill="var(--slate)"/>
+      <text x="12" y="340" font-family="'Space Grotesk', Arial, sans-serif" font-size="14" font-weight="700"
+            fill="var(--slate)" text-anchor="middle" transform="rotate(-90 12 340)">Shapes By Hand</text>
+
+      <!-- 六个节点：块状投影 + 硬边框 -->
+      <g stroke="var(--slate)" stroke-width="4">
+        <rect x="52" y="72" width="340" height="96" fill="var(--slate)"/><rect x="46" y="66" width="340" height="96" fill="var(--role-human)"/>
+        <rect x="52" y="218" width="340" height="96" fill="var(--slate)"/><rect x="46" y="212" width="340" height="96" fill="var(--role-ai)"/>
+        <rect x="52" y="364" width="340" height="96" fill="var(--slate)"/><rect x="46" y="358" width="340" height="96" fill="var(--role-robot)"/>
+        <rect x="52" y="510" width="340" height="96" fill="var(--slate)"/><rect x="46" y="504" width="340" height="96" fill="var(--role-material)"/>
+        <rect x="52" y="656" width="340" height="96" fill="var(--slate)"/><rect x="46" y="650" width="340" height="96" fill="var(--paper)"/>
+        <rect x="52" y="802" width="340" height="96" fill="var(--slate)"/><rect x="46" y="796" width="340" height="96" fill="var(--paper)"/>
+      </g>
+      <g font-family="'Space Grotesk', Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.5">
+        <text x="64" y="92" fill="var(--paper)">COMPARATOR</text>
+        <text x="64" y="238" fill="var(--slate)">REGULATOR</text>
+        <text x="64" y="384" fill="var(--paper)">EFFECTOR</text>
+        <text x="64" y="530" fill="var(--paper)">REGULATED VARIABLE</text>
+        <text x="64" y="822" fill="var(--slate)">MEMORY NODE</text>
+      </g>
+      <g font-family="Bungee, Impact, sans-serif" font-size="30">
+        <text x="64" y="128" fill="var(--paper)">HUMAN</text>
+        <text x="64" y="274" fill="var(--slate)">AI</text>
+        <text x="64" y="420" fill="var(--paper)">ROBOT ARM</text>
+        <text x="64" y="566" fill="var(--paper)">MATERIAL</text>
+        <text x="64" y="706" fill="var(--slate)">SENSOR</text>
+        <text x="64" y="858" fill="var(--slate)">DATASET</text>
+      </g>
+      <g font-family="'Space Grotesk', Arial, sans-serif" font-size="14" font-weight="500">
+        <text x="64" y="152" fill="var(--paper)">Types natural language</text>
+        <text x="64" y="298" fill="var(--slate)">Generates tool path</text>
+        <text x="64" y="444" fill="var(--paper)">Executes tool path</text>
+        <text x="64" y="590" fill="var(--paper)">Clay state + marks</text>
+        <text x="64" y="730" fill="var(--slate)">RGB cam + depth cam</text>
+        <text x="64" y="882" fill="var(--slate)">Language logs &#183; tool paths &#183; clay mesh</text>
+      </g>
+    </svg>
+  </section>
+
+  <!-- P06 · What I Built：产品界面（活回放）——产品界面（活回放，承载 Loop 与 Memory）+ 实体装置 -->
+  <section class="slide">
+    <div class="kicker">UI</div>
+    <div class="demo-crop" id="demoCrop">
+      <iframe data-src="../robot/code/project/UI/d1_deck_evidence_slice/index.html?embed=1&amp;startEvent=d1_event_007"
+              title="Meikku product UI and UX replay: recall, correction, a changed try, and hand-back"
+              loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <!-- P07 · Support System：黑盒后的实现栈。上 = 当前 Blender 文件（接触帧实拍）；
+       下 = 同一条路径的推理证明图（runId unity_loop_520220027ee3，与场景里那条路径逐点一致） -->
+  <section class="slide motion-slide">
+    <div class="kicker motion-step-1" data-motion-item>Support System</div>
+
+    <!-- 当前 Blender 文件：IK 驱动的 SO101 压在观测泥体上，半透明的是目标模型 -->
+    <div class="crop motion-step-2" data-motion-item style="aspect-ratio: 2560 / 1440;">
+      <img src="assets/storyboard/storyboard_blender_current_scene_20260819.png"
+           alt="Current Blender file at the contact frame: the SO101 arm presses into the observed clay mesh, with the goal model behind it"
+           style="width: 100%; left: 0; top: 0;">
+      <div class="focus" style="left: 41%; top: 25%; width: 35%; height: 50%;"></div>
+      <div class="num" style="left: 77%; top: 21.5%;">1</div>
+      <div class="focus" style="left: 25.5%; top: 52.5%; width: 16%; height: 22%;"></div>
+      <div class="num" style="left: 20%; top: 65%;">2</div>
+    </div>
+
+    <!-- 工具路径推理图：与上图那条路径同源同点 -->
+    <div class="crop motion-step-3" data-motion-item style="aspect-ratio: 2880 / 2160; width: 80%; align-self: flex-start;">
+      <img src="assets/storyboard/storyboard_tool_path_current_20260819.png"
+           alt="Tool path reasoning proof sheet for the path in the Blender file: XZ, YZ, XY and perspective projections of the evaluated clay mesh with the selected poke site and its five colored motion segments"
+           style="width: 100%; left: 0; top: 0;">
+      <div class="num" style="left: 1.5%; top: 2%;">3</div>
+    </div>
+
+    <div class="legend motion-step-4" data-motion-item>
+      <span><b>1</b>Blender IK drives the arm onto the contact frame.</span>
+      <span><b>2</b>Webcam + depth cam extract the clay proxy.</span>
+      <span><b>3</b>The same path, projected and checked before it moves.</span>
+    </div>
+  </section>
+
+  <!-- P08 · 收尾：闭幕短片（9:16 原生竖幅，滚入本页从头静音循环播放） -->
+  <section class="slide film-slide">
+    <video id="filmVideo" muted playsinline preload="auto"
+           src="assets/share/meikku_loop_turn_nod_execute_9x16_web.mp4"
+           aria-label="Closing film: Meikku turns, nods and executes the tool path"></video>
+    <div class="film-chat" id="filmChat">
+      <div class="row human"><div class="msg">Can you poke the clay?</div></div>
+      <div class="row robot"><div class="msg">Okay.</div></div>
+    </div>
+  </section>
+
+
+</div>
+
+<script>
+  // 方向键翻页（scroll-snap 已支持滚轮/触摸）
+  const deck = document.querySelector('.deck');
+  const slides = [...document.querySelectorAll('.slide')];
+
+  // 分享版自动播放：转场不单列，触发翻页即开始计算目标 frame 的时间。
+  const autoplayGate = document.getElementById('autoplayGate');
+  const autoplayStart = document.getElementById('autoplayStart');
+  const autoplayReplay = document.getElementById('autoplayReplay');
+  const autoplayCues = [
+    { at: 0, anchor: 0, label: 'Opening dream' },
+    { at: 5000, anchor: 1, label: 'Bubble / empty hands / arm entry' },
+    { at: 10000, anchor: 2, label: 'Plus-one proposition' },
+    { at: 15000, anchor: 3, label: 'Where AI Is Today' },
+    { at: 27000, anchor: 4, label: 'Cybernetics Map' },
+    { at: 37000, anchor: 5, label: 'UI' },
+    { at: 62000, anchor: 6, label: 'Support System' },
+    { at: 71000, anchor: 7, label: 'Film' }
+  ];
+  const autoplayDuration = 90000;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let autoplayTimers = [];
+
+  const clearAutoplayTimers = () => {
+    autoplayTimers.forEach(window.clearTimeout);
+    autoplayTimers = [];
+  };
+
+  const goToAutoplayAnchor = (anchorIndex, immediate = false) => {
+    const anchors = getAnchors();
+    const top = anchors[Math.min(anchorIndex, anchors.length - 1)];
+    deck.scrollTo({
+      top,
+      behavior: immediate || prefersReducedMotion.matches ? 'auto' : 'smooth'
+    });
+  };
+
+  const finishAutoplay = () => {
+    clearAutoplayTimers();
+    document.dispatchEvent(new CustomEvent('meikku:autoplay-finish'));
+    document.body.classList.remove('autoplay-running');
+    autoplayReplay.hidden = false;
+    document.title = 'Meikku — Deck v1 · Finished';
+  };
+
+  const cancelAutoplay = () => {
+    clearAutoplayTimers();
+    document.body.classList.remove('autoplay-running');
+    autoplayReplay.hidden = true;
+    autoplayGate.classList.remove('is-hidden');
+    autoplayStart.focus();
+    document.title = 'Meikku — Deck v1 · Ready';
+  };
+
+  const startAutoplay = () => {
+    clearAutoplayTimers();
+    autoplayReplay.hidden = true;
+    autoplayGate.classList.add('is-hidden');
+    document.body.classList.add('autoplay-running');
+    document.body.dataset.autoplayFrame = autoplayCues[0].label;
+    document.title = 'Meikku — Deck v1 · Playing';
+
+    // Re-prime the opening on the same user gesture, so waiting on the gate never consumes it.
+    goToAutoplayAnchor(0, true);
+    if (opening) opening.src = opening.dataset.src + '?v=' + Date.now();
+
+    autoplayCues.slice(1).forEach((cue) => {
+      autoplayTimers.push(window.setTimeout(() => {
+        goToAutoplayAnchor(cue.anchor);
+        document.body.dataset.autoplayFrame = cue.label;
+      }, cue.at));
+    });
+    autoplayTimers.push(window.setTimeout(finishAutoplay, autoplayDuration));
+  };
+
+  autoplayStart.addEventListener('click', startAutoplay);
+  autoplayReplay.addEventListener('click', startAutoplay);
+  document.addEventListener('keydown', (event) => {
+    if (!document.body.classList.contains('autoplay-running')) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      cancelAutoplay();
+      return;
+    }
+    if (['ArrowDown', 'ArrowRight', 'PageDown', ' ', 'ArrowUp', 'ArrowLeft', 'PageUp'].includes(event.key)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
+
+  // 三张解释页：每次滚入都轻量错峰进入，滚出后复位，下一次回来可重新播放。
+  // 没有 JS 时内容保持可见；只有 observer 就绪后才启用隐藏初态。
+  const motionSlides = [...document.querySelectorAll('.motion-slide')];
+  if (motionSlides.length) {
+    deck.classList.add('motion-enabled');
+    const motionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('is-active', entry.isIntersecting && entry.intersectionRatio >= .55);
+      });
+    }, { root: deck, threshold: [0, .55] });
+    motionSlides.forEach((slide) => motionObserver.observe(slide));
+  }
+
+  // 开屏 iframe 带时间戳加载，避免浏览器缓存旧版动画文件
+  const opening = document.querySelector('.opening-frame');
+  if (opening) opening.src = opening.dataset.src + '?v=' + Date.now();
+
+  // demo 裁窗：按窗口实际宽度换算 iframe 缩放（phone 裁窗宽 445 舞台单位）。
+  // src 由 IntersectionObserver 在每次滚入本页时带新时间戳重设——
+  // 既强制回放从头开始，也保证直连源文件、不吃浏览器缓存
+  const demoCrop = document.getElementById('demoCrop');
+  if (demoCrop) {
+    const demoFrame = demoCrop.querySelector('iframe');
+    const fitDemo = () => demoCrop.style.setProperty('--demo-scale', demoCrop.clientWidth / 445);
+    new ResizeObserver(fitDemo).observe(demoCrop);
+    fitDemo();
+    new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          demoFrame.src = demoFrame.dataset.src + '&v=' + Date.now();
+        }
+      });
+    }, { root: deck, threshold: .5 }).observe(demoCrop.closest('section'));
+
+    // UI 自己读取 startEvent：前置聊天作为静态历史立即建立，
+    // 从关键纠错事件开始按正常节奏播放。父 deck 不再篡改 iframe 的计时器。
+  }
+  // Film 页：一个完整节拍 = 人发问 → Meikku 应答 → 播片 → 对白消失 → 冻结 3s → 重来。
+  // 静音播放满足浏览器自动播放策略；滚出本页立刻停表，滚回从头再走一遍。
+  const film = document.getElementById('filmVideo');
+  const filmRows = [...document.querySelectorAll('#filmChat .row')];
+  if (film) {
+    const BEAT_HUMAN = 500, BEAT_ROBOT = 1600,
+          BEAT_SHARPEN = 2300, BEAT_PLAY = 2900, BEAT_FREEZE = 3000;
+    let filmTimers = [];
+    const at = (fn, ms) => filmTimers.push(setTimeout(fn, ms));
+    const stopFilmTimers = () => { filmTimers.forEach(clearTimeout); filmTimers = []; };
+    const hideRows = () => filmRows.forEach(r => r.classList.remove('on'));
+    const rewind = () => { try { film.currentTime = 0; } catch (err) { /* 元数据未就绪 */ } };
+
+    const startFilmLoop = () => {
+      stopFilmTimers();
+      hideRows();
+      film.classList.remove('sharp');
+      film.pause();
+      rewind();
+      at(() => filmRows[0] && filmRows[0].classList.add('on'), BEAT_HUMAN);
+      at(() => filmRows[1] && filmRows[1].classList.add('on'), BEAT_ROBOT);
+      // 同一拍：模糊散开、对白随之退场，落焦即开播
+      at(() => { film.classList.add('sharp'); hideRows(); }, BEAT_SHARPEN);
+      at(() => { rewind(); film.play().catch(() => {}); }, BEAT_PLAY);
+    };
+    // The shared 90-second controller owns the final hold. Stop the page's normal
+    // three-second loop restart so the public link lands on the same resolved frame as the MP4.
+    document.addEventListener('meikku:autoplay-finish', () => {
+      stopFilmTimers();
+      hideRows();
+      film.classList.add('sharp');
+      film.pause();
+      if (Number.isFinite(film.duration) && film.duration > 0) {
+        film.currentTime = Math.max(0, film.duration - .04);
+      }
+    });
+    // 片尾停在最后一帧：对白先撤，静止 3 秒，再起下一轮
+    film.addEventListener('ended', () => {
+      at(startFilmLoop, BEAT_FREEZE);
+    });
+
+    new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          startFilmLoop();
+        } else {
+          stopFilmTimers();
+          hideRows();
+          film.classList.remove('sharp');
+          film.pause();
+          rewind();
+        }
+      });
+    }, { root: deck, threshold: .5 }).observe(film);
+  }
+
+  // 方向键翻页锚点：转场起点(0) → 空手节拍 → 牵手命题节拍(转场终点) → 其余各页
+  const wrap = document.getElementById('dropWrap');
+  const getAnchors = () => {
+    const total = wrap.offsetHeight - window.innerHeight;
+    const list = [0, total * .57, total];
+    document.querySelectorAll('section.slide').forEach(s => {
+      list.push(s.getBoundingClientRect().top + deck.scrollTop);
+    });
+    return list;
+  };
+  document.addEventListener('keydown', (e) => {
+    let dir = 0;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') dir = 1;
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') dir = -1;
+    else return;
+    e.preventDefault();
+    const anchors = getAnchors();
+    const y = deck.scrollTop;
+    let idx = 0;
+    for (let i = 0; i < anchors.length; i++) {
+      if (Math.abs(anchors[i] - y) < Math.abs(anchors[idx] - y)) idx = i;
+    }
+    const next = Math.min(anchors.length - 1, Math.max(0, idx + dir));
+    deck.scrollTo({ top: anchors[next], behavior: 'smooth' });
+  });
+
+  // P1→P2 钉住转场：滚动进度驱动「气泡包裹真实动画 → 缩小消失 → 空手」
+  const dream2 = document.getElementById('dream2');
+  const overlay = document.getElementById('bubbleOverlay');
+  const bubbleShape = document.getElementById('bubbleShape');
+  const ghost = wrap.querySelector('.after-ghost');
+  const clamp01 = v => Math.min(1, Math.max(0, v));
+  const ramp = (p, a, b) => clamp01((p - a) / (b - a));
+  let ticking = false;
+  const armGroup = document.getElementById('armGroup');
+  const handR = document.getElementById('handRGroup');
+  const punchline = document.getElementById('punchline');
+  const update = () => {
+    ticking = false;
+    const total = wrap.offsetHeight - window.innerHeight;
+    const p = clamp01(-wrap.getBoundingClientRect().top / total);
+    // ①a 气泡以泥心为中心同心收缩进场：初始整圈在画布外（绿）→ 边缘扫入（红）→ 贴住泥（蓝）
+    const enter = ramp(p, .06, .23);
+    const easedEnter = 1 - Math.pow(1 - enter, 2);
+    const s = 1 + 2.4 * (1 - easedEnter);   // 3.4 → 1
+    bubbleShape.style.transform = `translate(450px, 940px) scale(${s}) translate(-450px, -940px)`;
+    // ①b 遮罩随泡收缩自动扫过泡外元素（几何驱动，无需单独淡入）
+    overlay.style.opacity = '1';
+    // 泡罩合拢后把 dream 层裁成气泡形——之后它不再是矩形，缩小移动都不会产生直切缝
+    dream2.style.clipPath = p >= .27 ? 'url(#dreamClip)' : 'none';
+    // ② 整个气泡（含活动画）收小并固定到画面上部：想象钉在泡里，现实空荡荡
+    const gone = ramp(p, .31, .53);
+    const e2 = gone * gone * (3 - 2 * gone);
+    const s2 = 1 - .4 * e2;                          // 1 → 0.6
+    dream2.style.transform = `translate(${19 * e2}%, ${-12.25 * e2}%) scale(${s2})`;
+    // 空手旁的虚线与文案浮出（第二节拍）
+    const after = ramp(p, .49, .58);
+    // ③ 第三幕：虚线与文案淡出，机械臂入画牵起右手，命题浮现
+    const fadeOut = ramp(p, .60, .68);
+    ghost.style.opacity = String(after * (1 - fadeOut));
+    const armIn = ramp(p, .64, .84);
+    const eArm = 1 - Math.pow(1 - armIn, 3);
+    const lift = ramp(p, .85, .93);
+    const eLift = lift * lift * (3 - 2 * lift);
+    // 沿臂轴方向从右上画布外滑入；牵住后与人手一起微微上提
+    armGroup.style.transform = `translate(${381 * (1 - eArm)}px, ${-587 * (1 - eArm) - 24 * eLift}px)`;
+    handR.style.transform = `translateY(${-24 * eLift}px)`;
+    const punchP = ramp(p, .87, .98);
+    punchline.style.opacity = String(punchP);
+    punchline.style.transform = `translateY(${12 * (1 - punchP)}px)`;
+  };
+  deck.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  update();
+</script>
+</body>
+</html>

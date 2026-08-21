@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku grow icon">
+  <title>Meikku grow icon</title>
+  <polyline points="32,53 32,29" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="17.0,30.0 17.12,28.96 17.48,27.95 18.07,27.0 18.87,26.14 19.86,25.4 21.0,24.8 22.26,24.36 23.61,24.09 25.0,24.0 26.39,24.09 27.74,24.36 29.0,24.8 30.14,25.4 31.13,26.14 31.93,27.0 32.52,27.95 32.88,28.96 33.0,30.0" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="31.0,27.0 31.12,25.96 31.48,24.95 32.07,24.0 32.87,23.14 33.86,22.4 35.0,21.8 36.26,21.36 37.61,21.09 39.0,21.0 40.39,21.09 41.74,21.36 43.0,21.8 44.14,22.4 45.13,23.14 45.93,24.0 46.52,24.95 46.88,25.96 47.0,27.0" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="18,53 46,53" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

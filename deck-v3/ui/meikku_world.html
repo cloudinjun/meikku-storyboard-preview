@@ -1,0 +1,3474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MEIKKU — An AI that shows up as your plus one</title>
+  <meta name="description" content="Meikku is an AI that shows up as your plus one — sits down, picks up where you left off, and makes something with you. The clay is the excuse. The shared memory is the point." />
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-24 -24 48 48"><g fill="none" stroke="%23000000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle r="12.5"/><path d="M-11,-6 L-15,-18 L-4,-12"/><path d="M11,-6 L15,-18 L4,-12"/><path d="M-3,5 Q0,8 3,5"/></g><circle cx="-5" cy="-2" r="1.8" fill="%23000000"/><circle cx="5" cy="-2" r="1.8" fill="%23000000"/></svg>' />
+  <style>
+@font-face {
+      font-family: 'Bungee';
+      src: url('assets/storyboard/fonts/Bungee-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Space Grotesk';
+      src: url('assets/storyboard/fonts/SpaceGrotesk-wght.ttf') format('truetype');
+      font-weight: 300 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --page: #eeeeee;
+      --sheet: #efefef;
+      --panel-shadow: rgba(0, 0, 0, 0.12);
+      --text-muted: rgba(35, 35, 34, 0.50);
+      --meikku-paper: #FCFCFA;
+      --meikku-ink: #232322;
+      --meikku-lime: #1052CC;   /* legacy alias -> ultramarine, per DNA §7 */
+      --meikku-pink: #D42718;   /* legacy alias -> vermilion */
+      --meikku-clay: #EBEBE7;
+      --meikku-grid: #D8D8D3;
+      --meikku-ghost-line: #CFCFCA;   /* canvas craft tint, neutralized */
+      --meikku-clay-shadow: #DEDEDA;  /* canvas craft tint, neutralized */
+      --meikku-contour: #CCCCC7;      /* canvas craft tint, neutralized */
+      --meikku-card-hover: #E6E6E2;   /* canvas craft tint, neutralized */
+      --frame-two-left: #1d56a5;
+      --frame-two-right: #aee6ff;
+      --frame-two-copy: rgba(255, 255, 255, 0.76);
+      --frame-two-copy-dark: rgba(4, 41, 75, 0.72);
+      --interface: #05090b;
+      --interface-copy: rgba(252, 252, 250, 0.62);
+      --interface-label: rgba(252, 252, 250, 0.32);
+      --image-label-bg: rgba(35, 35, 34, 0.70);
+      --image-label-fg: rgba(244, 243, 239, 0.92);
+      --image-border: rgba(35, 35, 34, 0.20);
+      --meikku-amber: #F7C600;  /* legacy alias -> cadmium */
+      --meikku-slate: #5C5C58;  /* legacy caption role -> stone */
+      --role-human: #D42718;
+      --role-ai: var(--meikku-lime);
+      --role-robot: #1052CC;
+      --role-material: #F7C600;
+      --role-sensor: var(--meikku-paper);
+      --role-dataset: var(--meikku-paper);
+      --role-flow: var(--meikku-ink);
+      --dark-panel: #080a07;
+      --dark-panel-soft: #14180f;
+      --dark-grid: rgba(16, 82, 204, 0.14);
+      --dark-dot-grid: rgba(16, 82, 204, 0.20);
+      --paper-dot-size: 1.3px;
+      --paper-dot-grid-size: 28px;
+      --dark-dot-size: 1.4px;
+      --dark-dot-grid-size: 30px;
+      --lime-soft: rgba(16, 82, 204, 0.16);
+      --pink-soft: rgba(212, 39, 24, 0.14);
+      --amber-soft: rgba(247, 198, 0, 0.22);
+      --paper-soft: rgba(252, 252, 250, 0.92);
+      --paper-dim: rgba(252, 252, 250, 0.76);
+      --dark-glass: rgba(8, 10, 7, 0.78);
+      --ink-soft: rgba(35, 35, 34, 0.68);
+      --warning-mark: #D42718;
+      --warning-soft: rgba(212, 39, 24, 0.16);
+      --blackbox-highlight: var(--meikku-lime);
+      --blackbox-glass: rgba(252, 252, 250, 0.18);
+      --annotation-paper: rgba(252, 252, 250, 0.92);
+      --font-display: 'Bungee', Impact, sans-serif;
+      --font-sans: 'Space Grotesk', Inter, Arial, sans-serif;
+      --font-mono: 'Space Grotesk', Inter, Arial, sans-serif;
+      --text-micro: 12px;
+      --text-small: 13px;
+      --text-label: 15px;
+      --text-body: 18px;
+      --text-title: 24px;
+      --text-hero: clamp(54px, 7.4vw, 112px);
+      --text-intro-subtitle: clamp(17px, 1.65vw, 25px);
+      --text-intro-note: clamp(14px, 1.05vw, 18px);
+      --text-statement-heading: clamp(34px, 4.6vw, 70px);
+      --text-statement-body: clamp(18px, 1.9vw, 28px);
+      --text-diagram-heading: clamp(42px, 4.8vw, 76px);
+      --text-section-heading: clamp(42px, 5.4vw, 88px);
+      --text-section-body: clamp(17px, 1.35vw, 23px);
+      --text-map-title: 18px;
+      --text-map-body: 13px;
+      --text-detail-heading: 30px;
+      --text-detail-body: 18px;
+      --text-mobile-heading: 42px;
+      --text-mobile-section-heading: 30px;
+      --text-mobile-body: 16px;
+      --text-mobile-map-title: 14px;
+      --text-mobile-map-body: 11px;
+      --text-mobile-detail-heading: 24px;
+      --text-mobile-detail-body: 15px;
+      --story-max-width: 1720px;
+      --story-gutter: clamp(32px, 5vw, 104px);
+      --story-section-space: clamp(96px, 12vh, 220px);
+      --story-display: clamp(56px, 5.8vw, 144px);
+      --story-display-compact: clamp(44px, 4.2vw, 96px);
+      --story-card-title: clamp(30px, 10cqi, 64px);
+      --story-body: clamp(17px, 1.15vw, 26px);
+      --story-card-body: clamp(16px, .95vw, 20px);
+      --story-label: clamp(12px, .75vw, 15px);
+    }
+
+    /* ============ base ============ */
+    html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    html, body { overflow-x: clip; }
+    body { background: var(--meikku-paper); color: var(--meikku-ink); font-family: var(--font-sans); }
+    ::selection { background: var(--meikku-lime); color: var(--meikku-paper); }
+    #cards { display: none; }
+
+    /* ============ opening scene (unchanged) ============ */
+    .scene { position: relative; width: 100%; height: 100vh; min-height: 620px; overflow: hidden; cursor: crosshair; background: var(--meikku-paper); }
+    .scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .mark { position: absolute; z-index: 3; left: 4.5vw; bottom: 13vh; margin: 0; font-family: var(--font-display); font-size: clamp(72px,15vw,240px); line-height: .8; text-transform: uppercase; color: var(--meikku-ink); pointer-events: none; }
+    .mark-sub { position: absolute; z-index: 3; left: 5vw; bottom: 36vh; margin: 0; max-width: 31em; font-size: clamp(16px,1.55vw,22px); font-weight: 800; line-height: 1.32; color: var(--meikku-ink); pointer-events: none; }
+    .cue { position: absolute; left: 50%; bottom: 3.5vh; margin-left: -12px; width: 20px; height: 20px; border-right: 4px solid var(--meikku-ink); border-bottom: 4px solid var(--meikku-ink); transform: rotate(45deg); animation: bob 1.5s ease-in-out infinite; pointer-events: none; z-index: 3; opacity: .7; }
+    @keyframes bob { 0%,100%{transform:rotate(45deg) translate(0,0);} 50%{transform:rotate(45deg) translate(5px,5px);} }
+
+    /* scroll arm on the rail (unchanged) */
+    .arm-rail { position: fixed; top: 0; right: 14px; width: 132px; height: 100vh; z-index: 1; pointer-events: none; }
+    .arm-rail::before { content: ""; position: absolute; top: 50%; right: 33px; width: 3px; height: 132px; transform: translateY(-50%); background: repeating-linear-gradient(rgba(0,0,0,0.22) 0 5px, transparent 5px 12px); }
+    .scroll-arm { position: absolute; top: 50%; right: 0; width: 132px; height: auto; transform: translateY(-50%); will-change: transform; pointer-events: auto; cursor: grab; touch-action: none; }
+    .scroll-arm.grabbing { cursor: grabbing; }
+    .arm-swing { transform-box: view-box; transform-origin: 114px 55px; }
+    .arm-fore { transform-box: view-box; transform-origin: 66px 50px; }
+    .scroll-arm .prong-a, .scroll-arm .prong-b { transform-box: view-box; transform-origin: 34px 56px; }
+    @media (max-width: 760px){ .arm-rail { display: none; } }
+
+    .tick-ico { display: inline-block; width: 1.2em; height: 1.2em; vertical-align: -0.22em; margin: 0 .08em; }
+
+    /* Content is present immediately. No scroll-triggered fade or entrance motion. */
+    .pop,
+    .pop.in { opacity: 1; transform: none; transition: none !important; transition-delay: 0s; }
+    @media (prefers-reduced-motion: reduce){
+      .pop { opacity: 1; transform: none; transition: none; }
+      .ticker-inner { animation: none !important; }
+    }
+
+    /* ============ handmade crayon surface ============ */
+    :root {
+      --craft-grain-opacity: .07;
+      --craft-dust-opacity: .035;
+    }
+
+    .craft-texture {
+      position: fixed;
+      z-index: 0;
+      inset: -8px;
+      width: calc(100% + 16px);
+      height: calc(100% + 16px);
+      overflow: visible;
+      pointer-events: none;
+      color: var(--meikku-ink);
+      mix-blend-mode: multiply;
+    }
+    .craft-grain { opacity: var(--craft-grain-opacity); }
+    .craft-dust { opacity: var(--craft-dust-opacity); }
+
+    .mark,
+    #dough,
+    #doughShadow {
+      filter: url("#craftPrintRoughness");
+    }
+
+    .tick-ico {
+      filter: url("#craftCrayonWobble");
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .cue { animation-timing-function: steps(6, end); }
+      .ticker-inner { animation-timing-function: steps(104, end); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .craft-texture {
+        transform: none;
+        will-change: auto;
+      }
+    }
+
+    @media print {
+      .craft-texture { display: none; }
+    }
+
+    /* ============ marquee tickers ============ */
+    .ticker { position: relative; z-index: 2; width: 106vw; margin: -30px 0 -30px -3vw; padding: 13px 0 10px; overflow: hidden; border-top: 4px solid var(--meikku-ink); border-bottom: 4px solid var(--meikku-ink); background: var(--meikku-amber); transform: rotate(-1.2deg); }
+    .ticker.t-ink { background: var(--meikku-ink); transform: rotate(1.1deg); }
+    .ticker-inner { display: flex; width: max-content; animation: tick 52s linear infinite; }
+    .ticker-inner span { font-family: var(--font-display); font-size: clamp(16px,2vw,26px); line-height: 1; text-transform: uppercase; white-space: nowrap; padding-right: 1.6em; color: var(--meikku-ink); }
+    .ticker.t-ink .ticker-inner span { color: var(--meikku-paper); }
+    @keyframes tick { to { transform: translateX(-33.3333%); } }
+
+    /* ============ 品牌 v1.6 令牌：只作用于开屏动画之后的正文 ============ */
+    :root {
+      --mk-paper: #FCFCFA;
+      --mk-clay: #EBEBE7;
+      --mk-grid: #D8D8D3;
+      --mk-stone: #5C5C58;
+      --mk-slate: #232322;
+      --mk-ultramarine: #1052CC;
+      --mk-viridian: #0E7A42;
+      --mk-cadmium: #F7C600;
+      --mk-vermilion: #D42718;
+      --mk-kraft: #C9A87C;
+      --mk-b: 4px solid var(--mk-slate);
+      --mk-b3: 3px solid var(--mk-slate);
+      --mk-sh: 10px 10px 0 var(--mk-slate);
+      --mk-sh-s: 6px 6px 0 var(--mk-slate);
+      --mk-max: 1560px;
+      --mk-gut: clamp(24px, 5vw, 88px);
+      --mk-pad: clamp(56px, 7vh, 112px);
+      --mk-display: clamp(40px, 4.6vw, 80px);
+      --mk-display-s: clamp(28px, 2.8vw, 48px);
+      --mk-card-h: clamp(20px, 2.1vw, 34px);
+      --mk-body: clamp(17px, 1.28vw, 22px);
+      --mk-sys: clamp(12px, .84vw, 15px);
+      /* Marketing typography roles: one token per hierarchy level. */
+      --text-marketing-display: clamp(42px, 4.8vw, 80px);
+      --text-marketing-section: clamp(32px, 3.2vw, 52px);
+      --text-marketing-deck: clamp(18px, 1.7vw, 24px);
+      --text-marketing-card: clamp(16px, 1.2vw, 20px);
+      --text-marketing-action: 15px;
+      --text-marketing-label: 13px;
+      --text-marketing-caption: 13px;
+      --mk-wallpaper-wash-paper: color-mix(in srgb, var(--mk-paper) 90%, transparent);
+      --mk-wallpaper-wash-paper-light: color-mix(in srgb, var(--mk-paper) 92%, transparent);
+      --mk-wallpaper-wash-paper-color: color-mix(in srgb, var(--mk-paper) 88%, transparent);
+      --mk-wallpaper-wash-primary: color-mix(in srgb, var(--mk-ultramarine) 86%, transparent);
+      --mk-wallpaper-wash-clay: color-mix(in srgb, var(--mk-clay) 88%, transparent);
+      --mk-dot: radial-gradient(var(--mk-grid) 2px, transparent 2px);
+    }
+
+    /* ============ 版面骨架 ============ */
+    .mk {
+      position: relative;
+      z-index: 2;
+      isolation: isolate;
+      color: var(--mk-slate);
+      /* 世界观法则：地面是一张连续的素纸——网点与洗色板全部退场，
+         色彩只属于两块颜料场（到场蓝 · 记忆黏土）和信息层自身 */
+      background-color: var(--mk-paper);
+    }
+    .mk-band { position: relative; z-index: 0; padding: var(--mk-pad) 0; background: var(--mk-paper); }
+    .mk-band--slate { background-color: var(--mk-slate); color: var(--mk-paper); }
+    .mk-band--blue { background-color: var(--mk-ultramarine); color: var(--mk-paper); }
+    .mk-band--clay { background-color: var(--mk-clay); }
+
+    /* ============ 墙纸：花纹只用产品自己的符号，永远待在动作后面 ============
+       01 空槽位=缺席的玩家 · 02/10 撞击射线=相遇 · 03 地标印章=共同参照
+       04 工具头=装备 · 05 虚线路径=还没走过的可能 · 07/09 泥块=材料
+       06 只留点阵（前景已经有三格图和图例，背景必须最安静）
+       08 扫描线=印刷质感 */
+    .mk-band { background-repeat: repeat; background-position: 0 0; }
+    .mk-band--dots { background-image: var(--mk-dot); background-size: 26px 26px; }
+    .mk-wall-rays { background-image: url("assets/art/pattern/pat_rays_blue.svg"); background-size: 208px 208px; }
+    .mk-wall-rays-lt { background-image: url("assets/art/pattern/pat_rays_paper.svg"); background-size: 160px 160px; }
+    .mk-wall-marks { background-image: var(--mk-dot), url("assets/art/pattern/pat_landmarks_paper.svg"); background-size: 26px 26px, 180px 180px; }
+    .mk-wall-tips { background-image: url("assets/art/pattern/pat_tooltips_clay.svg"); background-size: 200px 200px; }
+    .mk-wall-paths { background-image: url("assets/art/pattern/pat_dashpath_paper.svg"); background-size: 220px 160px; }
+    .mk-wall-clay-dk { background-image: url("assets/art/pattern/pat_clay_slate.svg"); background-size: 200px 200px; }
+    .mk-wall-clay { background-image: url("assets/art/pattern/pat_clay_clay.svg"); background-size: 200px 200px; }
+    .mk-wall-scan { background-image: repeating-linear-gradient(180deg, var(--mk-grid) 0 1px, transparent 1px 8px); }
+
+    /* 段间接缝：只在颜色改变处使用一张低层级、宽幅的柔软纸边。
+       同色章节不画接缝，避免“两个页面直接拼起来”的横向硬切。 */
+    .mk-band::before { display: none; }
+    #players::before {
+      content: "";
+      display: block;
+      position: absolute;
+      z-index: 0;
+      top: -56px;
+      left: 0;
+      right: 0;
+      height: 64px;
+      pointer-events: none;
+      -webkit-mask: url("assets/art/frame/seam_soft.svg") center bottom / 100% 100% no-repeat;
+      mask: url("assets/art/frame/seam_soft.svg") center bottom / 100% 100% no-repeat;
+    }
+    #players { overflow: visible; }
+    #players::before {
+      background-color: var(--mk-paper);
+      background-image: var(--mk-dot);
+      background-size: 26px 26px;
+    }
+
+    /* ============ 异形版面：全部直边，切角、缺口、撕口，没有圆角 ============ */
+    :root {
+      /* 四向硬描边：沿裁切后的真实轮廓走，所以切角和缺口上不会露出接缝 */
+      --mk-edge: drop-shadow(5px 0 0 var(--mk-slate)) drop-shadow(-5px 0 0 var(--mk-slate))
+                 drop-shadow(0 5px 0 var(--mk-slate)) drop-shadow(0 -5px 0 var(--mk-slate));
+      --cut-mat: polygon(
+        0 30px, 30px 0,
+        calc(100% - 176px) 0, calc(100% - 176px) 20px, calc(100% - 76px) 20px, calc(100% - 76px) 0,
+        100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%,
+        124px 100%, 108px calc(100% - 18px), 0 calc(100% - 18px)
+      );
+      --cut-sleeve: polygon(
+        0 0, calc(100% - 22px) 0, 100% 22px,
+        100% 100%, 22px 100%, 0 calc(100% - 22px)
+      );
+      --cut-slip: polygon(
+        0 20px, 20px 0, 100% 0,
+        100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%
+      );
+    }
+    .mk-framed { position: relative; }
+    /* 裁切必须在内层：filter 先于 clip-path 执行，描边画在同一层会被裁掉 */
+    .mk-cut { position: relative; margin: 0; filter: var(--mk-edge) drop-shadow(11px 11px 0 var(--mk-slate)); }
+    .mk-cut__in { background: var(--mk-paper); clip-path: var(--cut-mat); }
+    .mk-cut--sleeve .mk-cut__in { clip-path: var(--cut-sleeve); }
+    .mk-cut--slip .mk-cut__in { clip-path: var(--cut-slip); }
+    .mk-cut .mk-art { display: block; width: 100%; height: auto; }
+
+    /* 牛皮纸胶带：压住版角，压在裁切之外，所以能探出去 */
+    .mk-tape { position: absolute; z-index: 0; width: clamp(150px,17vw,266px); aspect-ratio: 200/46; background: url("assets/art/frame/tape_kraft.svg") center/100% 100% no-repeat; pointer-events: none; opacity: .18; }
+    .mk-tape--tl { top: -22px; left: 40px; transform: rotate(-5.5deg); }
+    .mk-tape--tr { top: -24px; right: 48px; transform: rotate(4.5deg); }
+    .mk-tape--bl { bottom: -14px; left: 68px; transform: rotate(2.5deg); }
+
+    /* 破框：主体越过版面边缘 */
+    .mk-break { position: absolute; z-index: 0; pointer-events: none; opacity: .18; }
+    .mk-break--gripper { top: clamp(-118px,-8.5vw,-62px); right: clamp(20px,5vw,96px); width: clamp(132px,16vw,244px); }
+    .mk-break--stamp { top: -40px; left: -30px; width: clamp(74px,8vw,124px); height: auto; color: var(--mk-slate); }
+
+    /* 从版边探出去的挂签 */
+    .mk-tab { position: absolute; z-index: 3; left: clamp(20px,4vw,64px); bottom: -22px; padding: 12px 20px 9px; border: var(--mk-b); background: var(--mk-cadmium); color: var(--mk-slate); clip-path: polygon(0 0, 100% 0, 100% 100%, 14px 100%, 0 calc(100% - 14px)); }
+    .mk-shell { position: relative; z-index: 2; width: min(var(--mk-max), 100%); margin: 0 auto; padding-inline: var(--mk-gut); }
+    .mk-framed > .mk-cut,
+    .mk-framed > .mk-window,
+    .mk-framed > figure { position: relative; z-index: 2; }
+
+    /* ============ 排版：只有 Bungee 和 Space Grotesk ============ */
+    .mk-h { margin: 0; text-wrap: balance; overflow-wrap: normal; word-break: normal; hyphens: none; }
+    .mk-lede { margin: 26px 0 0; max-width: 34em; text-wrap: pretty; }
+    .mk-note { margin: 18px 0 0; font-size: var(--mk-sys); font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--mk-stone); }
+    .mk-note a { color: inherit; text-underline-offset: 4px; }
+    .mk-band--slate .mk-note, .mk-band--blue .mk-note { color: rgba(252,252,250,.74); }
+    .mk-head { display: grid; grid-template-columns: minmax(0,1.25fr) minmax(260px,.75fr); gap: clamp(24px,4vw,72px); align-items: end; }
+    .mk-head .mk-lede { margin-top: 0; padding-bottom: .3em; }
+
+    /* ============ 通用构件：硬边、零圆角、硬投影 ============ */
+    .mk-plate { border: var(--mk-b); background: var(--mk-paper); box-shadow: var(--mk-sh); }
+    .mk-art { display: block; width: 100%; height: auto; }
+    .mk-figure { margin: clamp(40px,6vh,88px) 0 0; }
+    .mk-cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding: 14px 18px 12px; border-top: var(--mk-b); background: var(--mk-paper); color: var(--mk-slate); }
+    .mk-cap b { text-transform: uppercase; }
+    .mk-cap span { color: var(--mk-stone); }
+    .mk-tag { display: inline-block; padding: 7px 12px 5px; border: var(--mk-b3); background: var(--mk-paper); color: var(--mk-slate); font-size: var(--mk-sys); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .mk-tag--blue { background: var(--mk-ultramarine); color: var(--mk-paper); }
+    .mk-tag--yellow { background: var(--mk-cadmium); }
+    .mk-tag--red { background: var(--mk-vermilion); color: var(--mk-paper); }
+
+    /* ============ 跑马灯 ============ */
+    .mk-ticker { position: relative; z-index: 2; width: auto; margin: 0 -88px -34px; padding: 15px 0 12px; transform: rotate(-0.85deg); overflow: hidden; border-top: 5px solid var(--mk-slate); border-bottom: 5px solid var(--mk-slate); background: var(--mk-paper); }
+    .mk-ticker .ticker-inner span { color: var(--mk-slate); letter-spacing: .04em; }
+    .mk-ticker .tick-ico { color: var(--mk-vermilion); }
+
+    /* ============ 01 到场：问题和答案合成一次状态切换 ============ */
+    .mk-arrival { padding-top: calc(var(--mk-pad) + 26px); background-color: var(--mk-ultramarine); color: var(--mk-paper); }
+    .mk-arrival .st-b { display: none; }
+    .mk-arrival.is-on .st-a { display: none; }
+    .mk-arrival.is-on .st-b { display: block; }
+    .mk-arrival .mk-h { max-width: 14ch; }
+    .mk-arrival .mk-figure { max-width: 1160px; }
+    .mk-arrival .mk-cut { filter: var(--mk-edge) drop-shadow(11px 11px 0 rgba(0,0,0,.34)); }
+    .mk-arrival .mk-note { color: rgba(252,252,250,.74); }
+
+    /* 擦除式换画：硬边推过去，不做淡入淡出 */
+    .mk-swap { position: relative; }
+    .mk-swap img { display: block; width: 100%; height: auto; }
+    .mk-swap img + img { position: absolute; inset: 0; clip-path: inset(0 0 0 100%); transition: clip-path .8s cubic-bezier(.22,.9,.28,1); }
+    .mk-arrival.is-on .mk-swap img + img { clip-path: inset(0 0 0 0); }
+
+    .mk-statebar { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 26px; }
+    .mk-slotchip { display: inline-flex; align-items: center; gap: 13px; padding: 12px 18px 10px; font-family: var(--font-display); font-weight: 400; font-size: clamp(14px,1.4vw,22px); text-transform: uppercase; }
+    .mk-slotchip.st-a { border: 4px dashed rgba(252,252,250,.66); color: rgba(252,252,250,.88); }
+    .mk-slotchip.st-b { border: var(--mk-b); background: var(--mk-cadmium); color: var(--mk-slate); }
+    .mk-slotchip i { width: 15px; height: 15px; background: currentColor; }
+    .mk-replay { padding: 12px 18px 10px; border: 4px solid var(--mk-paper); background: transparent; color: var(--mk-paper); font: 400 clamp(13px,1.1vw,17px)/1 var(--font-display); letter-spacing: .04em; text-transform: uppercase; cursor: pointer; }
+    .mk-replay:hover { background: var(--mk-paper); color: var(--mk-slate); }
+
+    .mk-facts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); margin-top: clamp(34px,5vh,68px); border: var(--mk-b); background: var(--mk-paper); color: var(--mk-slate); box-shadow: var(--mk-sh); }
+    .mk-fact { min-width: 0; padding: clamp(20px,2.2vw,34px); border-right: var(--mk-b); }
+    .mk-fact:last-child { border-right: 0; }
+    .mk-fact svg { display: block; width: clamp(44px,4.2vw,64px); height: auto; margin-bottom: 16px; color: var(--mk-slate); }
+    .mk-fact b { display: block; margin-bottom: 9px; font-family: var(--font-display); font-weight: 400; font-size: clamp(16px,1.45vw,24px); text-transform: uppercase; }
+    .mk-fact p { margin: 0; font-size: var(--mk-body); font-weight: 500; line-height: 1.42; }
+
+    /* ============ 02 选人：两张卡 + 角色详情合成一段 ============ */
+    .mk-players { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: clamp(18px,2.2vw,36px); margin-top: clamp(32px,5vh,68px); }
+    .mk-player { display: flex; flex-direction: column; border: var(--mk-b); background: var(--mk-paper); box-shadow: var(--mk-sh); }
+    .mk-player__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 18px 11px; border-bottom: var(--mk-b); font-family: var(--font-display); font-weight: 400; font-size: clamp(14px,1.4vw,22px); text-transform: uppercase; }
+    .mk-player--one .mk-player__top { background: var(--mk-cadmium); }
+    .mk-player--two .mk-player__top { background: var(--mk-ultramarine); color: var(--mk-paper); }
+    .mk-player__body { display: grid; grid-template-columns: auto minmax(0,1fr); gap: clamp(18px,2.2vw,36px); align-items: center; padding: clamp(18px,2vw,32px); }
+    .mk-player__art { display: grid; place-items: center; padding: clamp(12px,1.4vw,22px); border: var(--mk-b3); background: var(--mk-clay); background-image: var(--mk-dot); background-size: 22px 22px; }
+    .mk-player__art svg { display: block; width: clamp(84px,9vw,150px); height: auto; color: var(--mk-slate); }
+    .mk-player h3 { margin: 0 0 15px; font-family: var(--font-display); font-weight: 400; font-size: clamp(17px,1.6vw,26px); line-height: 1.04; text-transform: uppercase; }
+    .mk-brings { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .mk-brings li { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; align-items: start; font-size: var(--mk-body); font-weight: 500; line-height: 1.38; }
+    .mk-brings li::before { content: ""; width: 13px; height: 13px; margin-top: .46em; background: var(--mk-slate); }
+
+    .mk-char { display: grid; grid-template-columns: minmax(0,.72fr) minmax(0,1.28fr); gap: clamp(22px,3vw,52px); align-items: start; margin-top: clamp(18px,2.2vw,36px); }
+    .mk-char figure, .mk-after figure, .mk-start__art { margin: 0; }
+    .mk-pull { margin: clamp(14px,1.8vw,26px) 0 0; padding: 20px 22px 17px; border: var(--mk-b); background: var(--mk-cadmium); color: var(--mk-slate); font-family: var(--font-display); font-weight: 400; font-size: clamp(17px,1.7vw,29px); line-height: 1.16; text-transform: uppercase; }
+
+    /* ============ 互动：人的动作与 Meikku 的响应组成持续循环 ============ */
+    .mk-seq { display: grid; grid-template-columns: minmax(0,1.12fr) minmax(280px,.88fr); gap: clamp(22px,3vw,52px); align-items: start; margin-top: clamp(32px,5vh,68px); }
+    .mk-seq__stage { min-width: 0; }
+    .mk-seq__stage .mk-cut__in { position: relative; }
+    .mk-seq__stage img { display: block; width: 100%; height: auto; visibility: hidden; }
+    .mk-seq__stage img + img { position: absolute; inset: 0; }
+    .mk-seq__stage img.is-on { visibility: visible; }
+    .mk-seq__steps { display: grid; gap: clamp(10px,1.2vw,16px); margin: 0; padding: 0; list-style: none; }
+    .mk-seq__steps button { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 15px; width: 100%; padding: 15px 18px 13px; border: var(--mk-b); background: var(--mk-paper); color: var(--mk-slate); font: inherit; text-align: left; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease; }
+    .mk-seq__steps li.is-on button { background: var(--mk-cadmium); box-shadow: var(--mk-sh-s); transform: translate(-2px,-2px); }
+    .mk-seq__steps b { font-weight: 400; }
+    .mk-seq__steps strong { display: block; margin-bottom: 6px; text-transform: uppercase; }
+    .mk-seq__steps span { font-size: var(--mk-body); font-weight: 500; line-height: 1.38; }
+    .mk-legend { display: flex; flex-wrap: wrap; gap: clamp(14px,2vw,40px); margin-top: clamp(18px,2.2vw,30px); padding: 16px 20px 14px; border: var(--mk-b3); background: var(--mk-paper); }
+    .mk-legend div { display: flex; align-items: center; gap: 11px; font-size: var(--mk-sys); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .mk-legend i { flex: 0 0 auto; width: 44px; height: 10px; border: 2px solid var(--mk-slate); background: var(--mk-ultramarine); }
+    .mk-legend i.is-dash { height: 0; border: 0; border-top: 4px dashed var(--mk-slate); }
+    .mk-legend i.is-dot { width: 19px; height: 19px; border: 3px solid var(--mk-slate); border-radius: 50%; background: var(--mk-cadmium); }
+
+    /* ============ 04 证据 ============ */
+    .mk-window { margin-top: clamp(32px,5vh,68px); border: var(--mk-b); background: var(--mk-paper); box-shadow: var(--mk-sh); }
+    .mk-window__bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 18px 9px; border-bottom: var(--mk-b); background: var(--mk-cadmium); }
+    .mk-window__dots { display: flex; gap: 8px; }
+    .mk-window__dots i { width: 13px; height: 13px; border: 2px solid var(--mk-slate); background: var(--mk-paper); }
+    .mk-window__frame { position: relative; aspect-ratio: 16/9; overflow: hidden; background: var(--mk-slate); }
+    .mk-window__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .mk-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 13px; margin-top: 22px; }
+    .mk-btn { display: inline-block; appearance: none; padding: 14px 21px 11px; border: var(--mk-b); background: var(--mk-ultramarine); color: var(--mk-paper); box-shadow: var(--mk-sh-s); text-decoration: none; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease; }
+    .mk-btn:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 var(--mk-slate); }
+    .mk-btn--ghost { background: var(--mk-paper); color: var(--mk-slate); }
+    .mk-evi { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: clamp(16px,1.8vw,30px); margin-top: clamp(22px,3vh,40px); }
+    .mk-evi figure { margin: 0; min-width: 0; }
+    .mk-evi .mk-shotbox { position: relative; aspect-ratio: 16/10; overflow: hidden; background: var(--mk-clay); border-bottom: var(--mk-b); }
+    .mk-evi img, .mk-evi video { display: block; width: 100%; height: 100%; object-fit: contain; background: var(--mk-clay); }
+    .mk-evi img.is-photo { object-fit: cover; filter: grayscale(1) contrast(1.06); }
+    .mk-evi figcaption { display: grid; gap: 5px; padding: 13px 15px 11px; }
+    .mk-evi figcaption b { text-transform: uppercase; }
+    .mk-evi figcaption span { color: var(--mk-stone); }
+
+    /* ============ 05 收场：留下来的东西 + 盒子里有什么 ============ */
+    .mk-after { display: grid; grid-template-columns: minmax(0,.82fr) minmax(0,1.18fr); gap: clamp(20px,2.6vw,44px); align-items: start; margin-top: clamp(32px,5vh,68px); }
+    .mk-shot { margin: 0; }
+    .mk-shot img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; filter: grayscale(1) contrast(1.06); }
+    .mk-list { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: clamp(16px,2vw,34px); margin: clamp(26px,3.4vh,46px) 0 0; padding: 0; list-style: none; }
+    .mk-list li { padding-top: 14px; border-top: var(--mk-b3); font-size: var(--mk-body); font-weight: 500; line-height: 1.4; }
+    .mk-list b { display: block; margin-bottom: 6px; font-family: var(--font-display); font-weight: 400; font-size: clamp(14px,1.25vw,20px); text-transform: uppercase; }
+
+    /* ============ 06 PRESS START ============ */
+    .mk-start { text-align: center; }
+    .mk-start .mk-lede { max-width: 30em; margin-inline: auto; }
+    .mk-start__art { max-width: 1120px; margin: 0 auto clamp(26px,4vh,58px); }
+    .mk-start .mk-btns { justify-content: center; margin-top: 28px; }
+
+    /* ============ v1.7 shared-table world: art defines the page edge ============
+       Five references, one original Meikku grammar:
+       route / relic / inhabited place / gesture / scale. Functional UI stays contained. */
+    :root {
+      --mk-decor-quiet: .14;
+      --mk-decor-soft: .2;
+      --mk-decor-medium: .28;
+      --mk-veil-cool: color-mix(in srgb, var(--mk-ultramarine) 52%, transparent);
+      --mk-veil-paper: color-mix(in srgb, var(--mk-paper) 34%, transparent);
+    }
+    .mk-band { overflow: clip; isolation: isolate; }
+    /* Layer contract: ambient art stays at 0; information surfaces stay at 2;
+       functional labels and controls may use 3. Decoration never enters 2/3. */
+    .mk-band .mk-shell { z-index: 2; }
+    .mk-band .mk-shell > * { position: relative; z-index: 2; }
+    .mk-band .mk-shell::before,
+    .mk-band .mk-shell::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      pointer-events: none;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+    #arrival::after,
+    #players::after,
+    #play::after,
+    #evidence::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      pointer-events: none;
+    }
+    #arrival::after { background: var(--mk-veil-cool); }
+    #players::after,
+    #play::after,
+    #evidence::after { background: var(--mk-veil-paper); }
+
+    /* Arrival / route: one diagonal proposal crosses the large scene before the facts begin. */
+    #arrival {
+      padding-bottom: clamp(32px, 3vh, 48px);
+      background-image:
+        url("assets/brand/ui_art_v2/frame_breakers/proposal-arc.svg"),
+        url("assets/brand/ui_art_v2/frame_breakers/clay-orbit.svg"),
+        url("assets/art/pattern/pat_rays_blue.svg");
+      background-repeat: no-repeat, no-repeat, repeat;
+      background-size: min(72vw, 1280px) auto, min(38vw, 640px) auto, 208px 208px;
+      background-position: 112% 27%, -13% 72%, 0 0;
+      background-blend-mode: soft-light, soft-light, soft-light;
+    }
+    #arrival .mk-figure { width: min(78%, 1160px); margin-left: 4%; }
+    #arrival .mk-statebar { width: min(78%, 1160px); margin-left: 4%; }
+    #arrival .mk-facts {
+      position: relative;
+      width: min(88%, 1360px);
+      margin-left: auto;
+      margin-right: 2%;
+      transform: rotate(.7deg);
+    }
+    #arrival .mk-shell::after {
+      z-index: 0;
+      right: -10%;
+      bottom: 16%;
+      width: min(42vw, 700px);
+      aspect-ratio: 3 / 1;
+      background-image: url("assets/brand/ui_art_v2/frame_breakers/tool-swarm.svg");
+      opacity: var(--mk-decor-soft);
+      transform: rotate(-8deg);
+    }
+
+    /* The middle story reads as one continuous paper surface. */
+    #players {
+      padding-top: clamp(40px, 4.5vh, 64px);
+      padding-bottom: clamp(20px, 2vh, 32px);
+      background-color: transparent;
+      background-image: url("assets/brand/ui_art_v2/frame_breakers/clay-orbit.svg");
+      background-repeat: no-repeat;
+      background-size: min(50vw, 820px) auto;
+      background-position: 50% 32%;
+      background-blend-mode: soft-light;
+    }
+    #players .mk-players {
+      grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+      gap: clamp(48px, 8vw, 136px);
+      align-items: start;
+      padding: 0 3%;
+    }
+    #players .mk-player { position: relative; z-index: 2; }
+    #players .mk-player--one { transform: rotate(-1.2deg) translateY(8px); }
+    #players .mk-player--two { transform: rotate(1.4deg) translateY(72px); }
+    #players .mk-char { margin-top: clamp(56px, 7vh, 96px); }
+    #players .mk-char > figure { transform: rotate(-1deg); }
+    #players .mk-shell::after {
+      z-index: 0;
+      right: -12%;
+      bottom: 1%;
+      width: min(52vw, 820px);
+      aspect-ratio: 3 / 1;
+      background-image: url("assets/brand/ui_art_v2/frame_breakers/tool-swarm.svg");
+      opacity: var(--mk-decor-soft);
+    }
+
+    /* Interaction / response: frames and states overlap as one continuous loop. */
+    #play {
+      padding-top: clamp(32px, 3vh, 48px);
+      background-color: transparent;
+      background-image: url("assets/brand/ui_art_v2/frame_breakers/proposal-arc.svg");
+      background-repeat: no-repeat;
+      background-size: min(84vw, 1460px) auto;
+      background-position: 80% 30%;
+      background-blend-mode: soft-light;
+    }
+    #play .mk-seq {
+      position: relative;
+      display: block;
+      min-height: clamp(580px, 58vw, 820px);
+    }
+    #play .mk-seq__stage { width: min(74%, 1080px); transform: rotate(-1.1deg); }
+    #play .mk-seq__steps {
+      position: absolute;
+      z-index: 3;
+      top: clamp(56px, 8vw, 128px);
+      right: 0;
+      width: min(43%, 620px);
+    }
+    #play .mk-seq__steps li:nth-child(1) { transform: rotate(1.2deg); }
+    #play .mk-seq__steps li:nth-child(2) { transform: translateX(-24px) rotate(-1deg); }
+    #play .mk-seq__steps li:nth-child(3) { transform: translateX(12px) rotate(1.4deg); }
+    #play .mk-legend { width: max-content; max-width: 100%; transform: rotate(-.5deg); }
+    /* Evidence / scale: proof remains rectangular; surrounding tools create the physical foreground. */
+    #evidence {
+      background-color: transparent;
+      background-image: url("assets/brand/ui_art_v2/frame_breakers/tool-swarm.svg");
+      background-repeat: no-repeat;
+      background-size: min(44vw, 760px) auto;
+      background-position: 112% 50%;
+      background-blend-mode: soft-light;
+    }
+    #evidence .mk-window { position: relative; z-index: 2; width: min(91%, 1420px); }
+    #evidence .mk-window::after {
+      content: "PROOF SURFACE";
+      position: absolute;
+      right: -36px;
+      bottom: 72px;
+      padding: 12px 16px 8px;
+      border: var(--mk-b3);
+      background: var(--mk-vermilion);
+      color: var(--mk-paper);
+      font: 400 var(--mk-sys) / 1 var(--font-display);
+      letter-spacing: .08em;
+      transform: rotate(90deg);
+    }
+    #evidence .mk-evi {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: clamp(20px, 2.2vw, 36px);
+      align-items: start;
+    }
+    #evidence .mk-evi figure:nth-child(1) { grid-column: 1 / span 6; transform: rotate(-1deg); }
+    #evidence .mk-evi figure:nth-child(2) { grid-column: 7 / span 4; transform: translateY(72px) rotate(1.2deg); }
+    #evidence .mk-evi figure:nth-child(3) { grid-column: 3 / span 5; margin-top: -24px; transform: rotate(.7deg); }
+
+    /* The closing pair returns to the stable, contained composition.
+       No frame-breakers cross the After / Press Start boundary. */
+    #press-start {
+      min-height: auto;
+      padding-top: clamp(48px, 6vh, 80px);
+      padding-bottom: clamp(64px, 8vh, 112px);
+    }
+    #press-start .mk-shell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #press-start .mk-start__art {
+      order: 1;
+      width: min(72vw, 880px);
+      transform: none;
+    }
+    #press-start .mk-h {
+      order: 2;
+      position: static;
+      margin: 0;
+      color: var(--mk-slate);
+      text-shadow: none;
+    }
+    #press-start .mk-lede {
+      order: 3;
+      position: static;
+      margin: 28px auto 0;
+    }
+    #press-start .mk-btns {
+      order: 4;
+      position: static;
+      margin-top: 28px;
+    }
+    #press-start .mk-h.mk-sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      border: 0;
+    }
+
+    /* v2.0 marketing narrative: one website, not stacked presentation boards. */
+    .mk-head--promise { align-items: start; }
+    .mk-promise {
+      margin: 24px 0 0;
+      max-width: 34em;
+      font-size: var(--mk-body);
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .mk-btn--yellow { background: var(--mk-cadmium); color: var(--mk-slate); }
+    .mk-btn--light { border-color: var(--mk-paper); background: var(--mk-paper); color: var(--mk-slate); }
+    .mk-btns--light .mk-btn--light { background: transparent; color: var(--mk-paper); box-shadow: 6px 6px 0 rgba(0,0,0,.34); }
+    .mk-statement {
+      align-self: center;
+      padding: clamp(24px, 3vw, 48px);
+      border-left: var(--mk-b);
+    }
+    .mk-statement .mk-pull { margin-top: 0; }
+    .mk-statement > p:last-child {
+      margin: 24px 0 0;
+      max-width: 34em;
+      font-size: var(--mk-body);
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    #play,
+    #players,
+    #evidence {
+      background-color: var(--mk-paper);
+      background-image: var(--mk-dot);
+      background-size: 26px 26px;
+      background-position: 0 0;
+    }
+    #play { padding-bottom: clamp(48px, 6vh, 80px); }
+    #players { padding-top: clamp(48px, 6vh, 80px); padding-bottom: var(--mk-pad); }
+    #play::before,
+    #players::before,
+    #play::after,
+    #players::after,
+    #evidence::after { display: none; }
+    #play .mk-seq { margin-top: clamp(48px, 6vh, 80px); }
+    #players .mk-players { margin-top: clamp(48px, 6vh, 80px); }
+    #players .mk-shell::after { display: none; }
+
+    #after {
+      background-image: url("assets/art/pattern/pat_clay_clay.svg");
+      background-size: 200px 200px;
+    }
+    #after .mk-shell::before,
+    #after .mk-shell::after,
+    #press-start .mk-shell::before,
+    #press-start .mk-shell::after { display: none; }
+
+    #evidence .mk-window { width: 100%; }
+    #evidence .mk-window::after { display: none; }
+    #evidence .mk-evi {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(20px, 2.2vw, 36px);
+    }
+    #evidence .mk-evi figure:nth-child(n) {
+      grid-column: auto;
+      margin-top: 0;
+      transform: none;
+    }
+
+    #press-start .mk-h { order: 3; }
+    #press-start .mk-lede { order: 4; }
+    #press-start .mk-btns { order: 5; }
+
+    @media (max-width: 900px) {
+      .mk-statement { padding: 24px 0 0; border-left: 0; border-top: var(--mk-b); }
+      #evidence .mk-evi { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .mk-head--promise .mk-h { font-size: clamp(36px, 11vw, 56px); }
+      .mk-promise { margin-top: 20px; }
+      .mk-btns--light { align-items: stretch; }
+      .mk-btns--light .mk-btn { width: 100%; text-align: center; }
+      #players .mk-char { margin-top: 48px; }
+      .mk-ticker { width: 100%; margin-left: 0; margin-right: 0; transform: none; }
+    }
+
+    /* v2.1 image-led marketing narrative: one image carries one idea. */
+    /* One semantic role, one format. Components may change color/alignment, never type scale. */
+    #story .type-display,
+    #story .type-heading,
+    #story .type-card-title,
+    #story .type-action,
+    #story .type-label {
+      font-family: var(--font-display);
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+    #story .type-display {
+      font-size: var(--text-marketing-display);
+      line-height: .92;
+      letter-spacing: -.005em;
+    }
+    #story .type-heading {
+      font-size: var(--text-marketing-section);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+    #story .type-deck,
+    #story .type-caption {
+      font-family: var(--font-sans);
+    }
+    #story .type-deck {
+      font-size: var(--text-marketing-deck);
+      font-weight: 500;
+      line-height: 1.45;
+    }
+    #story .type-card-title {
+      font-size: var(--text-marketing-card);
+      line-height: 1.15;
+      letter-spacing: .02em;
+    }
+    #story .type-action {
+      font-size: var(--text-marketing-action);
+      line-height: 1;
+      letter-spacing: .04em;
+    }
+    #story .type-label {
+      font-size: var(--text-marketing-label);
+      line-height: 1.2;
+      letter-spacing: .12em;
+    }
+    #story .type-caption {
+      font-size: var(--text-marketing-caption);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .mk-visual-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: clamp(24px, 4vw, 72px);
+      align-items: end;
+      margin-bottom: clamp(32px, 5vh, 64px);
+    }
+    .mk-visual-kicker {
+      max-width: 22ch;
+      margin: 0;
+    }
+    .mk-photo {
+      position: relative;
+      margin: 0;
+      overflow: hidden;
+      border: var(--mk-b);
+      background: var(--mk-clay);
+      box-shadow: var(--mk-sh);
+    }
+    .mk-photo > img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .mk-photo .mk-cap { border-top: var(--mk-b); }
+    .mk-claim {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 2;
+      padding: 8px 12px;
+      border: var(--mk-b3);
+      background: var(--mk-cadmium);
+      color: var(--mk-slate);
+    }
+    .mk-hero-grid {
+      display: grid;
+      grid-template-columns: minmax(300px, .72fr) minmax(0, 1.28fr);
+      gap: clamp(32px, 4vw, 72px);
+      align-items: center;
+    }
+    .mk-hero-copy .mk-h { max-width: 12ch; }
+    .mk-hero-copy .mk-lede { max-width: 28em; }
+    .mk-hero-copy .mk-btns { margin-top: 32px; }
+    #arrival .mk-photo { transform: rotate(.55deg); }
+
+    .mk-seq--visual {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 0;
+    }
+    #play .mk-seq--visual .mk-seq__stage {
+      width: 100%;
+      transform: none;
+    }
+    .mk-seq__steps--labels {
+      position: static !important;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      width: 100% !important;
+    }
+    .mk-seq__steps--labels li:nth-child(n) { transform: none !important; }
+    .mk-seq__steps--labels button {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 72px;
+    }
+    .mk-seq__steps--labels strong { margin: 0; }
+    .mk-relationship-photo { width: min(100%, 1240px); margin-inline: auto; }
+    .mk-word-stamps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      width: min(100%, 1240px);
+      margin: 32px auto 0;
+    }
+    .mk-word-stamps span {
+      padding: 16px;
+      border: var(--mk-b3);
+      background: var(--mk-paper);
+      text-align: center;
+    }
+    .mk-word-stamps span:nth-child(2) { background: var(--mk-cadmium); }
+    .mk-word-stamps span:nth-child(3) { background: var(--mk-ultramarine); color: var(--mk-paper); }
+
+    .mk-after-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(24px, 3vw, 48px);
+    }
+    .mk-after-gallery .mk-photo:first-child { transform: rotate(-.55deg); }
+    .mk-after-gallery .mk-photo:last-child { transform: translateY(36px) rotate(.65deg); }
+
+    .mk-proof-key {
+      display: inline-block;
+      margin: 0;
+      padding: 12px 16px;
+      border: var(--mk-b3);
+      background: var(--mk-cadmium);
+    }
+    #evidence .mk-window { margin-top: 0; }
+    #evidence .mk-evi { margin-top: clamp(48px, 6vh, 80px); }
+
+    .mk-finale-grid {
+      display: grid;
+      grid-template-columns: minmax(300px, .7fr) minmax(0, 1.3fr);
+      gap: clamp(32px, 5vw, 88px);
+      align-items: center;
+      text-align: left;
+    }
+    #press-start .mk-shell.mk-finale-grid {
+      display: grid;
+      align-items: center;
+    }
+    .mk-finale-grid .mk-photo {
+      width: min(100%, 560px);
+      justify-self: center;
+      transform: rotate(-.65deg);
+    }
+    .mk-finale-copy .mk-h {
+      max-width: 13ch;
+    }
+    #press-start .mk-finale-copy .mk-lede { max-width: 25em; margin-left: 0; margin-right: 0; }
+    #press-start .mk-finale-copy .mk-btns { justify-content: flex-start; }
+
+    /* Wallpaper is an information container, not foreground decoration.
+       Repeated wallpaper families connect repeated ideas across the story:
+       shared table = relationship, play field = response, pigment grid = playmate identity. */
+    #story .mk-band {
+      --mk-wallpaper-image: none;
+      --mk-wallpaper-wash: var(--mk-wallpaper-wash-paper);
+      background-color: var(--mk-paper);
+      background-image: none;
+    }
+    #story #arrival {
+      --mk-wallpaper-image: url("assets/brand/ui_art_v1/wallpapers/desktop/wallpaper-shared-table-clean-2560x1440.png");
+      --mk-wallpaper-wash: var(--mk-wallpaper-wash-primary);
+      background-color: var(--mk-ultramarine);
+    }
+    #story #play,
+    #story #players,
+    #story #press-start {
+      --mk-wallpaper-image: url("assets/brand/ui_art_v1/wallpapers/desktop/wallpaper-pigment-grid-clean-2560x1440.png");
+      --mk-wallpaper-wash: var(--mk-wallpaper-wash-paper-color);
+    }
+    #story #after {
+      --mk-wallpaper-image: url("assets/brand/ui_art_v1/wallpapers/desktop/wallpaper-shared-table-clean-2560x1440.png");
+      --mk-wallpaper-wash: var(--mk-wallpaper-wash-clay);
+      background-color: var(--mk-clay);
+    }
+    #story .mk-band > .mk-shell::before {
+      content: "";
+      display: block;
+      position: absolute;
+      z-index: 0;
+      inset: -32px 12px;
+      pointer-events: none;
+      background-color: var(--mk-paper);
+      background-image:
+        linear-gradient(var(--mk-wallpaper-wash), var(--mk-wallpaper-wash)),
+        var(--mk-wallpaper-image);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px));
+    }
+    #story #arrival > .mk-shell::before { background-color: var(--mk-ultramarine); }
+    #story #after > .mk-shell::before { background-color: var(--mk-clay); }
+    #story .mk-band > .mk-shell::after { display: none !important; }
+
+    @media (max-width: 900px) {
+      .mk-hero-grid,
+      .mk-finale-grid { grid-template-columns: 1fr; }
+      .mk-visual-head { grid-template-columns: 1fr; align-items: start; }
+      .mk-after-gallery { grid-template-columns: 1fr; }
+      .mk-after-gallery .mk-photo:nth-child(n) { transform: none; }
+      .mk-word-stamps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mk-finale-copy { text-align: center; }
+      .mk-finale-copy .mk-h,
+      #press-start .mk-finale-copy .mk-lede { margin-left: auto; margin-right: auto; }
+      #press-start .mk-finale-copy .mk-btns { justify-content: center; }
+    }
+    @media (max-width: 640px) {
+      #story #arrival,
+      #story #after {
+        --mk-wallpaper-image: url("assets/brand/ui_art_v1/wallpapers/mobile/wallpaper-shared-table-clean-1440x3200.png");
+      }
+      #story #play,
+      #story #evidence {
+        --mk-wallpaper-image: url("assets/brand/ui_art_v1/wallpapers/mobile/wallpaper-play-field-clean-1440x3200.png");
+      }
+      #story #players,
+      #story #press-start {
+        --mk-wallpaper-image: url("assets/brand/ui_art_v1/wallpapers/mobile/wallpaper-pigment-grid-clean-1440x3200.png");
+      }
+      #story .mk-band > .mk-shell::before {
+        inset: -20px 8px;
+        clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      }
+      .mk-seq__steps--labels { grid-template-columns: 1fr; }
+      .mk-seq__steps--labels button { min-height: 0; }
+      .mk-word-stamps { grid-template-columns: 1fr; }
+      .mk-claim { top: 8px; left: 8px; }
+    }
+
+    /* Existing solo preview route now supports the current section architecture. */
+    body.solo-section .scene,
+    body.solo-section .arm-rail,
+    body.solo-section #story > :not(.active-solo) { display: none !important; }
+    body.solo-section .active-solo { min-height: 100vh; }
+    body.solo-section .active-solo .pop { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mk-swap img + img, .mk-seq__steps button { transition: none !important; }
+    }
+    /* ============ 响应式 ============ */
+    @media (max-width: 1180px) {
+      .mk-seq { grid-template-columns: 1fr; }
+      .mk-after { grid-template-columns: 1fr; }
+      .mk-list { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      #arrival .mk-figure,
+      #arrival .mk-statebar,
+      #arrival .mk-facts,
+      #evidence .mk-window { width: auto; margin-left: 0; margin-right: 0; }
+      #play .mk-seq { display: grid; min-height: 0; }
+      #play .mk-seq__stage { width: 100%; }
+      #play .mk-seq__steps { position: static; width: 100%; }
+      #evidence .mk-evi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #evidence .mk-evi figure:nth-child(1),
+      #evidence .mk-evi figure:nth-child(2),
+      #evidence .mk-evi figure:nth-child(3) { grid-column: auto; margin-top: 0; transform: none; }
+      #after .mk-after { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 1080px) {
+      .mk-evi { grid-template-columns: 1fr; }
+      .mk-facts { grid-template-columns: 1fr; }
+      .mk-fact { border-right: 0; border-bottom: var(--mk-b); }
+      .mk-fact:last-child { border-bottom: 0; }
+    }
+    @media (max-width: 900px) {
+      .mk-head, .mk-players, .mk-char { grid-template-columns: 1fr; }
+      .mk-head { align-items: start; }
+      #players .mk-players { gap: 32px; padding: 0; }
+      #players .mk-player--one,
+      #players .mk-player--two { transform: none; }
+      #players .mk-char { margin-top: 64px; }
+      #evidence .mk-evi { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      :root {
+        --mk-pad: clamp(44px, 5.5vh, 76px);
+        /* 窄屏去掉底部那道台阶，图注是两行，会被切掉 */
+        --cut-mat: polygon(
+          0 20px, 20px 0,
+          calc(100% - 116px) 0, calc(100% - 116px) 14px, calc(100% - 46px) 14px, calc(100% - 46px) 0,
+          100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%
+        );
+      }
+      .mark { left: 24px; font-size: var(--text-section-heading); }
+      .mark-sub { left: 24px; right: 24px; max-width: none; font-size: var(--text-label); }
+      #story .type-display { font-size: var(--text-mobile-heading); }
+      #story .type-heading { font-size: var(--text-mobile-section-heading); }
+      .mk-player__body { grid-template-columns: 1fr; }
+      .mk-player__art { justify-self: start; }
+      .mk-plate, .mk-player, .mk-window, .mk-facts { box-shadow: var(--mk-sh-s); }
+      .mk-cut { filter: var(--mk-edge) drop-shadow(7px 7px 0 var(--mk-slate)); }
+      .mk-arrival .mk-cut { filter: var(--mk-edge) drop-shadow(7px 7px 0 rgba(0,0,0,.34)); }
+      .mk-tape { display: none; }
+      .mk-break--gripper { width: 92px; top: -44px; right: 12px; }
+      .mk-cap { display: grid; gap: 5px; }
+      #players .mk-players { grid-template-columns: 1fr; }
+      #play .mk-seq__stage { transform: none; }
+      #play .mk-seq__steps li:nth-child(n) { transform: none; }
+      #play .mk-seq__steps button { grid-template-columns: 1fr; }
+      #evidence .mk-window { margin-right: 8px; }
+      #arrival .mk-shell::after,
+      #players .mk-shell::after { display: none; }
+      #evidence .mk-window::after { display: none; }
+    }
+    @media (min-width: 2400px) {
+      :root { --mk-max: 1860px; }
+    }
+    /* 竖屏（deck 嵌入）时的排版微调，横屏布局不受影响（置于所有断点之后以保证优先）：
+       1) lede 文案移到左上空区，避开泥与手
+       2) SVG 元素按完整画布比例铺开（150vh×100vh = 1200:800，无裁切），
+          左移使泥居中；手仍锚在底边，臂/手允许出画 */
+    @media (orientation: portrait) {
+      .mark { top: 4vh; bottom: auto; }
+      .mark-sub { top: 13.5vh; bottom: auto; left: 5vw; right: 30vw; max-width: 24em; font-size: clamp(15px, 1.9vh, 22px); }
+      .scene svg { inset: 6vh auto auto -61.9vh; width: 150vh; height: 100vh; }
+    }
+
+    /* ============ v2 世界层落地：分隔条是世界物 · 媒体坐在黏土垫上 ·
+       图章只说真话 · 页脚是一个场景（ui_art_v2, 2026-08-17）============ */
+    /* ---- 世界观统一（2026-08-17）：素纸地面 + 蜡笔世界层 + 硬边信息层 ---- */
+    #story .mk-band > .mk-shell::before { display: none; }
+    /* 主题壁纸挂在 ::after：边缘渐隐，斜切贴纸周围只露干净素纸 */
+    #play::after, #players::after, #evidence::after {
+      display: block;
+      background: none;
+      z-index: 0;
+    }
+    #play::after, #players::after {
+      background-image: url("assets/brand/ui_art_v2/patterns/pattern-tool-scatter.svg");
+      background-repeat: repeat;
+      background-size: 300px 300px;
+    }
+    #play::after {
+      -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 150px);
+      mask-image: linear-gradient(180deg, transparent 0, #000 150px);
+    }
+    #players::after {
+      -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 240px), transparent 100%);
+      mask-image: linear-gradient(180deg, #000 calc(100% - 240px), transparent 100%);
+    }
+    #evidence::after {
+      background-image: var(--mk-dot);
+      background-repeat: repeat;
+      background-size: 26px 26px;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 170px, #000 calc(100% - 190px), transparent 100%);
+      mask-image: linear-gradient(180deg, transparent 0, #000 170px, #000 calc(100% - 190px), transparent 100%);
+    }
+    #players::before { background-image: none; }
+    .mk-band--dots { background-image: none; }
+    /* 世界层元素统一继承开场的蜡笔笔触；信息层（卡片、按钮、词条戳）保持印刷利落 */
+    .mk-wdiv,
+    .mk-seam-obj,
+    .mk-seam-squiggle,
+    #play .mk-seq__mat,
+    #evidence .mk-window__mat,
+    .mk-world-footer__scene,
+    #evidence .mk-evi figcaption img.mk-claim-stamp {
+      filter: url(#craftCrayonWobble);
+    }
+    .mk-seam-obj { filter: url(#craftCrayonWobble) drop-shadow(3px 3px 0 rgba(35, 35, 34, .18)); }
+    /* 对话气泡：泡体走蜡笔层（伪元素承载），文字留在利落的信息层 */
+    .mk-bubble { position: relative; background: none; }
+    .mk-bubble::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: url("assets/brand/ui_art_v2/frames/bubble-speech-left.svg") center / 100% 100% no-repeat;
+      filter: url(#craftCrayonWobble);
+    }
+    .mk-bubble--r { background: none; }
+    .mk-bubble--r::before { background-image: url("assets/brand/ui_art_v2/frames/bubble-speech-right.svg"); }
+
+    /* ---- 媒体的世界边框：v2 容器素材以 border-image 九宫格上卡 ----
+       法则：媒体窗口可穿黏土/胶带/撕页/射线等世界材质；证据窗与控件永远保持硬矩形 */
+    .mk-photo--fclay, .mk-photo--ftape, .mk-photo--ftorn, .mk-photo--frays {
+      border: 24px solid transparent;
+      border-image-slice: 88;
+      border-image-width: 24px;
+      border-image-outset: 4px;
+      border-image-repeat: stretch;
+      box-shadow: var(--mk-sh-s);
+      background: var(--mk-paper);
+    }
+    .mk-photo--fclay { border-image-source: url("assets/brand/ui_art_v2/containers/frame-clay-pressed.svg"); }
+    .mk-photo--ftape { border-image-source: url("assets/brand/ui_art_v2/containers/frame-tape-full.svg"); }
+    .mk-photo--ftorn { border-image-source: url("assets/brand/ui_art_v2/containers/frame-zine-torn.svg"); border-image-repeat: round; }
+    .mk-photo--frays { border-image-source: url("assets/brand/ui_art_v2/containers/frame-ray-notched.svg"); }
+    .mk-photo--fclay .mk-cap, .mk-photo--ftape .mk-cap, .mk-photo--ftorn .mk-cap, .mk-photo--frays .mk-cap { border-top: var(--mk-b3); }
+
+    /* ---- 主题壁纸区：同主题共用同一张纸，接缝是微旋转的斜边 ----
+       制作区（play+players）= 工具散布纹理连成一片；
+       记忆区（after）= 歪 0.7 度的黏土大贴纸 + 指纹纹理（黏土记住触碰）；
+       证据区（evidence）= 网点只属于这里：测量与工作台的语义壁纸。 */
+    /* 记忆区：整段是一张歪着钉在纸上的黏土贴纸，斜边即接缝 */
+    #story #after { background-color: transparent; }
+    #story #after::after { display: none; }
+    #story #after::before {
+      content: "";
+      display: block;
+      position: absolute;
+      z-index: 0;
+      inset: 16px -48px 18px;
+      pointer-events: none;
+      background-color: var(--mk-clay);
+      background-image: url("assets/brand/ui_art_v2/patterns/pattern-thumbprint.svg");
+      background-size: 240px 240px;
+      transform: rotate(-.7deg);
+      -webkit-mask: none;
+      mask: none;
+    }
+    /* 扇贝拼接退役：斜贴纸接管记忆区的进出边；骑缝物件保留 */
+    .mk-wdiv--scallop { display: none; }
+    .mk-wdiv--scallop-flip { height: 0 !important; margin: 0 !important; background: none !important; }
+    /* 更多微旋转：世界是歪一点点钉起来的；证据区保持横平竖直 */
+    #play .mk-visual-head { transform: rotate(-.5deg); }
+    #players .mk-visual-head { transform: rotate(.45deg); }
+    #after .mk-visual-head { transform: rotate(-.4deg); }
+    #players .mk-word-stamps span:nth-child(1) { transform: rotate(-1deg); }
+    #players .mk-word-stamps span:nth-child(2) { transform: rotate(.9deg) translateY(3px); }
+    #players .mk-word-stamps span:nth-child(3) { transform: rotate(-.7deg); }
+    #players .mk-word-stamps span:nth-child(4) { transform: rotate(1.1deg) translateY(-2px); }
+    #players .mk-bubble { transform: rotate(-1.1deg); }
+    #players .mk-bubble--r { transform: rotate(.9deg); }
+    .mk-after-gallery .mk-photo:first-child { transform: rotate(-1.3deg); }
+    .mk-after-gallery .mk-photo:last-child { transform: rotate(1.7deg); }
+
+    /* ---- 融合层：边界不是横线，是骑缝的物件、波浪的色场边和互相咬合的段落 ---- */
+    .mk-wdiv { position: relative; z-index: 4; height: 0; pointer-events: none; }
+    .mk-seam-obj {
+      position: absolute;
+      top: 0;
+      width: clamp(60px, 6vw, 88px);
+      height: auto;
+      transform: translateY(-50%) rotate(var(--r, 0deg));
+      filter: drop-shadow(3px 3px 0 rgba(35, 35, 34, .18));
+    }
+    .mk-seam-obj--sm { width: clamp(44px, 4.4vw, 64px); }
+    .mk-seam-squiggle {
+      position: absolute;
+      left: 5%;
+      top: 0;
+      width: min(38%, 540px);
+      height: 34px;
+      transform: translateY(-50%) rotate(-1deg);
+      opacity: .5;
+    }
+    /* 黏土带的进入边：波浪压过上一段的下摆 */
+    .mk-wdiv--scallop {
+      height: 52px;
+      margin-top: -30px;
+      margin-bottom: -1px;
+      background: url("assets/brand/ui_art_v2/dividers/divider-scallop-clay.svg") repeat-x center bottom / 960px 100%;
+    }
+    /* 黏土带的离开边：黏土波浪垂进证据段的纸面 */
+    .mk-wdiv--scallop-flip {
+      height: 52px;
+      margin-top: -1px;
+      margin-bottom: -30px;
+      background: url("assets/brand/ui_art_v2/dividers/divider-scallop-clay-flip.svg") repeat-x center top / 960px 100%;
+    }
+
+    /* 中段与地面同纸色：视觉上仍是一张纸，soft-light 装饰有底可混 */
+    #story #play, #story #players, #story #evidence { background-color: var(--mk-paper); }
+    /* 色调纱幕上下渐隐，不再以硬线收束 */
+    #play::after, #players::after, #evidence::after {
+      -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 130px, #000 calc(100% - 130px), transparent 100%);
+      mask-image: linear-gradient(180deg, transparent 0, #000 130px, #000 calc(100% - 130px), transparent 100%);
+    }
+    /* 每段的壁纸洗色板同样上下渐隐，板与板在缝上交叠而不是相接 */
+    #story #play > .mk-shell::before,
+    #story #players > .mk-shell::before,
+    #story #evidence > .mk-shell::before {
+      /* .mk-band 有 overflow:clip，色板必须整体留在段框内，渐隐才不会被硬切 */
+      inset: 8px 12px;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 120px, #000 calc(100% - 120px), transparent 100%);
+      mask-image: linear-gradient(180deg, transparent 0, #000 120px, #000 calc(100% - 120px), transparent 100%);
+    }
+    /* 段落咬合由波浪边、骑缝物件与渐隐纱幕承担；标题区保持呼吸空间 */
+    #story #play { padding-top: clamp(56px, 6vh, 84px); }
+    #story #evidence { padding-top: calc(var(--mk-pad) + 24px); }
+    #story #after { position: relative; z-index: 1; }
+    /* ---- 融合第三步：一段一个主角，打破"同宽卡片流" ----
+       壁纸照片从洗色板退场：板只留平色调，内容背后不再有照片和色块噪声 */
+    #story .mk-band > .mk-shell::before {
+      background-image: linear-gradient(var(--mk-wallpaper-wash), var(--mk-wallpaper-wash));
+    }
+
+    @media (min-width: 1100px) {
+      /* play：舞台居左，步骤条叠在舞台右缘 —— 一个复合主件，不是上下两条 */
+      .mk-seq--visual { position: relative; display: block; }
+      #play .mk-seq--visual .mk-seq__stage { width: 74%; transform: rotate(-.8deg); }
+      .mk-seq--visual .mk-seq__steps--labels {
+        position: absolute !important;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        top: clamp(48px, 7vw, 120px);
+        right: 0;
+        width: min(34%, 460px) !important;
+      }
+      .mk-seq--visual .mk-seq__steps--labels li:nth-child(1) { transform: rotate(1deg) !important; }
+      .mk-seq--visual .mk-seq__steps--labels li:nth-child(2) { transform: translateX(-26px) rotate(-.8deg) !important; }
+      .mk-seq--visual .mk-seq__steps--labels li:nth-child(3) { transform: translateX(10px) rotate(1.1deg) !important; }
+
+      /* players：场景照与对话并排成一个群像，词条戳退为右列注脚 */
+      #players .mk-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+        gap: clamp(28px, 3vw, 56px);
+        align-items: start;
+      }
+      #players .mk-visual-head { grid-column: 1 / -1; }
+      #players .mk-relationship-photo { grid-column: 1; grid-row: 2 / 4; width: 100%; margin: 0; }
+      #players .mk-chat { grid-column: 2; grid-row: 2; flex-direction: column; align-items: flex-start; width: auto; margin: 6px 0 0; }
+      #players .mk-bubble { width: min(88%, 400px); }
+      #players .mk-bubble--r { align-self: flex-end; margin-top: 4px; }
+      #players .mk-word-stamps { grid-column: 2; grid-row: 3; align-self: end; grid-template-columns: repeat(2, minmax(0, 1fr)); width: auto; margin: 18px 0 0; }
+
+      /* after：两卡主次交叠，一个主角一个注脚 */
+      .mk-after-gallery { display: block; position: relative; }
+      .mk-after-gallery .mk-photo:first-child { width: 58%; }
+      .mk-after-gallery .mk-photo:last-child {
+        position: absolute;
+        right: 0;
+        bottom: -56px;
+        width: 46%;
+        transform: rotate(1deg);
+        box-shadow: var(--mk-sh-s);
+      }
+      #story #after { padding-top: clamp(28px, 3vh, 44px); padding-bottom: calc(var(--mk-pad) + 72px); }
+
+      /* 影级分层：每段一个主角承重，其余轻装上阵 */
+      #evidence .mk-evi .mk-cut { filter: var(--mk-edge) drop-shadow(6px 6px 0 var(--mk-slate)); }
+    }
+
+    /* 到场段（蓝场）以波浪边交还给纸面，而不是一条直线 */
+    #story #arrival {
+      padding-bottom: clamp(72px, 7vh, 104px);
+      -webkit-mask-image: linear-gradient(#000 0 0), url("assets/brand/ui_art_v2/dividers/divider-scallop-clay-flip.svg");
+      -webkit-mask-repeat: no-repeat, repeat-x;
+      -webkit-mask-size: 100% calc(100% - 50px), 960px 51px;
+      -webkit-mask-position: 0 0, 0 100%;
+      mask-image: linear-gradient(#000 0 0), url("assets/brand/ui_art_v2/dividers/divider-scallop-clay-flip.svg");
+      mask-repeat: no-repeat, repeat-x;
+      mask-size: 100% calc(100% - 50px), 960px 51px;
+      mask-position: 0 0, 0 100%;
+    }
+
+    /* 黏土垫已退役：拉伸后读作变形托盘；模块由 sleeve 裁切与纹理区承担质感 */
+    #play .mk-seq__mat { display: none; }
+    #play .mk-seq { position: relative; }
+    #play .mk-seq__mat {
+      position: absolute;
+      z-index: 0;
+      inset: -4% -3%;
+      pointer-events: none;
+      background: url("assets/brand/ui_art_v2/containers/frame-clay-pressed.svg") center / 100% 100% no-repeat;
+      opacity: .85;
+    }
+    #play .mk-seq__stage, #play .mk-seq__steps { position: relative; z-index: 1; }
+
+    /* 证据窗背后是一圈工作台点阵框：测量感，不装饰证据本身 */
+    #evidence .mk-window__mat {
+      position: absolute;
+      z-index: 0;
+      inset: -30px;
+      pointer-events: none;
+      background: url("assets/brand/ui_art_v2/containers/frame-workbench.svg") center / 100% 100% no-repeat;
+      opacity: .5;
+    }
+    #evidence .mk-window__bar, #evidence .mk-window__frame { position: relative; z-index: 1; }
+
+    /* 证据图章：文字仍是主张的载体，图章是强化。figcaption 是 grid，图章走绝对定位钉在右侧 */
+    #evidence .mk-evi figcaption { position: relative; padding-right: 128px; }
+    #evidence .mk-evi figcaption img.mk-claim-stamp {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      width: clamp(76px, 7vw, 108px);
+      height: auto;
+      margin: 0;
+      transform: translateY(-50%) rotate(-4deg);
+    }
+
+    /* 对话气泡：任一参与者都可用任一侧，尾巴方向只是排版选择 */
+    .mk-chat { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; width: min(100%, 1240px); margin: 30px auto 0; }
+    /* 气泡保持 320×220 原始比例：背景不拉伸，文字锁进气泡身体区（下方 26% 是尾巴区） */
+    .mk-bubble {
+      margin: 0;
+      box-sizing: border-box;
+      width: min(44%, 420px);
+      min-width: 250px;
+      aspect-ratio: 320 / 220;
+      display: flex;
+      align-items: center;
+      padding: 5% 7% 26%;
+      background: url("assets/brand/ui_art_v2/frames/bubble-speech-left.svg") center / 100% 100% no-repeat;
+    }
+    .mk-bubble--r { margin-top: 40px; background-image: url("assets/brand/ui_art_v2/frames/bubble-speech-right.svg"); text-align: right; justify-content: flex-end; }
+    @media (max-width: 760px) { .mk-bubble, .mk-bubble--r { width: min(88%, 420px); } .mk-bubble--r { align-self: flex-end; } }
+
+    /* 词条戳配统一语法图标：currentColor 蒙版，深底自动反白 */
+    .mk-word-stamps span { display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .mk-ic {
+      width: 26px;
+      height: 26px;
+      flex: 0 0 auto;
+      background: currentColor;
+      -webkit-mask: var(--ic) center / contain no-repeat;
+      mask: var(--ic) center / contain no-repeat;
+    }
+
+    /* 页脚场景：手与夹爪在同一器皿上会合，页面落回共享桌 */
+    .mk-world-footer { position: relative; z-index: 2; background: var(--mk-paper); }
+    .mk-world-footer__scene { display: block; width: 100%; height: auto; margin-bottom: -1px; }
+    .mk-world-footer__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 18px var(--mk-gut) 16px;
+      background: var(--mk-slate);
+      color: var(--mk-paper);
+    }
+    .mk-world-footer__brand { display: flex; align-items: center; gap: 14px; }
+    .mk-world-footer__brand img { display: block; width: 76px; height: auto; }
+
+    /* ============ 开场叙事（自 meikku_deck_v1 移植）：
+       幻想气泡（真 hero 画布）→ 现实刷手机 → 机械臂牵手 → 命题浮现 ============ */
+    .mk-dropwrap { position: relative; height: 300vh; }
+    .mk-dropsticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: var(--meikku-paper); }
+    .mk-dream {
+      position: absolute; inset: 0; z-index: 2;
+      transform-origin: 0 0;
+      will-change: transform;
+      overflow: hidden;
+    }
+    .mk-dream .scene { position: absolute; inset: 0; height: 100%; }
+    .mk-bubble-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; will-change: opacity; }
+    .mk-reality { position: absolute; inset: 0; z-index: 1; }
+    .mk-reality svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .mk-reality .after-ghost { opacity: 0; will-change: opacity; }
+    .mk-punchline {
+      position: absolute; top: 71vh; left: 8%; right: 8%; text-align: center; z-index: 3;
+      opacity: 0; will-change: opacity, transform; pointer-events: none;
+    }
+    .mk-punch-line { margin: 0; font-family: var(--font-display); font-size: clamp(30px, 3.4vw, 60px); line-height: 1.12; text-transform: uppercase; color: var(--meikku-ink); }
+    .mk-punch-sub { margin: 14px 0 0; font-size: clamp(15px, 1.3vw, 21px); font-weight: 500; line-height: 1.5; color: var(--meikku-slate); }
+    .mk-punch-sub b { color: var(--meikku-ink); }
+    .mk-feed { animation: mkFeedScroll 2.6s linear infinite; }
+    @keyframes mkFeedScroll { to { transform: translateY(-160px); } }
+    @media (prefers-reduced-motion: reduce) { .mk-feed { animation: none; } }
+    /* 竖屏与横屏各用一版现实构图：竖版沿用 deck 原构图；
+       横版重排——手机手群居右、命题居左、迷你思考泡承接幻想 */
+    .mk-reality-l { display: none; }
+    @media (min-aspect-ratio: 1/1) {
+      .mk-reality-p { display: none; }
+      .mk-reality-l { display: block; }
+      .mk-punchline { top: 64vh; left: 6%; right: 54%; text-align: left; }
+      .mk-punch-line { font-size: clamp(24px, 2.6vw, 44px); }
+      .mk-punch-sub { font-size: clamp(13px, 1.1vw, 18px); }
+    }
+  </style>
+</head>
+<body>
+  <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <defs>
+      <filter id="craftCrayonWobble" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+        <feTurbulence id="craftWarpNoise" type="fractalNoise" baseFrequency=".026 .041" numOctaves="3" seed="41" stitchTiles="stitch" result="warpNoise"/>
+        <feDisplacementMap in="SourceGraphic" in2="warpNoise" scale="1.8" xChannelSelector="R" yChannelSelector="B"/>
+      </filter>
+      <filter id="craftPrintRoughness" x="-6%" y="-8%" width="112%" height="116%" color-interpolation-filters="sRGB">
+        <feTurbulence id="craftPrintEdgeNoise" type="fractalNoise" baseFrequency=".024 .11" numOctaves="3" seed="113" stitchTiles="stitch" result="printEdgeNoise"/>
+        <feDisplacementMap in="SourceAlpha" in2="printEdgeNoise" scale="4.4" xChannelSelector="R" yChannelSelector="B" result="scatteredAlpha"/>
+        <feGaussianBlur in="scatteredAlpha" stdDeviation=".55" result="softAlpha"/>
+        <feComponentTransfer in="softAlpha" result="clampedAlpha">
+          <feFuncA type="table" tableValues="0 0 .08 .76 1 1"/>
+        </feComponentTransfer>
+        <feComposite in="SourceGraphic" in2="clampedAlpha" operator="in" result="roughInk"/>
+        <feTurbulence id="craftInkWearNoise" type="fractalNoise" baseFrequency=".065 .14" numOctaves="4" seed="127" stitchTiles="stitch" result="inkWearNoise"/>
+        <feColorMatrix in="inkWearNoise" type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          .333 .333 .333 0 -.72" result="inkPinholes"/>
+        <feComposite in="roughInk" in2="inkPinholes" operator="out" result="brokenInk"/>
+        <feColorMatrix in="inkWearNoise" type="matrix" values="
+          .18 .18 .18 0 0
+          .18 .18 .18 0 0
+          .18 .18 .18 0 0
+          0 0 0 .44 0" result="inkFade"/>
+        <feBlend in="brokenInk" in2="inkFade" mode="screen" result="fadedInk"/>
+        <feComposite in="fadedInk" in2="clampedAlpha" operator="in"/>
+      </filter>
+      <filter id="craftPaperGrain" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+        <feTurbulence id="craftGrainNoise" type="fractalNoise" baseFrequency=".58 .71" numOctaves="4" seed="17" stitchTiles="stitch" result="grainNoise"/>
+        <feColorMatrix in="grainNoise" type="matrix" values="
+          .26 .26 .26 0 .08
+          .26 .26 .26 0 .08
+          .26 .26 .26 0 .08
+          0 0 0 .50 0"/>
+      </filter>
+      <filter id="craftDustField" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+        <feTurbulence id="craftDustNoise" type="fractalNoise" baseFrequency=".019 .083" numOctaves="3" seed="73" stitchTiles="stitch" result="dustNoise"/>
+        <feColorMatrix in="dustNoise" type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          .333 .333 .333 0 -.59" result="dustAlpha"/>
+        <feFlood flood-color="var(--meikku-ink)" flood-opacity=".92" result="dustInk"/>
+        <feComposite in="dustInk" in2="dustAlpha" operator="in"/>
+      </filter>
+      <pattern id="craftDustSpeckPattern" width="263" height="181" patternUnits="userSpaceOnUse">
+        <g fill="var(--meikku-ink)">
+          <circle cx="19" cy="23" r="1.15" opacity=".78"/>
+          <circle cx="86" cy="151" r=".72" opacity=".62"/>
+          <circle cx="148" cy="36" r="1.42" opacity=".72"/>
+          <circle cx="224" cy="112" r=".88" opacity=".82"/>
+          <circle cx="247" cy="19" r=".58" opacity=".66"/>
+          <path d="M52 87l3.8-1.1" stroke="var(--meikku-ink)" stroke-width=".85" stroke-linecap="round" opacity=".72"/>
+          <path d="M171 132l1.8 2.9" stroke="var(--meikku-ink)" stroke-width=".72" stroke-linecap="round" opacity=".68"/>
+        </g>
+      </pattern>
+    </defs>
+  </svg>
+  <svg class="craft-texture" width="100%" height="100%" aria-hidden="true">
+    <rect class="craft-grain" x="0" y="0" width="100%" height="100%" filter="url(#craftPaperGrain)"/>
+    <rect class="craft-dust" x="0" y="0" width="100%" height="100%" filter="url(#craftDustField)"/>
+    <rect class="craft-dust" x="0" y="0" width="100%" height="100%" fill="url(#craftDustSpeckPattern)"/>
+  </svg>
+  <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <defs>
+      <symbol id="an-cat" viewBox="-24 -24 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle r="12.5"/>
+          <path d="M-11,-6 L-15,-18 L-4,-12"/><path d="M11,-6 L15,-18 L4,-12"/>
+          <path d="M-3,5 Q0,8 3,5"/>
+          <path d="M-10,2 L-18,1 M-10,5 L-17,7 M10,2 L18,1 M10,5 L17,7" stroke-width="1.2"/>
+        </g>
+        <circle cx="-5" cy="-2" r="1.6" fill="currentColor"/><circle cx="5" cy="-2" r="1.6" fill="currentColor"/>
+      </symbol>
+      <symbol id="an-pig" viewBox="-24 -24 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle r="13"/>
+          <path d="M-12,-5 L-13,-16 L-3,-12"/><path d="M12,-5 L13,-16 L3,-12"/>
+          <ellipse cy="3" rx="6" ry="4.5"/>
+        </g>
+        <circle cx="-2.4" cy="3" r="1.3" fill="currentColor"/><circle cx="2.4" cy="3" r="1.3" fill="currentColor"/>
+        <circle cx="-7" cy="-4" r="1.5" fill="currentColor"/><circle cx="7" cy="-4" r="1.5" fill="currentColor"/>
+      </symbol>
+      <symbol id="an-fish" viewBox="-24 -24 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16,0 Q6,-8 -6,-5.5 Q-10,-4.5 -10,0 Q-10,4.5 -6,5.5 Q6,8 16,0 Z"/>
+          <path d="M-10,0 L-18,-6.5 Q-15.5,0 -18,6.5 Z"/>
+          <path d="M5,-4 Q3,0 5,4" stroke-width="1.2"/>
+        </g>
+        <circle cx="11" cy="-2" r="1.6" fill="currentColor"/>
+      </symbol>
+      <symbol id="an-bird" viewBox="-24 -24 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="1" rx="9.5" ry="4.2"/>
+          <path d="M-1,-3.5 L-4,-17 Q1,-13 3.5,-3.5"/>
+          <path d="M-1,3.5 L-4,17 Q1,13 3.5,3.5"/>
+          <path d="M-9,-2 L-17,-5 M-9.5,0 L-18,0 M-9,2 L-17,5" stroke-width="1.2"/>
+        </g>
+        <path d="M10.5,-1 L16.5,0 L10.5,1.6 Z" fill="currentColor"/>
+        <circle cx="6.5" cy="-1.8" r="1.3" fill="currentColor"/>
+      </symbol>
+      <symbol id="an-star" viewBox="-24 -24 48 48">
+        <path d="M0,-17 L4.1,-5.7 L16.2,-5.3 L6.7,2.2 L10,13.8 L0,7 L-10,13.8 L-6.7,2.2 L-16.2,-5.3 L-4.1,-5.7 Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle r="2" fill="currentColor"/>
+      </symbol>
+
+      <!-- ===== Meikku 游戏页专用图形：两名玩家 ===== -->
+      <symbol id="mk-p1" viewBox="0 0 120 120">
+        <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="56" cy="36" r="21"/>
+          <path d="M60 46 Q66 51 71 44"/>
+          <path d="M48 56 L48 64 M64 56 L64 64"/>
+          <path d="M24 112 Q26 68 56 66 Q86 68 88 112"/>
+          <path d="M84 79 L99 67" stroke-width="6"/>
+          <path d="M91 68 L117 68" stroke-width="5"/>
+          <path d="M93 66 Q91 51 104 49 Q118 51 115 66"/>
+        </g>
+        <path d="M35 34 Q34 11 56 11 Q78 11 77 34 L70 34 Q70 21 56 21 Q42 21 42 34 Z" fill="currentColor"/>
+        <circle cx="66" cy="34" r="3.2" fill="currentColor"/>
+      </symbol>
+      <symbol id="mk-p2" viewBox="0 0 120 120">
+        <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M38 110 L45 78 L79 78 L86 110 Z"/>
+          <path d="M62 78 L34 42" stroke-width="7"/>
+          <path d="M34 42 L86 22" stroke-width="6"/>
+          <circle cx="62" cy="78" r="9"/>
+          <circle cx="34" cy="42" r="13"/>
+          <circle cx="34" cy="42" r="5.5"/>
+          <circle cx="86" cy="22" r="7"/>
+          <path d="M86 22 L104 10 M86 22 L100 33" stroke-width="4.5"/>
+        </g>
+      </symbol>
+
+      <!-- ===== 四个姿态：看 / 提议 / 试 / 让 ===== -->
+      <symbol id="mk-pose-watch" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 44 L19 33 L31 33 L34 44 Z"/>
+          <circle cx="25" cy="33" r="3.6"/>
+          <path d="M25 33 L15 19"/><path d="M15 19 L30 10"/>
+          <circle cx="15" cy="19" r="5.6"/><circle cx="15" cy="19" r="2.2"/>
+          <circle cx="30" cy="10" r="3"/>
+          <path d="M30 10 L38 6 M30 10 L36 15" stroke-width="2.2"/>
+        </g>
+      </symbol>
+      <symbol id="mk-pose-offer" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 44 L19 33 L31 33 L34 44 Z"/>
+          <circle cx="25" cy="33" r="3.6"/>
+          <path d="M25 33 L19 18"/><path d="M19 18 L7 26"/>
+          <circle cx="19" cy="18" r="5.6"/><circle cx="19" cy="18" r="2.2"/>
+          <circle cx="7" cy="26" r="3"/>
+          <path d="M7 26 L2 22 M7 26 L3 31" stroke-width="2.2"/>
+          <path d="M11 31 L18 38" stroke-width="2.2" stroke-dasharray="2.6 2.6"/>
+        </g>
+      </symbol>
+      <symbol id="mk-pose-try" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 44 L19 33 L31 33 L34 44 Z"/>
+          <circle cx="25" cy="33" r="3.6"/>
+          <path d="M25 33 L24 17"/><path d="M24 17 L13 29"/>
+          <circle cx="24" cy="17" r="5.6"/><circle cx="24" cy="17" r="2.2"/>
+          <circle cx="13" cy="29" r="3"/>
+          <path d="M13 29 L9 33 M13 29 L16 34" stroke-width="2.2"/>
+          <path d="M3 44 Q2 35 9 33 Q16 32 16 44"/>
+        </g>
+      </symbol>
+      <symbol id="mk-pose-yield" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 44 L19 33 L31 33 L34 44 Z"/>
+          <circle cx="25" cy="33" r="3.6"/>
+          <path d="M25 33 L30 18"/><path d="M30 18 L42 27"/>
+          <circle cx="30" cy="18" r="5.6"/><circle cx="30" cy="18" r="2.2"/>
+          <circle cx="42" cy="27" r="3"/>
+          <path d="M42 27 L45 22 M42 27 L46 31" stroke-width="2.2"/>
+          <path d="M15 20 L9 15 M13 27 L6 25" stroke-width="2.2"/>
+        </g>
+      </symbol>
+
+      <!-- ===== 三条事实 ===== -->
+      <symbol id="mk-icon-hands" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 42 Q3 29 14 24 Q25 19 33 27 Q43 33 41 42 Z"/>
+          <path d="M46 4 L31 11" stroke-width="3.2"/>
+          <circle cx="29" cy="12" r="4.4"/>
+          <path d="M29 12 L21 20 M29 12 L37 19" stroke-width="2.4"/>
+        </g>
+      </symbol>
+      <symbol id="mk-icon-memory" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 18 L42 18 L42 42 L6 42 Z"/>
+          <path d="M6 26 L42 26"/>
+          <path d="M14 18 L14 8 L34 8 L34 18"/>
+          <path d="M18 38 Q17 32 23 31 Q30 30 30 38 Z"/>
+        </g>
+      </symbol>
+      <symbol id="mk-icon-turn" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18 Q24 6 39 18"/>
+          <path d="M39 18 L31 17 M39 18 L38 10"/>
+          <path d="M39 31 Q24 43 9 31"/>
+          <path d="M9 31 L17 32 M9 31 L10 39"/>
+        </g>
+      </symbol>
+
+      <!-- ===== 四种玩法 ===== -->
+      <symbol id="mk-icon-shape" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 40 Q5 24 16 18 Q23 13 27 20 Q31 27 36 20 Q44 26 41 40 Z"/>
+          <path d="M14 33 Q24 29 34 34"/>
+          <circle cx="27" cy="21" r="3.2"/>
+        </g>
+      </symbol>
+      <symbol id="mk-icon-relay" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 34 L8 20 L40 20"/>
+          <path d="M33 13 L40 20 L33 27"/>
+          <path d="M40 14 L40 28 L8 28"/>
+          <path d="M15 35 L8 28 L15 21"/>
+        </g>
+      </symbol>
+      <symbol id="mk-icon-challenge" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 6 L34 6 L40 12 L40 42 L12 42 Z"/>
+          <path d="M34 6 L34 12 L40 12"/>
+          <path d="M26 34 L18 34 L26 20 L34 34 L30 34"/>
+        </g>
+      </symbol>
+      <symbol id="mk-icon-repair" viewBox="0 0 48 48">
+        <g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 30 L16 30 M32 30 L44 30"/>
+          <path d="M17 22 L31 22 L31 38 L17 38 Z"/>
+          <path d="M20 30 L23 33 L29 26"/>
+          <path d="M38 24 L44 30 L38 36"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+  <div class="arm-rail" aria-hidden="true">
+    <svg class="scroll-arm" id="scrollArm" viewBox="0 0 132 112" fill="none">
+      <rect x="108" y="36" width="18" height="38" rx="4" fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="5"/>
+      <g class="arm-swing">
+        <line x1="114" y1="55" x2="66" y2="50" stroke="var(--meikku-ink)" stroke-width="13" stroke-linecap="round"/>
+        <line x1="114" y1="55" x2="66" y2="50" stroke="var(--meikku-paper)" stroke-width="5.5" stroke-linecap="round"/>
+        <g class="arm-fore">
+          <line x1="66" y1="50" x2="34" y2="56" stroke="var(--meikku-ink)" stroke-width="12" stroke-linecap="round"/>
+          <line x1="66" y1="50" x2="34" y2="56" stroke="var(--meikku-paper)" stroke-width="5" stroke-linecap="round"/>
+          <path class="prong-a" d="M34,56 L13,43" stroke="var(--meikku-ink)" stroke-width="6" stroke-linecap="round"/>
+          <path class="prong-b" d="M34,56 L13,69" stroke="var(--meikku-ink)" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="34" cy="56" r="6.5" fill="var(--mk-ultramarine)" stroke="var(--meikku-ink)" stroke-width="3"/>
+        </g>
+        <circle cx="66" cy="50" r="7.5" fill="var(--mk-ultramarine)" stroke="var(--meikku-ink)" stroke-width="3.5"/>
+      </g>
+      <circle cx="114" cy="55" r="6" fill="var(--mk-ultramarine)" stroke="var(--meikku-ink)" stroke-width="3.5"/>
+    </svg>
+  </div>
+
+  <!-- 开场叙事：幻想（真 hero 画布）先满屏播放；下滚后被思考泡包起、缩走，
+       露出现实——一个人刷手机，黏土"本该在"的位置只剩虚线；
+       机械臂入画牵起那只手，命题浮现。故事出自 meikku_deck_v1。 -->
+  <div class="mk-dropwrap" id="mkDropWrap">
+    <div class="mk-dropsticky">
+
+      <!-- 现实层（在下） -->
+      <div class="mk-reality">
+        <svg class="mk-reality-p" viewBox="0 0 900 1600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <filter id="mkCrayonDrop" x="-25%" y="-25%" width="150%" height="150%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.032" numOctaves="3" seed="4" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="5.5"/>
+            </filter>
+            <clipPath id="mkDreamClip" clipPathUnits="objectBoundingBox">
+              <path d="
+                M .9784 .5875
+                Q 1.0643 .6856 .8876 .7381 Q .8488 .8436 .6478 .8307
+                Q .5 .9043 .3522 .8307 Q .1512 .8436 .1124 .7381
+                Q -.0643 .6856 .0216 .5875 Q -.0643 .4894 .1124 .4369
+                Q .1512 .3314 .3522 .3443 Q .5 .2707 .6478 .3443
+                Q .8488 .3314 .8876 .4369 Q 1.0643 .4894 .9784 .5875 Z"/>
+              <ellipse cx=".3222" cy=".875" rx=".0578" ry=".0325"/>
+              <ellipse cx=".2644" cy=".9338" rx=".0422" ry=".0238"/>
+              <ellipse cx=".2267" cy=".9763" rx=".0289" ry=".0163"/>
+            </clipPath>
+          </defs>
+          <g>
+            <circle class="after-ghost" cx="450" cy="900" r="230" fill="none" filter="url(#mkCrayonDrop)" stroke="var(--meikku-ghost-line)"
+                    stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round"/>
+            <g transform="translate(465,900) rotate(-4)">
+              <rect x="-125" y="-205" width="250" height="410" rx="26"
+                    fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5" filter="url(#mkCrayonDrop)"/>
+              <clipPath id="mkScreenClip"><rect x="-105" y="-180" width="210" height="360" rx="12"/></clipPath>
+              <g clip-path="url(#mkScreenClip)">
+                <g class="mk-feed" stroke-linecap="round">
+                  <g>
+                    <rect x="-85" y="-170" width="170" height="64" rx="8" fill="var(--meikku-clay)" stroke="var(--meikku-contour)" stroke-width="2.5"/>
+                    <line x1="-85" y1="-88" x2="65" y2="-88" stroke="var(--meikku-contour)" stroke-width="6"/>
+                    <line x1="-85" y1="-64" x2="85" y2="-64" stroke="var(--meikku-contour)" stroke-width="6"/>
+                  </g>
+                  <g>
+                    <rect x="-85" y="-10" width="170" height="64" rx="8" fill="var(--meikku-clay)" stroke="var(--meikku-contour)" stroke-width="2.5"/>
+                    <line x1="-85" y1="72" x2="65" y2="72" stroke="var(--meikku-contour)" stroke-width="6"/>
+                    <line x1="-85" y1="96" x2="85" y2="96" stroke="var(--meikku-contour)" stroke-width="6"/>
+                  </g>
+                  <g>
+                    <rect x="-85" y="150" width="170" height="64" rx="8" fill="var(--meikku-clay)" stroke="var(--meikku-contour)" stroke-width="2.5"/>
+                    <line x1="-85" y1="232" x2="65" y2="232" stroke="var(--meikku-contour)" stroke-width="6"/>
+                    <line x1="-85" y1="256" x2="85" y2="256" stroke="var(--meikku-contour)" stroke-width="6"/>
+                  </g>
+                  <g>
+                    <rect x="-85" y="310" width="170" height="64" rx="8" fill="var(--meikku-clay)" stroke="var(--meikku-contour)" stroke-width="2.5"/>
+                    <line x1="-85" y1="392" x2="65" y2="392" stroke="var(--meikku-contour)" stroke-width="6"/>
+                    <line x1="-85" y1="416" x2="85" y2="416" stroke="var(--meikku-contour)" stroke-width="6"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <g transform="translate(398,985) rotate(54)">
+              <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                    stroke-linecap="round" stroke-linejoin="round" filter="url(#mkCrayonDrop)" transform="scale(-1,1)" d="
+                M -54 760 C -62 600 -54 430 -48 300 C -52 250 -50 175 -46 138
+                Q -56 122 -68 108 Q -95 88 -96 68 Q -96 52 -84 52 Q -72 54 -66 70
+                Q -58 86 -48 94 Q -44 72 -42 50 L -40 18 Q -40 4 -30 4 Q -20 5 -20 18
+                L -16 54 Q -12 64 -9 52 L -6 8 Q -5 -6 4 -5 Q 12 -4 11 10 L 14 54
+                Q 17 66 21 54 L 27 16 Q 30 4 39 7 Q 47 10 44 22 L 38 62 Q 40 74 45 64
+                L 55 38 Q 60 27 68 32 Q 75 37 71 47 L 58 92 Q 55 108 48 118
+                Q 46 150 44 170 C 46 195 50 250 47 300 C 52 430 58 600 52 760 Z"/>
+            </g>
+            <g id="mkHandRGroup">
+              <g transform="translate(532,985) rotate(-54)">
+                <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                      stroke-linecap="round" stroke-linejoin="round" filter="url(#mkCrayonDrop)" d="
+                  M -54 760 C -62 600 -54 430 -48 300 C -52 250 -50 175 -46 138
+                  Q -56 122 -68 108 Q -95 88 -96 68 Q -96 52 -84 52 Q -72 54 -66 70
+                  Q -58 86 -48 94 Q -44 72 -42 50 L -40 18 Q -40 4 -30 4 Q -20 5 -20 18
+                  L -16 54 Q -12 64 -9 52 L -6 8 Q -5 -6 4 -5 Q 12 -4 11 10 L 14 54
+                  Q 17 66 21 54 L 27 16 Q 30 4 39 7 Q 47 10 44 22 L 38 62 Q 40 74 45 64
+                  L 55 38 Q 60 27 68 32 Q 75 37 71 47 L 58 92 Q 55 108 48 118
+                  Q 46 150 44 170 C 46 195 50 250 47 300 C 52 430 58 600 52 760 Z"/>
+              </g>
+            </g>
+            <g id="mkArmGroup">
+              <g transform="translate(570,948) rotate(33)">
+                <g transform="scale(-1,1)" filter="url(#mkCrayonDrop)" fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M -1 -156 C -10 -330 8 -540 -2 -860 L 36 -860 C 28 -540 44 -330 35 -150 Z"/>
+                  <circle cx="16" cy="-148" r="25"/>
+                  <circle cx="16" cy="-148" r="10" fill="none" stroke="var(--meikku-lime)" stroke-width="6"/>
+                  <path d="M 2 -152 L 30 -150 L 24 -64 L -4 -66 Z"/>
+                  <rect x="-2" y="-108" width="15" height="15" fill="var(--meikku-lime)"
+                        stroke="var(--meikku-ink)" stroke-width="3" transform="rotate(8 5 -100)"/>
+                  <path d="M -46 -68 L 54 -64 L 52 -44 L -48 -48 Z"/>
+                  <path d="M -42 -50 L -36 -4 Q -35 6 -25 3 L -25 -48 Z"/>
+                  <path d="M 31 -48 L 32 -2 Q 33 8 43 4 L 48 -46 Z"/>
+                  <circle cx="-32" cy="-57" r="4.5" fill="var(--meikku-ink)" stroke="none"/>
+                  <circle cx="40" cy="-55" r="4.5" fill="var(--meikku-ink)" stroke="none"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>
+        <!-- 横版现实构图：1600x900。手机手群居右，命题（HTML 层）居左，
+             迷你思考泡挂在头顶方向承接被收走的幻想 -->
+        <svg class="mk-reality-l" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <filter id="mkCrayonDropL" x="-25%" y="-25%" width="150%" height="150%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.032" numOctaves="3" seed="4" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="5.5"/>
+            </filter>
+            <clipPath id="mkDreamClipL" clipPathUnits="objectBoundingBox">
+              <path d="M 0.7797 0.5 Q 0.83 0.6431 0.7266 0.7196 Q 0.7039 0.8736 0.5864 0.8547 Q 0.5 0.962 0.4136 0.8547 Q 0.2961 0.8736 0.2734 0.7196 Q 0.17 0.6431 0.2203 0.5 Q 0.17 0.3569 0.2734 0.2804 Q 0.2961 0.1264 0.4136 0.1453 Q 0.5 0.038 0.5864 0.1453 Q 0.7039 0.1264 0.7266 0.2804 Q 0.83 0.3569 0.7797 0.5 Z"/>
+              <ellipse cx=".7825" cy=".8956" rx=".0325" ry=".0578"/>
+              <ellipse cx=".8313" cy=".9511" rx=".0244" ry=".0433"/>
+              <ellipse cx=".8675" cy=".9911" rx=".0175" ry=".0311"/>
+            </clipPath>
+            <clipPath id="mkScreenClipL"><rect x="-105" y="-180" width="210" height="360" rx="12"/></clipPath>
+            <path id="mkBubblePathL" d="
+              M 845 940
+              Q 916 1084 770 1161 Q 738 1316 572 1297 Q 450 1405 328 1297
+              Q 162 1316 130 1161 Q -16 1084 55 940 Q -16 796 130 719
+              Q 162 564 328 583 Q 450 475 572 583 Q 738 564 770 719
+              Q 916 796 845 940 Z"/>
+          </defs>
+          <g>
+            <circle class="after-ghost" cx="1080" cy="470" r="170" fill="none" filter="url(#mkCrayonDropL)" stroke="var(--meikku-ghost-line)"
+                    stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round"/>
+            <g transform="translate(1080,470) rotate(-4) scale(.8)">
+              <rect x="-125" y="-205" width="250" height="410" rx="26"
+                    fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5" filter="url(#mkCrayonDropL)"/>
+              <g clip-path="url(#mkScreenClipL)">
+                <g class="mk-feed" stroke-linecap="round"><g><rect x="-85" y="-170" width="170" height="64" rx="8" fill="var(--meikku-clay)" stroke="var(--meikku-contour)" stroke-width="2.5"/><line x1="-85" y1="-88" x2="65" y2="-88" stroke="var(--meikku-contour)" stroke-width="6"/><line x1="-85" y1="-64" x2="85" y2="-64" stroke="var(--meikku-contour)" stroke-width="6"/></g><g><rect x="-85" y="-10" width="170" height="64" rx="8" fill="var(--meikku-clay)" stroke="var(--meikku-contour)" stroke-width="2.5"/><line x1="-85" y1="72" x2="65" y2="72" stroke="var(--meikku-contour)" stroke-width="6"/><line x1="-85" y1="96" x2="85" y2="96" stroke="var(--meikku-contour)" stroke-width="6"/></g><g><rect x="-85" y="150" width="170" height="64" rx="8" fill="var(--meikku-clay)" stroke="var(--meikku-contour)" stroke-width="2.5"/><line x1="-85" y1="232" x2="65" y2="232" stroke="var(--meikku-contour)" stroke-width="6"/><line x1="-85" y1="256" x2="85" y2="256" stroke="var(--meikku-contour)" stroke-width="6"/></g><g><rect x="-85" y="310" width="170" height="64" rx="8" fill="var(--meikku-clay)" stroke="var(--meikku-contour)" stroke-width="2.5"/><line x1="-85" y1="392" x2="65" y2="392" stroke="var(--meikku-contour)" stroke-width="6"/><line x1="-85" y1="416" x2="85" y2="416" stroke="var(--meikku-contour)" stroke-width="6"/></g></g>
+              </g>
+            </g>
+            <g transform="translate(1026,538) rotate(54) scale(.8)">
+              <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                    stroke-linecap="round" stroke-linejoin="round" filter="url(#mkCrayonDropL)" transform="scale(-1,1)" d="
+                M -54 760 C -62 600 -54 430 -48 300 C -52 250 -50 175 -46 138
+                Q -56 122 -68 108 Q -95 88 -96 68 Q -96 52 -84 52 Q -72 54 -66 70
+                Q -58 86 -48 94 Q -44 72 -42 50 L -40 18 Q -40 4 -30 4 Q -20 5 -20 18
+                L -16 54 Q -12 64 -9 52 L -6 8 Q -5 -6 4 -5 Q 12 -4 11 10 L 14 54
+                Q 17 66 21 54 L 27 16 Q 30 4 39 7 Q 47 10 44 22 L 38 62 Q 40 74 45 64
+                L 55 38 Q 60 27 68 32 Q 75 37 71 47 L 58 92 Q 55 108 48 118
+                Q 46 150 44 170 C 46 195 50 250 47 300 C 52 430 58 600 52 760 Z"/>
+            </g>
+            <g id="mkHandRGroupL">
+              <g transform="translate(1134,538) rotate(-54) scale(.8)">
+                <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                      stroke-linecap="round" stroke-linejoin="round" filter="url(#mkCrayonDropL)" d="
+                M -54 760 C -62 600 -54 430 -48 300 C -52 250 -50 175 -46 138
+                Q -56 122 -68 108 Q -95 88 -96 68 Q -96 52 -84 52 Q -72 54 -66 70
+                Q -58 86 -48 94 Q -44 72 -42 50 L -40 18 Q -40 4 -30 4 Q -20 5 -20 18
+                L -16 54 Q -12 64 -9 52 L -6 8 Q -5 -6 4 -5 Q 12 -4 11 10 L 14 54
+                Q 17 66 21 54 L 27 16 Q 30 4 39 7 Q 47 10 44 22 L 38 62 Q 40 74 45 64
+                L 55 38 Q 60 27 68 32 Q 75 37 71 47 L 58 92 Q 55 108 48 118
+                Q 46 150 44 170 C 46 195 50 250 47 300 C 52 430 58 600 52 760 Z"/>
+              </g>
+            </g>
+            <g id="mkArmGroupL">
+              <g transform="translate(1164,508) rotate(33) scale(.8)">
+                <g transform="scale(-1,1)" filter="url(#mkCrayonDropL)" fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M -1 -156 C -10 -330 8 -540 -2 -860 L 36 -860 C 28 -540 44 -330 35 -150 Z"/>
+                  <circle cx="16" cy="-148" r="25"/>
+                  <circle cx="16" cy="-148" r="10" fill="none" stroke="var(--meikku-lime)" stroke-width="6"/>
+                  <path d="M 2 -152 L 30 -150 L 24 -64 L -4 -66 Z"/>
+                  <rect x="-2" y="-108" width="15" height="15" fill="var(--meikku-lime)"
+                        stroke="var(--meikku-ink)" stroke-width="3" transform="rotate(8 5 -100)"/>
+                  <path d="M -46 -68 L 54 -64 L 52 -44 L -48 -48 Z"/>
+                  <path d="M -42 -50 L -36 -4 Q -35 6 -25 3 L -25 -48 Z"/>
+                  <path d="M 31 -48 L 32 -2 Q 33 8 43 4 L 48 -46 Z"/>
+                  <circle cx="-32" cy="-57" r="4.5" fill="var(--meikku-ink)" stroke="none"/>
+                  <circle cx="40" cy="-55" r="4.5" fill="var(--meikku-ink)" stroke="none"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>
+        <div class="mk-punchline" id="mkPunchline">
+          <p class="mk-punch-line">&ldquo;This would be better with&nbsp;someone.&rdquo;</p>
+          <p class="mk-punch-sub">Not because anyone is missing &mdash; a plus one just turns
+          something you <b>do</b> into something you <b>share</b>.</p>
+        </div>
+      </div>
+
+      <!-- 幻想层（在上）：真 hero 画布 + 思考泡遮罩 -->
+      <div class="mk-dream" id="mkDream">
+  <div class="scene" id="frame-01">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="crayon" x="-25%" y="-25%" width="150%" height="150%">
+            <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.032" numOctaves="3" seed="2" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="5.5"/>
+          </filter>
+
+          <filter id="crayonStill" x="-15%" y="-15%" width="130%" height="130%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="9" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+          </filter>
+
+          <!-- contours may only exist inside the dough -->
+          <clipPath id="doughClip">
+            <path id="doughClipPath" d=""/>
+          </clipPath>
+        </defs>
+
+
+        <g id="cards" filter="url(#crayonStill)"></g>
+
+        <g filter="url(#crayon)">
+
+
+          <circle cx="720" cy="430" r="170" fill="none" stroke="var(--meikku-ghost-line)"
+                  stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round"/>
+
+
+          <path id="doughShadow" d="" fill="var(--meikku-clay-shadow)" transform="translate(10,12)"/>
+
+
+          <path id="dough" d="" fill="var(--meikku-clay)" stroke="var(--meikku-ink)"
+                stroke-width="5.5" stroke-linejoin="round"/>
+
+
+          <g clip-path="url(#doughClip)" stroke="var(--meikku-contour)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.85">
+            <path id="iso0" d=""/>
+            <path id="iso1" d=""/>
+            <path id="iso2" d=""/>
+            <path id="iso3" d=""/>
+            <path id="iso4" d=""/>
+            <path id="iso5" d=""/>
+          </g>
+
+          <!-- ink boundary of every raised / sunken feature (simple sketch edge) -->
+          <g id="featEdges" clip-path="url(#doughClip)" fill="none"
+             stroke="var(--meikku-ink)" stroke-width="4" stroke-linecap="round"></g>
+
+
+          <circle id="holeC" cx="720" cy="430" r="0" opacity="0"
+                  fill="var(--meikku-paper)" stroke="var(--meikku-ink)"
+                  stroke-width="5" stroke-linejoin="round"/>
+
+
+          <g id="ghost1" opacity="0">
+            <path id="ghost1Line" d="" fill="none" stroke="var(--meikku-lime)"
+                  stroke-width="5" stroke-dasharray="12 14" stroke-linecap="round"/>
+            <circle id="ghost1Circ" cx="0" cy="0" r="28" fill="none" stroke="var(--meikku-lime)"
+                    stroke-width="5" stroke-dasharray="10 9"/>
+          </g>
+
+
+          <g id="toolpathG" opacity="0">
+            <path id="tpFull" d="" fill="none" stroke="var(--meikku-lime)" stroke-width="3"
+                  stroke-dasharray="5 9" stroke-linecap="round" opacity="0.3"/>
+            <path id="tpAhead" d="" fill="none" stroke="var(--meikku-lime)" stroke-width="5"
+                  stroke-dasharray="12 10" stroke-linecap="round"/>
+            <g id="tpTargets" fill="none" stroke="var(--meikku-lime)" stroke-width="4"></g>
+          </g>
+
+
+          <g id="sparks"></g>
+
+
+          <!-- LEFT HAND: mirrored, the steadying hand - holds what the right hand has shaped -->
+          <g id="handL">
+            <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                  stroke-linecap="round" stroke-linejoin="round" transform="scale(-1,1)" d="
+              M -54 760
+              C -62 600 -54 430 -48 300
+              C -52 250 -50 175 -46 138
+              Q -56 122 -68 108
+              Q -95 88 -96 68
+              Q -96 52 -84 52
+              Q -72 54 -66 70
+              Q -58 86 -48 94
+              Q -44 72 -42 50
+              L -40 18
+              Q -40 4 -30 4
+              Q -20 5 -20 18
+              L -16 54
+              Q -12 64 -9 52
+              L -6 8
+              Q -5 -6 4 -5
+              Q 12 -4 11 10
+              L 14 54
+              Q 17 66 21 54
+              L 27 16
+              Q 30 4 39 7
+              Q 47 10 44 22
+              L 38 62
+              Q 40 74 45 64
+              L 55 38
+              Q 60 27 68 32
+              Q 75 37 71 47
+              L 58 92
+              Q 55 108 48 118
+              Q 46 150 44 170
+              C 46 195 50 250 47 300
+              C 52 430 58 600 52 760
+              Z"/>
+          </g>
+
+          <!-- RIGHT HAND: the shaping hand - clicks, presses, pushes, pinches, pulls, rubs -->
+          <g id="hand">
+            <path fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+                  stroke-linecap="round" stroke-linejoin="round" d="
+              M -54 760
+              C -62 600 -54 430 -48 300
+              C -52 250 -50 175 -46 138
+              Q -56 122 -68 108
+              Q -95 88 -96 68
+              Q -96 52 -84 52
+              Q -72 54 -66 70
+              Q -58 86 -48 94
+              Q -44 72 -42 50
+              L -40 18
+              Q -40 4 -30 4
+              Q -20 5 -20 18
+              L -16 54
+              Q -12 64 -9 52
+              L -6 8
+              Q -5 -6 4 -5
+              Q 12 -4 11 10
+              L 14 54
+              Q 17 66 21 54
+              L 27 16
+              Q 30 4 39 7
+              Q 47 10 44 22
+              L 38 62
+              Q 40 74 45 64
+              L 55 38
+              Q 60 27 68 32
+              Q 75 37 71 47
+              L 58 92
+              Q 55 108 48 118
+              Q 46 150 44 170
+              C 46 195 50 250 47 300
+              C 52 430 58 600 52 760
+              Z"/>
+          </g>
+
+
+          <g id="bot">
+            <g fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="4.5"
+               stroke-linecap="round" stroke-linejoin="round">
+
+              <path d="M -1 -156 C -10 -330 8 -540 -2 -860 L 36 -860 C 28 -540 44 -330 35 -150 Z"/>
+              <circle cx="16" cy="-148" r="25"/>
+              <circle cx="16" cy="-148" r="10" fill="none" stroke="var(--meikku-lime)" stroke-width="6"/>
+              <path d="M 2 -152 L 30 -150 L 24 -64 L -4 -66 Z"/>
+              <rect x="-2" y="-108" width="15" height="15" fill="var(--meikku-lime)"
+                    stroke="var(--meikku-ink)" stroke-width="3" transform="rotate(8 5 -100)"/>
+              <path d="M -46 -68 L 54 -64 L 52 -44 L -48 -48 Z"/>
+              <g id="prongL">
+                <path d="M -42 -50 L -36 -4 Q -35 6 -25 3 L -25 -48 Z"/>
+              </g>
+              <g id="prongR">
+                <path d="M 31 -48 L 32 -2 Q 33 8 43 4 L 48 -46 Z"/>
+              </g>
+              <circle cx="-32" cy="-57" r="4.5" fill="var(--meikku-ink)" stroke="none"/>
+              <circle cx="40" cy="-55" r="4.5" fill="var(--meikku-ink)" stroke="none"/>
+            </g>
+          </g>
+
+        </g>
+      </svg>
+    <h1 class="mark">Meikku</h1>
+    <p class="mark-sub">An AI that shows up as your plus one &mdash; it sits down, works the clay with you, and picks up where you left off.</p>
+    <div class="cue"></div>
+  </div>
+
+        <svg class="mk-bubble-overlay" id="mkBubbleOverlay" viewBox="0 0 900 1600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <filter id="mkCrayonWrap" x="-15%" y="-15%" width="130%" height="130%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="11" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+            </filter>
+            <path id="mkBubblePath2" d="
+              M 845 940
+              Q 916 1084 770 1161 Q 738 1316 572 1297 Q 450 1405 328 1297
+              Q 162 1316 130 1161 Q -16 1084 55 940 Q -16 796 130 719
+              Q 162 564 328 583 Q 450 475 572 583 Q 738 564 770 719
+              Q 916 796 845 940 Z"/>
+          </defs>
+          <mask id="mkBubbleHoleMask">
+            <rect x="-200" y="-200" width="1300" height="2000" fill="white"/>
+            <use href="#mkBubblePath2" fill="black"
+                 transform="translate(450,940) scale(1.06) translate(-450,-940)"/>
+          </mask>
+          <g id="mkBubbleShape">
+            <g filter="url(#mkCrayonWrap)">
+              <rect x="-70" y="-70" width="1040" height="1740" fill="var(--meikku-paper)" mask="url(#mkBubbleHoleMask)"/>
+              <use href="#mkBubblePath2" fill="none" stroke="var(--meikku-ink)" stroke-width="7" stroke-linejoin="round"
+                   transform="translate(450,940) scale(1.06) translate(-450,-940)"/>
+              <g fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="6">
+                <circle cx="290" cy="1400" r="46"/>
+                <circle cx="238" cy="1494" r="32"/>
+                <circle cx="204" cy="1562" r="20"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+        <svg class="mk-bubble-overlay" id="mkBubbleOverlayL" viewBox="0 0 1600 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+          <defs>
+            <filter id="mkCrayonWrapL" x="-15%" y="-15%" width="130%" height="130%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="11" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+            </filter>
+            <path id="mkBubblePathLW" d="M 1206.9 450.0 Q 1280.0 567.1 1129.6 629.7 Q 1096.7 755.7 925.7 740.2 Q 800.0 828.0 674.3 740.2 Q 503.3 755.7 470.4 629.7 Q 320.0 567.1 393.1 450.0 Q 320.0 332.9 470.4 270.3 Q 503.3 144.3 674.3 159.8 Q 800.0 72.0 925.7 159.8 Q 1096.7 144.3 1129.6 270.3 Q 1280.0 332.9 1206.9 450.0 Z"/>
+          </defs>
+          <mask id="mkBubbleHoleMaskL">
+            <rect x="-300" y="-300" width="2200" height="1500" fill="white"/>
+            <use href="#mkBubblePathLW" fill="black"
+                 transform="translate(800,450) scale(1.05) translate(-800,-450)"/>
+          </mask>
+          <g id="mkBubbleShapeL">
+            <g filter="url(#mkCrayonWrapL)">
+              <rect x="-200" y="-200" width="2000" height="1300" fill="var(--meikku-paper)" mask="url(#mkBubbleHoleMaskL)"/>
+              <use href="#mkBubblePathLW" fill="none" stroke="var(--meikku-ink)" stroke-width="7" stroke-linejoin="round"
+                   transform="translate(800,450) scale(1.05) translate(-800,-450)"/>
+              <g fill="var(--meikku-paper)" stroke="var(--meikku-ink)" stroke-width="6">
+                <circle cx="1252" cy="806" r="40"/>
+                <circle cx="1330" cy="856" r="27"/>
+                <circle cx="1388" cy="892" r="16"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+
+  <main class="mk" id="story">
+    <!-- The opening animation above is intentionally independent from this marketing narrative. -->
+    <section class="mk-band mk-arrival" id="arrival" aria-labelledby="arrival-h">
+      <div class="mk-shell mk-hero-grid">
+        <div class="mk-hero-copy pop">
+          <h2 class="mk-h type-display" id="arrival-h">Meet your plus one.</h2>
+          <p class="mk-lede type-deck">AI already writes with you, draws with you, thinks with you. Meikku is what happens when it shows up &mdash; a small robot arm at your table, with a voice, a point of view, and its hands in the clay.</p>
+          <div class="mk-btns mk-btns--light">
+            <a class="mk-btn mk-btn--yellow type-action" href="#play">See the interaction</a>
+            <a class="mk-btn mk-btn--light type-action" href="#evidence">See the prototype</a>
+          </div>
+        </div>
+        <figure class="mk-photo mk-photo--fclay pop">
+          <span class="mk-claim type-label">Product vision</span>
+          <img src="../Images/brand_guidelines_v2_5_pose_locked/masters/01_comaking_master.png" width="1536" height="1024" alt="A person and Meikku shape the same clay vessel at one work table." />
+          <figcaption class="mk-cap"><b class="type-card-title">One table. Two players.</b><span class="type-caption">The clay belongs to both.</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <div class="mk-wdiv mk-wdiv--tools" aria-hidden="true">
+      <img class="mk-seam-obj" style="left:7%; --r:-7deg" src="assets/brand/ui_art_v2/objects/object-brush.svg" alt="" />
+      <img class="mk-seam-obj mk-seam-obj--sm" style="left:55%; --r:5deg" src="assets/brand/ui_art_v2/objects/object-token.svg" alt="" />
+      <img class="mk-seam-obj" style="left:86%; --r:-4deg" src="assets/brand/ui_art_v2/objects/object-pinch-pot.svg" alt="" />
+    </div>
+
+    <section class="mk-band" id="play" aria-labelledby="play-h">
+      <div class="mk-shell">
+        <header class="mk-visual-head pop">
+          <div>
+            <h2 class="mk-h type-heading" id="play-h">You talk. You both make. The clay answers.</h2>
+          </div>
+          <p class="mk-visual-kicker type-card-title">One conversation &mdash; in words and in clay.</p>
+        </header>
+
+        <div class="mk-seq mk-seq--visual pop" data-seq>
+          <div class="mk-seq__mat" aria-hidden="true"></div>
+          <div class="mk-cut mk-cut--sleeve mk-seq__stage">
+            <div class="mk-cut__in">
+              <span class="mk-claim type-label">Product vision</span>
+              <img data-frame class="is-on" src="../Images/brand_guidelines_v2_5_pose_locked/masters/08_proposal_discussion_master.png" width="1536" height="1024" alt="A person points among several clay possibilities while Meikku holds another option." />
+              <img data-frame src="../Images/brand_guidelines_v2_5_pose_locked/masters/09_material_comparison_master.png" width="1536" height="1024" loading="lazy" alt="A person and Meikku compare a sequence of material samples on the same table." />
+              <img data-frame src="../Images/brand_guidelines_v2_5_pose_locked/masters/05_attention_tools_master_clean.png" width="1536" height="1024" loading="lazy" alt="Meikku reaches into a shared field of clay tools, texture blocks and prompt cards." />
+            </div>
+          </div>
+          <ol class="mk-seq__steps mk-seq__steps--labels" role="tablist" aria-label="Three moments in a continuous interaction">
+            <li data-step class="is-on"><button class="type-action" type="button" role="tab" aria-selected="true"><b>01</b><strong>Say an unfinished idea</strong></button></li>
+            <li data-step><button class="type-action" type="button" role="tab" aria-selected="false"><b>02</b><strong>Meikku offers another</strong></button></li>
+            <li data-step><button class="type-action" type="button" role="tab" aria-selected="false"><b>03</b><strong>Someone takes a turn</strong></button></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <div class="mk-wdiv mk-wdiv--coil" aria-hidden="true">
+      <img class="mk-seam-squiggle" src="assets/brand/ui_art_v2/dividers/divider-coil-wave.svg" alt="" />
+      <img class="mk-seam-obj" style="left:72%; --r:6deg" src="assets/brand/ui_art_v2/objects/object-loop-tool.svg" alt="" />
+    </div>
+
+    <section class="mk-band" id="players" aria-labelledby="players-h">
+      <div class="mk-shell">
+        <header class="mk-visual-head pop">
+          <div>
+            <h2 class="mk-h type-heading" id="players-h">It doesn&rsquo;t wait for commands. It has a point of view.</h2>
+          </div>
+          <p class="mk-visual-kicker type-card-title">It offers. It pushes back. It can be surprised.</p>
+        </header>
+        <figure class="mk-photo mk-relationship-photo mk-photo--ftape pop">
+          <span class="mk-claim type-label">Product vision</span>
+          <img src="../Images/brand_guidelines_v2_5_pose_locked/masters/07_public_workshop_master.png" width="1536" height="1024" loading="lazy" alt="A person watches Meikku work on the same clay vessel in a warm studio." />
+          <figcaption class="mk-cap"><b class="type-card-title">It notices. It offers. It backs off.</b><span class="type-caption">Neither player owns the outcome.</span></figcaption>
+        </figure>
+        <div class="mk-chat pop" aria-label="One small exchange at the table">
+          <p class="mk-bubble mk-bubble--l type-card-title">What if it leans a little?</p>
+          <p class="mk-bubble mk-bubble--r type-card-title">Try it &mdash; I&rsquo;ll steady the base.</p>
+        </div>
+        <div class="mk-word-stamps pop" aria-label="What makes Meikku a playmate">
+          <span class="type-card-title"><i class="mk-ic" style="--ic:url('assets/brand/ui_art_v1/icons/svg/icon-listen.svg')"></i>Notices you</span>
+          <span class="type-card-title"><i class="mk-ic" style="--ic:url('assets/brand/ui_art_v1/icons/svg/icon-offer.svg')"></i>Answers back</span>
+          <span class="type-card-title"><i class="mk-ic" style="--ic:url('assets/brand/ui_art_v1/icons/svg/icon-proposal.svg')"></i>Surprises you</span>
+          <span class="type-card-title"><i class="mk-ic" style="--ic:url('assets/brand/ui_art_v1/icons/svg/icon-remember.svg')"></i>Remembers together</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="mk-wdiv mk-wdiv--scallop" aria-hidden="true"></div>
+
+    <section class="mk-band mk-band--clay" id="after" aria-labelledby="after-h">
+      <div class="mk-shell">
+        <header class="mk-visual-head pop">
+          <div>
+            <h2 class="mk-h type-heading" id="after-h">Next time, it picks up where you left off.</h2>
+          </div>
+          <p class="mk-visual-kicker type-card-title">Make. Keep. Return.</p>
+        </header>
+        <div class="mk-after-gallery">
+          <figure class="mk-photo mk-photo--ftorn pop">
+            <span class="mk-claim type-label">Product vision</span>
+            <img src="../Images/brand_guidelines_v2_5_pose_locked/masters/03_starter_kit_master_clean.png" width="1536" height="1024" loading="lazy" alt="The Meikku starter kit arranged with the robot, shared mat, clay, tools and cards." />
+            <figcaption class="mk-cap"><b class="type-card-title">Everything for shared making</b><span class="type-caption">Robot, clay, tools, mat.</span></figcaption>
+          </figure>
+          <figure class="mk-photo mk-photo--ftape pop">
+            <span class="mk-claim type-label">Product vision</span>
+            <img src="../Images/brand_guidelines_v2_5_pose_locked/masters/06_session_archive_master_clean.png" width="1536" height="1024" loading="lazy" alt="A hand returns a clay sample to a session archive beside a journal and care tools." />
+            <figcaption class="mk-cap"><b class="type-card-title">A history you can reopen</b><span class="type-caption">Samples and memories return next time.</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <div class="mk-wdiv mk-wdiv--scallop-flip" aria-hidden="true">
+      <img class="mk-seam-obj mk-seam-obj--sm" style="left:18%; --r:5deg" src="assets/brand/ui_art_v2/objects/object-specimen-tray.svg" alt="" />
+    </div>
+
+    <section class="mk-band" id="evidence" aria-labelledby="evi-h">
+      <div class="mk-shell">
+        <header class="mk-visual-head pop">
+          <div>
+            <h2 class="mk-h type-heading" id="evi-h">See the prototype respond.</h2>
+          </div>
+          <p class="mk-proof-key type-label">Physical / recorded / scripted / simulated</p>
+        </header>
+        <div class="mk-window mk-framed pop" data-media-slot="M05">
+          <div class="mk-window__mat" aria-hidden="true"></div>
+          <div class="mk-window__bar">
+            <span class="type-label">Correct a memory &mdash; change the response</span>
+            <span class="mk-window__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          </div>
+          <div class="mk-window__frame">
+            <iframe id="meikkuDemo" src="../robot/code/project/UI/d1_deck_evidence_slice/index.html?embed=1" title="Scripted Meikku interaction prototype showing a person correcting the AI's memory" loading="lazy"></iframe>
+          </div>
+          <span class="mk-tab type-label">Scripted interaction</span>
+        </div>
+        <div class="mk-btns pop">
+          <button class="mk-btn type-action" type="button" id="replayDemo">Replay</button>
+          <a class="mk-btn mk-btn--ghost type-action" href="../robot/code/project/UI/d1_deck_evidence_slice/index.html?embed=1" target="_blank" rel="noopener">Open full size</a>
+        </div>
+        <div class="mk-evi" aria-label="Current prototype evidence">
+          <figure class="mk-cut mk-cut--sleeve pop" data-media-slot="M03"><div class="mk-cut__in">
+            <div class="mk-shotbox"><img class="is-photo" src="assets/storyboard/storyboard_robot_yellow_anchor.jpg" loading="lazy" alt="Close view of the physical Meikku robot arm on the work surface." /></div>
+            <figcaption><img class="mk-claim-stamp" src="assets/brand/ui_art_v2/stamps/stamp-recorded.svg" alt="" /><b class="type-card-title">Physical robot</b><span class="type-caption">Recorded hardware</span></figcaption>
+          </div></figure>
+          <figure class="mk-cut mk-cut--sleeve pop" data-media-slot="M06"><div class="mk-cut__in">
+            <div class="mk-shotbox"><video src="assets/storyboard/storyboard_scada_path_run_20260708_153040_cw38_30s.mp4" poster="assets/storyboard/storyboard_scada_interface.png" controls muted loop playsinline preload="metadata" aria-label="Recorded digital rehearsal of a Meikku interaction"></video></div>
+            <figcaption><img class="mk-claim-stamp" src="assets/brand/ui_art_v2/stamps/stamp-recorded.svg" alt="" /><b class="type-card-title">Digital rehearsal</b><span class="type-caption">Recorded, no live hardware</span></figcaption>
+          </div></figure>
+          <figure class="mk-cut mk-cut--sleeve pop" data-media-slot="M09"><div class="mk-cut__in">
+            <div class="mk-shotbox"><img src="assets/storyboard/storyboard_too_path_latest.png" loading="lazy" alt="Simulated preview of a candidate Meikku tool path over the workspace." /></div>
+            <figcaption><img class="mk-claim-stamp" src="assets/brand/ui_art_v2/stamps/stamp-simulated.svg" alt="" /><b class="type-card-title">AI offer</b><span class="type-caption">Simulated path</span></figcaption>
+          </div></figure>
+        </div>
+      </div>
+    </section>
+
+    <div class="mk-wdiv mk-wdiv--finale" aria-hidden="true">
+      <img class="mk-seam-obj" style="left:26%; --r:-6deg" src="assets/brand/ui_art_v2/objects/object-clay-lump.svg" alt="" />
+      <img class="mk-seam-obj mk-seam-obj--sm" style="left:68%; --r:5deg" src="assets/brand/ui_art_v2/objects/object-needle-tool.svg" alt="" />
+    </div>
+
+    <section class="mk-band mk-start" id="press-start" aria-labelledby="start-h">
+      <div class="mk-shell mk-finale-grid">
+        <figure class="mk-photo mk-photo--frays pop">
+          <span class="mk-claim type-label">Product vision</span>
+          <img src="../Images/brand_guidelines_v2_5_pose_locked/masters/10_completion_highfive_master.png" width="1024" height="1536" loading="lazy" alt="A person and Meikku high-five beside the clay form they completed together." />
+        </figure>
+        <div class="mk-finale-copy pop">
+          <h2 class="mk-h type-display" id="start-h">Bring something unfinished.</h2>
+          <p class="mk-lede type-deck">Meikku brings attention, an offer, and a second set of hands.</p>
+          <div class="mk-btns">
+            <a class="mk-btn type-action" href="#play">See the interaction</a>
+            <a class="mk-btn mk-btn--ghost type-action" href="#evidence">See the prototype</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="mk-world-footer" role="contentinfo">
+      <img class="mk-world-footer__scene" src="assets/brand/ui_art_v2/scene_edges/scene-footer-shared-table.svg" alt="" aria-hidden="true" />
+      <div class="mk-world-footer__bar">
+        <span class="mk-world-footer__brand"><img src="assets/brand/logo/meikku_logo_highfive_paper.svg" alt="Meikku high-five logo" /><b class="type-card-title">MEIKKU</b></span>
+        <span class="type-label">Plus one for the making &middot; ATStudio Two &middot; SCI-Arc</span>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    /* 开场叙事驱动：滚动进度 = 幻想被泡起 → 缩走 → 现实空手 → 机械臂牵手 → 命题 */
+    (function(){
+      var wrap = document.getElementById('mkDropWrap');
+      if (!wrap) return;
+      var dream = document.getElementById('mkDream');
+      var overlay = document.getElementById('mkBubbleOverlay');
+      var shape = document.getElementById('mkBubbleShape');
+      var ghosts = wrap.querySelectorAll('.after-ghost');
+      var arms = [document.getElementById('mkArmGroup'), document.getElementById('mkArmGroupL')].filter(Boolean);
+      var handRs = [document.getElementById('mkHandRGroup'), document.getElementById('mkHandRGroupL')].filter(Boolean);
+      var dreamMarks = [dream.querySelector('.mark'), dream.querySelector('.mark-sub'), dream.querySelector('.cue')].filter(Boolean);
+      var overlayL = document.getElementById('mkBubbleOverlayL');
+      var shapeL = document.getElementById('mkBubbleShapeL');
+      var punch = document.getElementById('mkPunchline');
+      var armRail = document.querySelector('.arm-rail');
+      var clamp01 = function(v){ return Math.min(1, Math.max(0, v)); };
+      var ramp = function(p, a, b){ return clamp01((p - a) / (b - a)); };
+      var ticking = false;
+      var lastSet = {};
+      var put = function(key, val, apply){ if (lastSet[key] !== val) { lastSet[key] = val; apply(val); } };
+      function update(){
+        ticking = false;
+        var i;
+        var total = wrap.offsetHeight - window.innerHeight;
+        var p = clamp01(-wrap.getBoundingClientRect().top / total);
+        var portrait = window.innerHeight > window.innerWidth;
+        if (portrait) {
+          /* 竖屏（deck 原方案）：泡圈从画布外同心收拢 → 泡形裁剪 → 整泡缩走 */
+          overlay.style.display = '';
+          var enter = ramp(p, .04, .16);
+          var easedEnter = 1 - Math.pow(1 - enter, 2);
+          var s = 1 + 2.4 * (1 - easedEnter);
+          put('shapeP', 'translate(450,940) scale(' + s + ') translate(-450,-940)', function(v){ shape.setAttribute('transform', v); });
+          put('clip', p >= .19 ? 'url(#mkDreamClip)' : 'none', function(v){ dream.style.clipPath = v; });
+          if (overlayL) overlayL.style.display = 'none';
+          var gone = ramp(p, .22, .42);
+          var e2 = gone * gone * (3 - 2 * gone);
+          var s2 = 1 - .4 * e2;
+          put('dreamT', 'translate(' + (19 * e2) + '%, ' + (-12.25 * e2) + '%) scale(' + s2 + ')', function(v){ dream.style.transform = v; });
+          for (i = 0; i < dreamMarks.length; i++) dreamMarks[i].style.visibility = '';
+        } else {
+          /* 横屏：泡形裁剪扣住黏土动画（词标随即硬切退场），
+             整层带着活画布沿对角线滑进左下的思考泡位；泡里动画不停 */
+          overlay.style.display = 'none';
+          /* 第一幕：泡圈从画布外同心收拢，扫过之处盖上纸色（与竖屏同一机制） */
+          if (overlayL) {
+            overlayL.style.display = '';
+            var enterL = ramp(p, .04, .18);
+            var easedL = 1 - Math.pow(1 - enterL, 2);
+            var sL = 1 + 2.4 * (1 - easedL);
+            put('shapeL', 'translate(800,450) scale(' + sL + ') translate(-800,-450)', function(v){ shapeL.setAttribute('transform', v); });
+          }
+          var clipOn = p >= .20;
+          put('clip', clipOn ? 'url(#mkDreamClipL)' : 'none', function(v){ dream.style.clipPath = v; });
+          for (i = 0; i < dreamMarks.length; i++) dreamMarks[i].style.visibility = p >= .12 ? 'hidden' : '';
+          /* 第二幕：整泡带着活画布沿对角线滑到左下 */
+          var glide = ramp(p, .22, .46);
+          var eg = glide * glide * (3 - 2 * glide);
+          put('dreamT', 'translate(' + (-4 * eg) + '%, ' + (1 * eg) + '%) scale(' + (1 - .38 * eg) + ')', function(v){ dream.style.transform = v; });
+        }
+        /* 页面级滚动臂在叙事期间退场，避免与现实层的机械臂混淆 */
+        var pRaw = -wrap.getBoundingClientRect().top / total;
+        if (armRail) armRail.style.visibility = (pRaw > .04 && pRaw < 1.02) ? 'hidden' : '';
+        var after = ramp(p, .40, .50);
+        var fadeOut = ramp(p, .52, .60);
+        put('ghostO', String(.75 * after * (1 - fadeOut)), function(v){ for (var k = 0; k < ghosts.length; k++) ghosts[k].style.opacity = v; });
+        var armIn = ramp(p, .55, .75);
+        var eArm = 1 - Math.pow(1 - armIn, 3);
+        var lift = ramp(p, .78, .86);
+        var eLift = lift * lift * (3 - 2 * lift);
+        put('armT', 'translate(' + (381 * (1 - eArm)) + 'px, ' + (-587 * (1 - eArm) - 24 * eLift) + 'px)', function(v){ for (var k = 0; k < arms.length; k++) arms[k].style.transform = v; });
+        put('handT', 'translateY(' + (-24 * eLift) + 'px)', function(v){ for (var k = 0; k < handRs.length; k++) handRs[k].style.transform = v; });
+        var punchP = ramp(p, .80, .92);
+        put('punchO', String(punchP), function(v){ punch.style.opacity = v; });
+        put('punchT', 'translateY(' + (12 * (1 - punchP)) + 'px)', function(v){ punch.style.transform = v; });
+      }
+      window.addEventListener('scroll', function(){
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+
+    (function(){
+      var replay = document.getElementById('replayDemo');
+      var demo = document.getElementById('meikkuDemo');
+      if (!replay || !demo) return;
+      replay.addEventListener('click', function(){
+        demo.src = '../robot/code/project/UI/d1_deck_evidence_slice/index.html?embed=1&replay=' + Date.now();
+      });
+    })();
+  </script>
+
+  <script>
+    /* 到场：Player 2 落座是一次状态切换，不是循环播放的装饰 */
+    (function(){
+      var sec = document.querySelector('[data-arrival]');
+      if (!sec) return;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var timer = 0;
+      function arrive(){ sec.classList.add('is-on'); }
+      if (reduce || !('IntersectionObserver' in window)) {
+        arrive();
+      } else {
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(en){
+            if (!en.isIntersecting) return;
+            io.disconnect();
+            timer = window.setTimeout(arrive, 850);
+          });
+        }, { threshold: 0.3 });
+        io.observe(sec);
+      }
+      var again = sec.querySelector('[data-arrival-replay]');
+      if (again) {
+        again.addEventListener('click', function(){
+          window.clearTimeout(timer);
+          sec.classList.remove('is-on');
+          timer = window.setTimeout(arrive, reduce ? 0 : 620);
+        });
+      }
+    })();
+
+    /* 互动循环：进入视口后自动播放三个连续状态；点击仍可选帧。 */
+    (function(){
+      var seq = document.querySelector('[data-seq]');
+      if (!seq) return;
+      var frames = seq.querySelectorAll('[data-frame]');
+      var steps = seq.querySelectorAll('[data-step]');
+      if (!frames.length || frames.length !== steps.length) return;
+      var index = 0;
+      var timer = 0;
+      var visible = false;
+      var focused = false;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var dwell = 2400;
+
+      function show(n){
+        index = (n + frames.length) % frames.length;
+        seq.setAttribute('data-seq-state', String(index + 1));
+        for (var i = 0; i < frames.length; i++){
+          var on = (i === index);
+          frames[i].classList.toggle('is-on', on);
+          frames[i].setAttribute('aria-hidden', on ? 'false' : 'true');
+          steps[i].classList.toggle('is-on', on);
+          var btn = steps[i].querySelector('button');
+          if (btn) btn.setAttribute('aria-selected', on ? 'true' : 'false');
+        }
+      }
+
+      function stop(){
+        window.clearTimeout(timer);
+        timer = 0;
+        seq.setAttribute('data-seq-autoplay', 'paused');
+      }
+
+      function schedule(delay){
+        stop();
+        if (!visible || focused || document.hidden || reduce.matches) return;
+        seq.setAttribute('data-seq-autoplay', 'playing');
+        timer = window.setTimeout(function(){
+          show(index + 1);
+          schedule(dwell);
+        }, delay == null ? dwell : delay);
+      }
+
+      for (var i = 0; i < steps.length; i++){
+        (function(k){
+          var btn = steps[k].querySelector('button');
+          if (btn) {
+            btn.addEventListener('pointerup', function(){ btn.blur(); });
+            btn.addEventListener('click', function(){
+              show(k);
+              schedule(dwell + 1200);
+            });
+          }
+        })(i);
+      }
+
+      show(0);
+      if ('IntersectionObserver' in window){
+        new IntersectionObserver(function(entries){
+          entries.forEach(function(en){
+            visible = en.isIntersecting;
+            visible ? schedule(dwell) : stop();
+          });
+        }, { threshold: 0.25 }).observe(seq);
+      } else {
+        visible = true;
+        schedule(dwell);
+      }
+
+      seq.addEventListener('focusin', function(){ focused = true; stop(); });
+      seq.addEventListener('focusout', function(){
+        focused = seq.contains(document.activeElement);
+        if (!focused) schedule(dwell);
+      });
+      document.addEventListener('visibilitychange', function(){
+        document.hidden ? stop() : schedule(dwell);
+      });
+      if (reduce.addEventListener) reduce.addEventListener('change', function(){ schedule(dwell); });
+    })();
+  </script>
+
+
+  <script>
+
+    (function(){
+      const soloParams = new URLSearchParams(window.location.search);
+      if (soloParams.has('solo') && window.location.hash) {
+        const targetFrame = document.querySelector(window.location.hash);
+        if (targetFrame && targetFrame.matches('#story > .mk-band')) {
+          document.body.classList.add('solo-section');
+          targetFrame.classList.add('active-solo');
+          window.requestAnimationFrame(() => window.scrollTo(0, 0));
+        }
+      }
+
+      const NSVG = 'http://www.w3.org/2000/svg';
+      const T = 18;
+      const T_RESET = 15.5;
+      const CX = 720, CY = 430, R = 170;   // dough sits right of centre to balance the card column
+      const N = 22;
+      const TAU = Math.PI*2;
+
+
+      const ease = u => u*u*(3-2*u);
+      const clamp = (v,a,b)=> Math.max(a,Math.min(b,v));
+      const wrapA = a => { while(a> Math.PI) a-=2*Math.PI; while(a<-Math.PI) a+=2*Math.PI; return a; };
+      const inWin = (wins,t)=> wins.some(w=> t>=w[0] && t<=w[1]);
+
+      function track(keys, t){
+        if (t <= keys[0][0]) return keys[0].slice(1);
+        for (let i=0;i<keys.length-1;i++){
+          const a=keys[i], b=keys[i+1];
+          if (t>=a[0] && t<=b[0]){
+            const u = ease((t-a[0]) / ((b[0]-a[0])||1e-9));
+            return [a[1]+(b[1]-a[1])*u, a[2]+(b[2]-a[2])*u, a[3]+(b[3]-a[3])*u];
+          }
+        }
+        return keys[keys.length-1].slice(1);
+      }
+
+
+      const theta = [], D = new Array(N).fill(0), jitter = new Array(N).fill(0);
+      const poke = new Array(N).fill(0);
+      const readToken = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      const INK = readToken('--meikku-ink');
+      const LIME = readToken('--meikku-lime');
+      const CARD_HOVER = readToken('--meikku-card-hover');
+      for (let i=0;i<N;i++) theta.push(i/N*TAU);
+
+      function blobPath(pts){
+        const n = pts.length;
+        let d = `M ${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)} `;
+        for (let i=0;i<n;i++){
+          const p0=pts[(i-1+n)%n], p1=pts[i], p2=pts[(i+1)%n], p3=pts[(i+2)%n];
+          const c1=[p1[0]+(p2[0]-p0[0])/6, p1[1]+(p2[1]-p0[1])/6];
+          const c2=[p2[0]-(p3[0]-p1[0])/6, p2[1]-(p3[1]-p1[1])/6];
+          d += `C ${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)} `;
+        }
+        return d + 'Z';
+      }
+
+
+      function heartRadii(){
+        const buckets = new Array(N).fill(0);
+        for (let m=0;m<1440;m++){
+          const tt = m/1440*TAU;
+          const xm = 16*Math.pow(Math.sin(tt),3);
+          const ym = 13*Math.cos(tt)-5*Math.cos(2*tt)-2*Math.cos(3*tt)-Math.cos(4*tt);
+          const sx = xm, sy = -ym + 2;
+          let phi = Math.atan2(sy,sx); if (phi<0) phi += TAU;
+          const b = Math.floor(phi/TAU*N)%N;
+          const r = Math.hypot(sx,sy);
+          if (r>buckets[b]) buckets[b]=r;
+        }
+        for (let i=0;i<N;i++) if (buckets[i]===0)
+          buckets[i]=(buckets[(i-1+N)%N]+buckets[(i+1)%N])/2 || 10;
+        const mx = Math.max(...buckets);
+        return buckets.map(r=> r/mx * R*1.02);
+      }
+      const circleR = mul => theta.map(()=> R*mul);
+
+
+
+      // radial lobe helper: a soft bump on the outline at centreDeg
+      const lobe = (a, cDeg, w, amp) =>
+        amp*Math.exp(-Math.pow(wrapA(a - cDeg*Math.PI/180)/w, 2));
+
+      // five animals: outline lobes give ears/fins/flippers,
+      // relief actions give eyes/shells/backs
+      const SHAPES = [
+        {name:'CAT',     mode:'edge',               // round face, two ears, two pressed eyes
+         radii: theta.map(a=> R*(0.92 + lobe(a,245,0.22,0.34) + lobe(a,295,0.22,0.34))),
+         actions:[
+          {t0:11.8, t1:12.4, dx:-35, dy:-25, s:-1, max:0.32, sig:16, who:'h', v:'press'},
+          {t0:12.7, t1:13.3, dx:35,  dy:-25, s:-1, max:0.32, sig:16, who:'r', v:'press'}
+         ]},
+        {name:'PIG',     mode:'edge',               // round face, floppy ears, the snout is the soul
+         radii: theta.map(a=> R*(0.94 + lobe(a,240,0.18,0.24) + lobe(a,300,0.18,0.24))),
+         actions:[
+          {t0:11.6, t1:12.2,  dx:0,   dy:8, s: 1, max:0.45, sig:30, who:'h', v:'pull'},   // snout, properly raised
+          {t0:12.5, t1:12.85, dx:12,  dy:9, s:-1, max:0.30, sig:13, who:'r', v:'press'},  // nostril, properly sunk
+          {t0:12.9, t1:13.25, dx:-12, dy:9, s:-1, max:0.30, sig:13, who:'h', v:'press'}   // nostril
+         ]},
+        {name:'FISH',    mode:'edge',               // pointed nose east, slim waist, big fan tail with V notch
+         radii: theta.map(a=> R*(0.66 + 0.70*Math.pow(Math.max(Math.cos(a),0),3)
+                 + lobe(a,162,0.16,0.63) + lobe(a,198,0.16,0.63))),
+         actions:[
+          {t0:10.4, t1:10.9,  dx:30,  dy:0,   s: 1, max:0.18, sig:44, who:'h', v:'pull'},  // soft volume, no ink ring
+          {t0:12.5, t1:12.75, dx:125, dy:-20, s:-1, max:0.28, sig:12, who:'r', v:'press'}  // eye up near the nose
+         ]},
+        {name:'BIRD',    mode:'edge',               // flying bird from above: head east, wings spread, fan tail west
+         radii: theta.map(a=> R*(0.55 + lobe(a,0,0.14,0.42)
+                 + lobe(a,90,0.30,0.50) + lobe(a,270,0.30,0.50)
+                 + lobe(a,180,0.24,0.38))),
+         actions:[
+          {t0:10.4, t1:10.9,  dx:-10, dy:0,   s: 1, max:0.18, sig:46, who:'h', v:'pull'},  // body volume
+          {t0:11.5, t1:11.8,  dx:0,   dy:85,  s: 1, max:0.16, sig:38, who:'h', v:'pull'},  // south wing
+          {t0:12.5, t1:12.75, dx:105, dy:-15, s:-1, max:0.26, sig:11, who:'r', v:'press'}, // eye on the head
+          {t0:13.35,t1:13.55, dx:0,   dy:-85, s: 1, max:0.16, sig:38, who:'r', v:'pinch'}  // north wing
+         ]},
+        {name:'STARFISH', mode:'edge',              // five arms, centre domed up
+         radii: theta.map(a=> R*(0.80 + 0.32*Math.cos(5*a))),
+         actions:[
+          {t0:11.8, t1:12.4, dx:0, dy:2,  s: 1, max:0.30, sig:58, who:'h', v:'pull'},
+          {t0:12.7, t1:13.3, dx:6, dy:-4, s: 1, max:0.28, sig:58, who:'r', v:'pinch'}
+         ]}
+      ];
+      function shapeR(radii, phi){
+        phi = ((phi%TAU)+TAU)%TAU;
+        const f = phi/TAU*N, i0 = Math.floor(f)%N, fr = f-Math.floor(f);
+        return radii[i0]*(1-fr) + radii[(i0+1)%N]*fr;
+      }
+
+
+      const $ = id => document.getElementById(id);
+      const dough=$('dough'), doughShadow=$('doughShadow'), doughClipPath=$('doughClipPath');
+      const hand=$('hand'), handL=$('handL'), bot=$('bot'), prongL=$('prongL'), prongR=$('prongR');
+      const ghost1=$('ghost1'), sparksG=$('sparks'), turb=$('turb');
+      const g1L=$('ghost1Line'), g1C=$('ghost1Circ');
+      const holeC=$('holeC');
+      const toolpathG=$('toolpathG'), tpFull=$('tpFull'), tpAhead=$('tpAhead'), tpTargets=$('tpTargets');
+      const featEdgesG=$('featEdges');
+      let featEdgeEls=[];
+
+
+      const cardX = 58, cardW = 172, cardH = 80, cardGap = 102, cardY0 = 138;
+      const cardEls = [];
+      const cardsG = $('cards');
+      SHAPES.forEach((S,i)=>{
+        const y = cardY0 + i*cardGap;
+        const g = document.createElementNS(NSVG,'g');
+        const sh = document.createElementNS(NSVG,'rect');
+        sh.setAttribute('x',cardX+5); sh.setAttribute('y',y+6);
+        sh.setAttribute('width',cardW); sh.setAttribute('height',cardH);
+        sh.setAttribute('fill','var(--meikku-ink)');
+        const rc = document.createElementNS(NSVG,'rect');
+        rc.setAttribute('x',cardX); rc.setAttribute('y',y);
+        rc.setAttribute('width',cardW); rc.setAttribute('height',cardH);
+        rc.setAttribute('fill','var(--meikku-paper)');
+        rc.setAttribute('stroke','var(--meikku-ink)'); rc.setAttribute('stroke-width',4);
+        g.appendChild(sh); g.appendChild(rc);
+
+        // sketch icon: the simplest drawing that captures the animal
+        const icx = cardX+42, icy = y+cardH/2;
+        const el = (tag, attrs)=>{
+          const n = document.createElementNS(NSVG, tag);
+          for (const k in attrs) n.setAttribute(k, attrs[k]);
+          if (attrs.fill===undefined) n.setAttribute('fill','none');
+          n.setAttribute('stroke', attrs.stroke!==undefined ? attrs.stroke : 'var(--meikku-ink)');
+          if (attrs['stroke-width']===undefined) n.setAttribute('stroke-width',2.2);
+          n.setAttribute('stroke-linecap','round');
+          n.setAttribute('stroke-linejoin','round');
+          g.appendChild(n);
+        };
+        const dot = (dx,dy,r)=> el('circle',{cx:icx+dx, cy:icy+dy, r, fill:'var(--meikku-ink)', stroke:'none'});
+        if (S.name==='CAT'){
+          el('circle',{cx:icx, cy:icy, r:12.5});
+          el('path',{d:`M ${icx-11} ${icy-6} L ${icx-15} ${icy-18} L ${icx-4} ${icy-12}`});
+          el('path',{d:`M ${icx+11} ${icy-6} L ${icx+15} ${icy-18} L ${icx+4} ${icy-12}`});
+          dot(-5,-2,1.6); dot(5,-2,1.6);
+          el('path',{d:`M ${icx-3} ${icy+5} Q ${icx} ${icy+8} ${icx+3} ${icy+5}`});
+          el('path',{d:`M ${icx-10} ${icy+2} L ${icx-18} ${icy+1} M ${icx-10} ${icy+5} L ${icx-17} ${icy+7}`,'stroke-width':1.6});
+          el('path',{d:`M ${icx+10} ${icy+2} L ${icx+18} ${icy+1} M ${icx+10} ${icy+5} L ${icx+17} ${icy+7}`,'stroke-width':1.6});
+        } else if (S.name==='PIG'){
+          el('circle',{cx:icx, cy:icy, r:13});
+          el('path',{d:`M ${icx-12} ${icy-5} L ${icx-13} ${icy-16} L ${icx-3} ${icy-12}`});
+          el('path',{d:`M ${icx+12} ${icy-5} L ${icx+13} ${icy-16} L ${icx+3} ${icy-12}`});
+          el('ellipse',{cx:icx, cy:icy+3, rx:6, ry:4.5});
+          dot(-2.4,3,1.3); dot(2.4,3,1.3);
+          dot(-7,-4,1.5); dot(7,-4,1.5);
+        } else if (S.name==='FISH'){
+          el('path',{d:`M ${icx+16} ${icy} Q ${icx+6} ${icy-8} ${icx-6} ${icy-5.5} Q ${icx-10} ${icy-4.5} ${icx-10} ${icy} Q ${icx-10} ${icy+4.5} ${icx-6} ${icy+5.5} Q ${icx+6} ${icy+8} ${icx+16} ${icy} Z`});
+          el('path',{d:`M ${icx-10} ${icy} L ${icx-18} ${icy-6.5} Q ${icx-15.5} ${icy} ${icx-18} ${icy+6.5} Z`});
+          el('path',{d:`M ${icx+5} ${icy-4} Q ${icx+3} ${icy} ${icx+5} ${icy+4}`,'stroke-width':1.6});
+          dot(11,-2,1.6);
+        } else if (S.name==='BIRD'){
+          el('ellipse',{cx:icx+1, cy:icy, rx:9.5, ry:4.2});
+          el('path',{d:`M ${icx-1} ${icy-3.5} L ${icx-4} ${icy-17} Q ${icx+1} ${icy-13} ${icx+3.5} ${icy-3.5}`});
+          el('path',{d:`M ${icx-1} ${icy+3.5} L ${icx-4} ${icy+17} Q ${icx+1} ${icy+13} ${icx+3.5} ${icy+3.5}`});
+          el('path',{d:`M ${icx+10.5} ${icy-1} L ${icx+16.5} ${icy} L ${icx+10.5} ${icy+1.6} Z`, fill:'var(--meikku-ink)'});
+          el('path',{d:`M ${icx-9} ${icy-2} L ${icx-17} ${icy-5} M ${icx-9.5} ${icy} L ${icx-18} ${icy} M ${icx-9} ${icy+2} L ${icx-17} ${icy+5}`,'stroke-width':1.6});
+          dot(6.5,-1.8,1.3);
+        } else if (S.name==='STARFISH'){
+          let sd = '';
+          for (let k=0;k<10;k++){
+            const rr = k%2 ? 7 : 17;
+            const a = -Math.PI/2 + k*Math.PI/5;
+            sd += (k?'L':'M') + (icx+rr*Math.cos(a)).toFixed(1) + ' ' + (icy+rr*Math.sin(a)).toFixed(1);
+          }
+          el('path',{d: sd+'Z'});
+          dot(0,0,2);
+        }
+        const tx = document.createElementNS(NSVG,'text');
+        tx.setAttribute('x',cardX+80); tx.setAttribute('y',y+cardH/2+6);
+        tx.setAttribute('font-size',16); tx.setAttribute('font-weight',700);
+        tx.setAttribute('letter-spacing','1.5'); tx.setAttribute('fill','var(--meikku-ink)');
+        tx.textContent = S.name;
+        g.appendChild(tx);
+
+        g.style.cursor = 'pointer';
+        g.addEventListener('click', ()=>{ newCycle(i); tLoc = 2.4; });
+        g.addEventListener('mouseenter', ()=>{ hovered = i; });
+        g.addEventListener('mouseleave', ()=>{ if (hovered===i) hovered = -1; });
+        cardsG.appendChild(g);
+        cardEls.push(rc);
+      });
+      const cardClickPt = i => [cardX+42, cardY0 + i*cardGap + cardH/2 + 8];
+
+
+      let choice = -1, humanKeys=[], robotKeys=[], leftKeys=[], humanEng=[], robotEng=[], leftEng=[];
+      let humanDip=[], humanLift=[], robotDip=[], robotLift=[], robotSq=[], leftDip=[];
+      let feats=[], sparkEvents=[], sparkEls=[];
+      let tLoc = 0, hovered = -1;
+      let tpSamples = [], robotTargets = [], tpTargetEls = [], dashOff = 0;
+      let curRadii = SHAPES[0].radii;
+      const FEAT_STRENGTH = 0.7;
+
+      function contact(phi, extra, radii){
+        const r = shapeR(radii, phi) + extra;
+        return [CX + Math.cos(phi)*r, CY + Math.sin(phi)*r];
+      }
+
+      function buildSparks(){
+        sparksG.innerHTML = '';
+        sparkEls = sparkEvents.map(e=>{
+          const g = document.createElementNS(NSVG,'g');
+          for (let k=0;k<5;k++){
+            const a = k/5*TAU + 0.5;
+            const l = document.createElementNS(NSVG,'line');
+            l.setAttribute('x1', e.x + Math.cos(a)*14); l.setAttribute('y1', e.y + Math.sin(a)*14);
+            l.setAttribute('x2', e.x + Math.cos(a)*30); l.setAttribute('y2', e.y + Math.sin(a)*30);
+            l.setAttribute('stroke', e.c); l.setAttribute('stroke-width', 5);
+            l.setAttribute('stroke-linecap','round');
+            g.appendChild(l);
+          }
+          g.setAttribute('opacity','0');
+          sparksG.appendChild(g);
+          return g;
+        });
+      }
+
+      function newCycle(forced){
+        choice = (forced !== undefined) ? forced
+               : choice<0 ? Math.floor(Math.random()*5)
+                          : (choice + 1 + Math.floor(Math.random()*4)) % 5;
+        const S = SHAPES[choice];
+        curRadii = S.radii;
+
+        humanKeys = [
+          [0.0, 430, 1010, 0],
+          [2.2, 430, 1010, 0],
+          [3.15, 430, 760, 0],
+          [3.6, 460, 720, 0]
+        ];
+        robotKeys = [
+          [0.0, 960, -150, 120],
+          [3.0, 960, -150, 120]
+        ];
+        leftKeys = [
+          [0.0, 250, 1010, 0],
+          [3.6, 250, 1010, 0]
+        ];
+        humanDip = []; humanLift=[]; robotDip=[]; robotLift=[]; robotSq=[]; leftDip=[]; leftEng=[];
+        feats = []; robotTargets = [];
+
+        // the left hand parks on the rim: long steady contacts.
+        // press=true makes it a slow forming press (it sculpts its own small arc)
+        function leftHold(phiDeg, tIn, tOut, press){
+          const phi = phiDeg*Math.PI/180;
+          const pOut = contact(phi, 70, S.radii);
+          const pOn  = contact(phi, press ? -4 : 2, S.radii);
+          const rot = phiDeg-90;
+          leftKeys.push(
+            [tIn-0.4, pOut[0], pOut[1], rot],
+            [tIn,     pOn[0],  pOn[1],  rot],
+            [tOut,    pOn[0]-2, pOn[1], rot],
+            [tOut+0.3, pOut[0], pOut[1], rot]
+          );
+          leftDip.push([tIn, tOut]);
+          if (press) leftEng.push([tIn, tOut]);
+        }
+        sparkEvents = [];
+
+
+
+        function addAction(a){
+          const x = CX + a.dx, y = CY + a.dy;
+          const w = a.t1 - a.t0, mid = a.t0 + w*0.5;
+          const v = a.v || 'press';
+          const e = {t0:a.t0, t1:a.t1, x, y, s:a.s, max:a.max, sig:a.sig};
+          if (v === 'push'){ e.x = x-30; e.y = y+12; e.x2 = x+26; e.y2 = y-8; }
+          if (v === 'rub'){ e.sig = a.sig*0.75; e.sig2 = a.sig*1.25; }
+          feats.push(e);
+
+          if (a.who === 'h'){
+            if (v === 'push'){
+              humanKeys.push(
+                [a.t0-0.25, x-52, y+130, 8],
+                [a.t0,      x-38, y+16,  8],
+                [a.t1,      x+30, y-10, -6],
+                [a.t1+0.3,  x+14, y+150, 0]
+              );
+            } else if (v === 'rub'){
+              humanKeys.push([a.t0-0.25, x-8, y+120, 2]);
+              for (let k=0;k<=5;k++){
+                const ang = k/5*Math.PI*3;
+                humanKeys.push([a.t0 + w*k/5, x+Math.cos(ang)*16, y+Math.sin(ang)*11, (k%2? 6:-6)]);
+              }
+              humanKeys.push([a.t1+0.3, x-24, y+150, 4]);
+            } else if (v === 'pull'){
+              humanKeys.push(
+                [a.t0-0.25, x-8, y+120, 2],
+                [a.t0,        x,   y+6, 0],
+                [a.t0+w*0.35, x-3, y-3, -4],
+                [a.t0+w*0.55, x+4, y+4, 4],
+                [a.t0+w*0.8,  x-2, y-4, -3],
+                [a.t1,        x,   y,   0],
+                [a.t1+0.3,  x-24, y+150, 4]
+              );
+            } else if (v === 'pinch'){
+              humanKeys.push(
+                [a.t0-0.25, x-8, y+120, 2],
+                [a.t0, x, y+6, -8],
+                [mid,  x, y+3,  8],
+                [a.t1, x, y+2, -5],
+                [a.t1+0.3, x-24, y+150, 4]
+              );
+            } else {
+              humanKeys.push(
+                [a.t0-0.25, x-8, y+120, 2],
+                [a.t0,        x,   y+8, 0],
+                [a.t0+w*0.45, x,   y+2, 0],
+                [a.t0+w*0.6,  x+2, y+7, -3],
+                [a.t1,        x+1, y+2, 2],
+                [a.t1+0.3,  x-24, y+150, 4]
+              );
+            }
+            (v==='pull' || a.s>0 ? humanLift : humanDip).push([a.t0, a.t1]);
+            sparkEvents.push({t:a.t0+0.12, x, y, c:INK});
+          } else {
+            if (v === 'rub'){
+              robotKeys.push([a.t0-0.25, x+14, y-120, 0]);
+              for (let k=0;k<=5;k++){
+                const ang = k/5*Math.PI*3;
+                robotKeys.push([a.t0 + w*k/5, x+Math.cos(ang)*14, y-Math.sin(ang)*10, (k%2? 5:-5)]);
+              }
+              robotKeys.push([a.t1+0.3, x+34, y-140, -8]);
+              robotSq.push([a.t0-0.1, a.t1+0.1]);
+            } else if (v === 'pull'){
+              robotKeys.push(
+                [a.t0-0.25, x+14, y-120, 0],
+                [a.t0,        x,   y-4, 0],
+                [a.t0+w*0.35, x-3, y-9, -5],
+                [a.t0+w*0.55, x+4, y-2, 5],
+                [a.t0+w*0.8,  x-2, y-8, -4],
+                [a.t1,        x,   y-4, 0],
+                [a.t1+0.3,  x+34, y-140, -8]
+              );
+              robotSq.push([a.t0-0.1, a.t1+0.1]);
+            } else if (v === 'pinch'){
+              robotKeys.push(
+                [a.t0-0.25, x+14, y-120, 0],
+                [a.t0, x, y-4, -6],
+                [mid,  x, y-2,  6],
+                [a.t1, x, y-2, -4],
+                [a.t1+0.3, x+34, y-140, -8]
+              );
+              robotSq.push([a.t0, a.t0+w*0.25], [a.t0+w*0.4, a.t0+w*0.65], [a.t0+w*0.75, a.t1]);
+            } else {
+              robotKeys.push(
+                [a.t0-0.25, x+14, y-120, 0],
+                [a.t0,        x,   y-6, 0],
+                [a.t0+w*0.45, x,   y-1, 0],
+                [a.t0+w*0.6,  x+2, y-6, -4],
+                [a.t1,        x,   y-1, 2],
+                [a.t1+0.3,  x+34, y-140, -8]
+              );
+              robotSq.push([a.t0-0.1, a.t1+0.1]);
+            }
+            (v==='pull' || a.s>0 ? robotLift : robotDip).push([a.t0, a.t1]);
+            robotTargets.push({t:a.t0, x, y});
+            sparkEvents.push({t:a.t0+0.12, x, y, c:LIME});
+          }
+        }
+
+        if (S.mode === 'edge'){
+          // zones, so no arm ever crosses the body:
+          // right hand 95-175 deg (south->south-west), left hand 180-206 deg (west),
+          // robot 85..-85 deg (east+north) then continues 268->212 (north-west)
+          {
+            const p = contact(95*Math.PI/180, 60, S.radii);
+            humanKeys.push([4.0, p[0], p[1], 5]);
+          }
+          for (let k=0;k<=8;k++){
+            const phiDeg = 95 + 80*k/8;
+            const phi = phiDeg*Math.PI/180;
+            const p = contact(phi, (k%2 ? 26 : -6), S.radii);
+            humanKeys.push([4.4 + 5.0*k/8, p[0], p[1], phiDeg-90]);
+          }
+          humanEng = [[4.3,9.45]];
+          // hover low outside while the centre is still busy
+          humanKeys.push([10.1, ...contact(150*Math.PI/180, 85, S.radii), 60]);
+
+          robotKeys.push(
+            [3.45, ...contact(25*Math.PI/180, 140, S.radii), 135],
+            [3.8, ...contact(85*Math.PI/180, 46, S.radii), 175]
+          );
+          for (let k=0;k<=14;k++){
+            const phiDeg = 85 - 170*k/14;
+            const phi = phiDeg*Math.PI/180;
+            const p = contact(phi, (k%2 ? -6 : 26), S.radii);
+            const tk = 4.4 + 5.6*k/14;
+            robotKeys.push([tk, p[0], p[1], phiDeg+90]);
+            if (k%2) robotTargets.push({t:tk, x:p[0], y:p[1]});
+          }
+          // continuation: around the top into the north-west arc
+          for (let k=0;k<=4;k++){
+            const phiDeg = 268 - 14*k;
+            const phi = phiDeg*Math.PI/180;
+            const p = contact(phi, (k%2 ? -6 : 26), S.radii);
+            const tk = 10.3 + 1.9*k/4;
+            robotKeys.push([tk, p[0], p[1], phiDeg+90]);
+            if (k%2) robotTargets.push({t:tk, x:p[0], y:p[1]});
+          }
+          robotEng = [[4.3,12.25]];
+
+          // left hand: three slow forming presses on its own arc
+          leftHold(180, 5.4, 6.6, true);
+          leftHold(193, 7.4, 8.6, true);
+          leftHold(206, 9.4, 10.6, true);
+          leftHold(140, 11.9, 13.3);      // brace the rim while the centre is puffed
+
+          S.actions.forEach(addAction);
+
+          const g1t = contact(85*Math.PI/180, 0, S.radii);
+          g1L.setAttribute('d', `M 930 -20 L ${g1t[0]+20} ${g1t[1]-40}`);
+          g1C.setAttribute('cx', g1t[0]); g1C.setAttribute('cy', g1t[1]);
+          sparkEvents.push(
+            {t:4.45, x:contact(95*Math.PI/180,0,S.radii)[0], y:contact(95*Math.PI/180,0,S.radii)[1], c:INK},
+            {t:4.45, x:g1t[0], y:g1t[1], c:LIME}
+          );
+        } else {
+
+          humanKeys.push([4.1, CX-20, CY+220, 3]);
+          robotKeys.push([4.3, CX+150, CY-190, -30]);
+          S.actions.forEach(addAction);
+
+          if (S.smooth){
+            for (let k=0;k<=4;k++){
+              const phiDeg = 100 + 70*k/4;      // right hand smooths only its own arc
+              const phi = phiDeg*Math.PI/180;
+              humanKeys.push([S.smooth.h0 + 0.42*k, CX+Math.cos(phi)*98, CY+Math.sin(phi)*98, phiDeg-90]);
+            }
+            for (let k=0;k<=4;k++){
+              const phiDeg = -90 + 145*k/4;
+              const phi = phiDeg*Math.PI/180;
+              robotKeys.push([S.smooth.r0 + 0.4*k, CX+Math.cos(phi)*98, CY+Math.sin(phi)*98, phiDeg+90]);
+            }
+            humanEng = [[S.smooth.h0-0.05, S.smooth.h0+1.78]];
+            robotEng = [[S.smooth.r0-0.05, S.smooth.r0+1.7]];
+            robotSq.push([S.smooth.r0-0.05, S.smooth.r0+1.7]);
+            robotTargets.push({t:S.smooth.r0, x:CX, y:CY-98});
+          } else {
+            humanEng = []; robotEng = [];
+          }
+
+
+          g1L.setAttribute('d', `M 930 -20 L ${CX+70} ${CY-130}`);
+          g1C.setAttribute('cx', CX+4); g1C.setAttribute('cy', CY-2);
+
+          // left hand braces the west rim while the right works the centre
+          leftHold(160, 5.0, 7.5);
+          leftHold(200, 8.6, 10.5);
+          if (S.smooth){
+            // support done - hover clear of the smoothing sweeps
+            leftKeys.push([11.4, CX-160, CY+270, 15], [13.5, CX-150, CY+265, 12]);
+          } else {
+            leftHold(182, 11.3, 12.8); // hold the flank while the crater is pressed
+          }
+        }
+
+
+        humanKeys.push(
+          [13.9, 430, 720, 0],
+          [15.2, 435, 720, 0],
+          [16.6, 450, 1015, 0],
+          [T,    450, 1015, 0]
+        );
+        robotKeys.push(
+          [13.9, 850, 140, 60],
+          [15.2, 855, 140, 60],
+          [16.7, 1000, -170, 60],
+          [T,    1000, -170, 60]
+        );
+        leftKeys.push(
+          [14.2, 320, 780, 8],
+          [15.2, 325, 780, 8],
+          [16.4, 250, 1015, 0],
+          [T,    250, 1015, 0]
+        );
+        // one ink edge ring per feature
+        featEdgesG.innerHTML = '';
+        featEdgeEls = feats.map(()=>{
+          const c = document.createElementNS(NSVG,'circle');
+          c.setAttribute('r','0'); c.setAttribute('opacity','0');
+          featEdgesG.appendChild(c);
+          return c;
+        });
+        buildToolpath();
+        buildSparks();
+      }
+
+
+      function buildToolpath(){
+        tpSamples = [];
+        for (let tt=3.3; tt<=13.6; tt+=0.08){
+          const p = track(robotKeys, tt);
+          tpSamples.push([tt, p[0], p[1]]);
+        }
+        tpTargets.innerHTML = '';
+        tpTargetEls = robotTargets.map(tg=>{
+          const c = document.createElementNS(NSVG,'circle');
+          c.setAttribute('cx', tg.x); c.setAttribute('cy', tg.y);
+          c.setAttribute('r', 10); c.setAttribute('opacity','0');
+          tpTargets.appendChild(c);
+          return c;
+        });
+      }
+
+
+      const isoEls = [$('iso0'),$('iso1'),$('iso2'),$('iso3'),$('iso4'),$('iso5')];
+      const isoLevels = [0.2, 0.45, 0.7, 0.9, 1.12, 1.35];
+      const GN = 50, GX0 = CX-265, GY0 = CY-265, CS = 530/GN;
+      const field = new Float32Array((GN+1)*(GN+1));
+      const MS = {1:[['l','b']],2:[['b','r']],3:[['l','r']],4:[['t','r']],
+                  5:[['l','t'],['b','r']],6:[['b','t']],7:[['l','t']],8:[['l','t']],
+                  9:[['b','t']],10:[['l','b'],['t','r']],11:[['t','r']],12:[['l','r']],
+                  13:[['b','r']],14:[['l','b']]};
+      const pk=(c,L,R2,Tp,B)=> c==='l'?L : c==='r'?R2 : c==='t'?Tp : B;
+
+
+
+      const seeds=[2,7,13];
+      let si=0;
+      setInterval(()=>{
+        si=(si+1)%seeds.length;
+        turb.setAttribute('seed', seeds[si]);
+        for (let i=0;i<N;i++) jitter[i]=(Math.random()*2-1)*2.6;
+      }, 140);
+
+      function instantVisibility(t, tIn, tGone){
+        return (t >= tIn && t <= tGone) ? 1 : 0;
+      }
+      const pressEnv = (wins,t) => wins.reduce((m,w)=>{
+        if (t<w[0]||t>w[1]) return m;
+        return Math.max(m, clamp(Math.min((t-w[0])*5,(w[1]-t)*5,1),0,1));
+      },0);
+
+      let prev = performance.now();
+      const drawCadence = [86, 86, 172, 86, 258, 129, 86];
+      let drawCadenceIndex = 0;
+      let nextDrawAt = prev;
+      newCycle();
+
+      function frame(now){
+        if (now < nextDrawAt){
+          requestAnimationFrame(frame);
+          return;
+        }
+        nextDrawAt = now + drawCadence[drawCadenceIndex++ % drawCadence.length];
+        const dt = clamp((now-prev)/1000, 0, 0.28);
+        prev = now;
+        tLoc += dt;
+        if (tLoc >= T){ tLoc -= T; newCycle(); }
+        const t = tLoc;
+
+
+        cardEls.forEach((rc,i)=>{
+          const on = (i===choice && t>2.62 && t<16.6);
+          rc.setAttribute('fill', on ? 'var(--meikku-lime)'
+                            : i===hovered ? CARD_HOVER : 'var(--meikku-paper)');
+        });
+
+
+        const hp = track(humanKeys, t);
+        const rp = track(robotKeys, t);
+        const lp = track(leftKeys, t);
+        const hScale = 1 - 0.08*pressEnv(humanDip, t) + 0.07*pressEnv(humanLift, t);
+        const rScale = 1 - 0.07*pressEnv(robotDip, t) + 0.07*pressEnv(robotLift, t);
+        const lScale = 0.96 * (1 - 0.05*pressEnv(leftDip, t));   // slightly smaller, gentler press
+        hand.setAttribute('transform', `translate(${hp[0]},${hp[1]}) rotate(${hp[2]}) scale(${hScale.toFixed(3)})`);
+        handL.setAttribute('transform', `translate(${lp[0]},${lp[1]}) rotate(${lp[2]}) scale(${lScale.toFixed(3)})`);
+        bot.setAttribute('transform',  `translate(${rp[0]},${rp[1]}) rotate(${rp[2]}) scale(${rScale.toFixed(3)})`);
+
+
+        const squeeze = (inWin(robotEng, t) || inWin(robotSq, t)) ? 7 : 0;
+        prongL.setAttribute('transform', `translate(${squeeze},0)`);
+        prongR.setAttribute('transform', `translate(${-squeeze},0)`);
+
+
+        const actors = [];
+        if (inWin(humanEng,t)) actors.push(hp);
+        if (inWin(robotEng,t)) actors.push(rp);
+        if (inWin(leftEng,t))  actors.push(lp);
+        const resetting = t > T_RESET;
+
+        for (const a of actors){
+          const phiH = Math.atan2(a[1]-CY, a[0]-CX);
+          const dH   = Math.hypot(a[0]-CX, a[1]-CY);
+          const gate = clamp((shapeR(curRadii,phiH)+14 - dH)/20, 0, 1);
+          if (gate<=0) continue;
+          for (let i=0;i<N;i++){
+            const w = Math.exp(-Math.pow(wrapA(theta[i]-phiH)/0.5, 2));
+            if (w > 0.05){
+              const off = curRadii[i] - R;
+              D[i] += (off - D[i]) * Math.min(1, dt*9) * w * gate;
+            }
+          }
+        }
+        if (resetting) for (let i=0;i<N;i++) D[i] *= Math.exp(-dt*3);
+
+
+        const breathe = Math.sin(t*1.4)*2.5;
+        for (let i=0;i<N;i++) poke[i] *= 0.9;
+        const pts = [];
+        for (let i=0;i<N;i++){
+          const r = clamp(R + D[i] + jitter[i] + breathe + poke[i], 34, 300);   // deep enough for the tail notch
+          pts.push([CX + Math.cos(theta[i])*r, CY + Math.sin(theta[i])*r]);
+        }
+        const d = blobPath(pts);
+        dough.setAttribute('d', d);
+        doughShadow.setAttribute('d', d);
+        doughClipPath.setAttribute('d', d);
+
+
+        const fa = feats.map(e=>{
+          if (t < e.t0) return 0;
+          if (t < e.t1) return e.max * ease((t-e.t0)/(e.t1-e.t0));
+          if (t < T_RESET) return e.max;
+          return e.max * Math.max(0, 1-(t-T_RESET)/1.3);
+        });
+
+        const fEff = feats.map(e=>{
+          const p = clamp((t-e.t0)/((e.t1-e.t0)||1), 0, 1);
+          const ex = e.x2!==undefined ? e.x+(e.x2-e.x)*p : e.x;
+          const ey = e.y2!==undefined ? e.y+(e.y2-e.y)*p : e.y;
+          const es = e.sig2 ? e.sig+(e.sig2-e.sig)*p : e.sig;
+          return {x:ex, y:ey, es, s2:2*es*es};
+        });
+
+        // Ink edge rings: boundary where a feature rises or sinks.
+        // Broad soft volumes (sig > 36) get no ring; only compact features do.
+        feats.forEach((e,k)=>{
+          const el2 = featEdgeEls[k];
+          if (!el2) return;
+          if (e.sig > 36){ el2.setAttribute('opacity','0'); return; }
+          const prog = fa[k]/e.max;
+          el2.setAttribute('cx', fEff[k].x.toFixed(1));
+          el2.setAttribute('cy', fEff[k].y.toFixed(1));
+          el2.setAttribute('r', (1.3*fEff[k].es*prog).toFixed(1));
+          el2.setAttribute('opacity', prog > 0 ? '0.72' : '0');
+        });
+
+
+        if (feats.length && SHAPES[choice].hole){
+          let depth = 0;
+          for (let k=0;k<feats.length;k++) depth += fa[k]*FEAT_STRENGTH;
+          const rH = Math.min(58, 75*Math.sqrt(Math.max(0, depth-1)));
+          holeC.setAttribute('r', rH.toFixed(1));
+          holeC.setAttribute('opacity', rH > 0 ? '0.8' : '0');
+        } else {
+          holeC.setAttribute('opacity','0');
+          holeC.setAttribute('r','0');
+        }
+
+        for (let j=0;j<=GN;j++){
+          for (let i2=0;i2<=GN;i2++){
+            const x = GX0+i2*CS, y = GY0+j*CS;
+            const dx = x-CX, dy = y-CY;
+            const dd = Math.hypot(dx,dy);
+            let phi = Math.atan2(dy,dx); if (phi<0) phi += TAU;
+            const fi = phi/TAU*N, ii = Math.floor(fi)%N, fr = fi-Math.floor(fi);
+            const re = R + D[ii]*(1-fr) + D[(ii+1)%N]*fr + breathe;
+            const u = dd/re;
+            let hgt = 1 - u*u;
+            for (let k=0;k<feats.length;k++){
+              if (fa[k] <= 0.02) continue;
+              const fdx = x-fEff[k].x, fdy = y-fEff[k].y;
+              const q = (fdx*fdx+fdy*fdy)/fEff[k].s2;
+              if (q < 6) hgt += feats[k].s * fa[k] * FEAT_STRENGTH * Math.exp(-q);
+            }
+            field[j*(GN+1)+i2] = hgt;
+          }
+        }
+
+        isoEls.forEach((el,li)=>{
+          const lv = isoLevels[li];
+          let ds = '';
+          for (let j=0;j<GN;j++){
+            for (let i2=0;i2<GN;i2++){
+              const vtl = field[j*(GN+1)+i2],     vtr = field[j*(GN+1)+i2+1];
+              const vbl = field[(j+1)*(GN+1)+i2], vbr = field[(j+1)*(GN+1)+i2+1];
+              let idx = 0;
+              if (vbl>lv) idx|=1; if (vbr>lv) idx|=2; if (vtr>lv) idx|=4; if (vtl>lv) idx|=8;
+              if (idx===0 || idx===15) continue;
+              const x = GX0+i2*CS, y = GY0+j*CS;
+              const L  = [x,                          y + CS*(lv-vtl)/(vbl-vtl)];
+              const R2 = [x+CS,                       y + CS*(lv-vtr)/(vbr-vtr)];
+              const Tp = [x + CS*(lv-vtl)/(vtr-vtl),  y];
+              const B  = [x + CS*(lv-vbl)/(vbr-vbl),  y+CS];
+              for (const s of MS[idx]){
+                const p = pk(s[0],L,R2,Tp,B), q = pk(s[1],L,R2,Tp,B);
+                ds += `M${p[0].toFixed(1)} ${p[1].toFixed(1)}L${q[0].toFixed(1)} ${q[1].toFixed(1)}`;
+              }
+            }
+          }
+          el.setAttribute('d', ds || 'M -10 -10');
+        });
+
+
+        ghost1.setAttribute('opacity', String(instantVisibility(t, 3.1, 4.5)));
+
+
+
+        const tpVis = instantVisibility(t, 3.0, 13.6);
+        toolpathG.setAttribute('opacity', String(tpVis));
+        if (tpVis > 0){
+          const ni = robotTargets.findIndex(tg => t <= tg.t + 0.25);
+          let planD = '', aheadD = '';
+          if (ni !== -1){
+            const stageStart = ni===0 ? 3.2 : robotTargets[ni-1].t + 0.25;
+            const chunkEnd = robotTargets[ni].t + 0.35;
+            const u = ease(clamp((t - stageStart)/0.6, 0, 1));
+            const revealEnd = stageStart + (chunkEnd - stageStart)*u;
+            const w0 = Math.max(t, 3.3);
+            for (const s of tpSamples){
+              if (s[0] < w0 || s[0] > revealEnd) continue;
+              planD += (planD?'L':'M') + s[1].toFixed(1) + ' ' + s[2].toFixed(1);
+              if (s[0] <= Math.min(t+1.4, revealEnd))
+                aheadD += (aheadD?'L':'M') + s[1].toFixed(1) + ' ' + s[2].toFixed(1);
+            }
+            robotTargets.forEach((tg,i)=>{
+              const el = tpTargetEls[i];
+              if (t > tg.t + 0.25) el.setAttribute('opacity','0');
+              else if (i===ni)
+                el.setAttribute('opacity', '0.76');
+              else el.setAttribute('opacity','0');
+            });
+          } else {
+            tpTargetEls.forEach(el=>el.setAttribute('opacity','0'));
+          }
+          tpFull.setAttribute('d', planD || 'M -10 -10');
+          tpAhead.setAttribute('d', aheadD || 'M -10 -10');
+          dashOff -= dt*45;
+          tpAhead.setAttribute('stroke-dashoffset', dashOff.toFixed(1));
+        }
+
+
+        sparkEvents.forEach((e,idx)=>{
+          const tt = t - e.t;
+          if (tt>=0 && tt<0.5){
+            sparkEls[idx].setAttribute('opacity', (1-tt/0.5).toFixed(2));
+            sparkEls[idx].style.transformOrigin = `${e.x}px ${e.y}px`;
+            sparkEls[idx].style.transform = `scale(${0.7+tt*1.2})`;
+          } else {
+            sparkEls[idx].setAttribute('opacity','0');
+          }
+        });
+
+        requestAnimationFrame(frame);
+      }
+      const _svg = document.querySelector('.scene svg');
+      function pokeAt(cx, cy){
+        if (!_svg) return;
+        const pt = _svg.createSVGPoint(); pt.x = cx; pt.y = cy;
+        const m = _svg.getScreenCTM(); if (!m) return;
+        const p = pt.matrixTransform(m.inverse());
+        const dx = p.x - CX, dy = p.y - CY, dist = Math.hypot(dx, dy);
+        if (dist > R * 2.2) return;
+        const ang = Math.atan2(dy, dx);
+        const reach = clamp(1 - Math.abs(dist - R) / (R * 1.2), 0, 1);
+        for (let i = 0; i < N; i++){
+          const w = Math.exp(-Math.pow(wrapA(theta[i] - ang) / 0.6, 2));
+          poke[i] += (30 * reach - poke[i]) * 0.45 * w;
+        }
+      }
+      if (_svg){
+        _svg.addEventListener('pointermove', e => pokeAt(e.clientX, e.clientY));
+        _svg.addEventListener('pointerdown', e => { for (let k=0;k<4;k++) pokeAt(e.clientX, e.clientY); });
+      }
+      requestAnimationFrame(frame);
+    })();
+
+  </script>
+
+  <script>
+    (function(){
+      const arm = document.getElementById('scrollArm');
+      if (!arm) return;
+      const swing = arm.querySelector('.arm-swing');
+      const fore = arm.querySelector('.arm-fore');
+      const pa = arm.querySelector('.prong-a');
+      const pb = arm.querySelector('.prong-b');
+      let vel = 0, lastY = window.scrollY;
+      window.addEventListener('scroll', function(){ const y = window.scrollY; vel += (y - lastY); lastY = y; }, { passive: true });
+
+      /* grab the arm: it clamps the page and drags it with you */
+      let dragging = false, dragStartY = 0, dragStartScroll = 0, offTarget = 0;
+      const DRAG_GAIN = 2.2;
+      arm.addEventListener('pointerdown', function(e){
+        dragging = true; offTarget = 0;
+        dragStartY = e.clientY; dragStartScroll = window.scrollY;
+        arm.classList.add('grabbing');
+        document.documentElement.style.scrollBehavior = 'auto';
+        if (arm.setPointerCapture) arm.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      });
+      arm.addEventListener('pointermove', function(e){
+        if (!dragging) return;
+        const dy = e.clientY - dragStartY;
+        offTarget = Math.max(-46, Math.min(46, dy));
+        window.scrollTo(0, dragStartScroll - dy * DRAG_GAIN);
+      });
+      function drop(){
+        if (!dragging) return;
+        dragging = false; offTarget = 0;
+        arm.classList.remove('grabbing');
+        document.documentElement.style.scrollBehavior = '';
+      }
+      arm.addEventListener('pointerup', drop);
+      arm.addEventListener('pointercancel', drop);
+      arm.addEventListener('lostpointercapture', drop);
+
+      let ang = 0, angV = 0, press = 0, pressV = 0, grip = 5, gripV = 0, off = 0, offV = 0;
+      const K = 90, D = 20;
+      let last = performance.now();
+      function frame(now){
+        const dt = Math.min(0.033, (now - last) / 1000); last = now;
+        vel *= 0.80;
+        const targetAng = Math.max(-16, Math.min(16, -vel * 0.9));
+        const mag = Math.min(1, Math.abs(vel) * 0.06);
+        const targetPress = dragging ? -10 : -6 * mag;
+        const targetGrip = dragging ? 17 : 5 + 5 * mag;
+        angV += (K * (targetAng - ang) - D * angV) * dt; ang += angV * dt;
+        pressV += (K * (targetPress - press) - D * pressV) * dt; press += pressV * dt;
+        gripV += (K * (targetGrip - grip) - D * gripV) * dt; grip += gripV * dt;
+        offV += (K * (offTarget - off) - D * offV) * dt; off += offV * dt;
+        arm.style.transform = 'translateY(calc(-50% + ' + off.toFixed(1) + 'px))';
+        if (swing) swing.style.transform = 'rotate(' + ang.toFixed(2) + 'deg)';
+        if (fore) fore.style.transform = 'translateX(' + press.toFixed(2) + 'px)';
+        if (pa) pa.style.transform = 'rotate(' + grip.toFixed(2) + 'deg)';
+        if (pb) pb.style.transform = 'rotate(' + (-grip).toFixed(2) + 'deg)';
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+  </script>
+  <script>
+    (function(){
+      const root = document.documentElement;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const warpNoise = document.getElementById('craftWarpNoise');
+      const grainNoise = document.getElementById('craftGrainNoise');
+      const dustNoise = document.getElementById('craftDustNoise');
+      const printEdgeNoise = document.getElementById('craftPrintEdgeNoise');
+      const inkWearNoise = document.getElementById('craftInkWearNoise');
+      const frames = [
+        { hold: 92,  jump: 1, warp: 41, grain: 17, dust: 73 },
+        { hold: 92,  jump: 1, warp: 43, grain: 19, dust: 79 },
+        { hold: 184, jump: 2, warp: 47, grain: 23, dust: 83 },
+        { hold: 92,  jump: 1, warp: 53, grain: 29, dust: 89 },
+        { hold: 276, jump: 3, warp: 59, grain: 31, dust: 97 },
+        { hold: 138, jump: 1, warp: 61, grain: 37, dust: 101 }
+      ];
+      let index = 0;
+      let exposedFrame = 0;
+      let timer = 0;
+
+      function paintFrame(frame){
+        exposedFrame += frame.jump;
+        root.dataset.craftFrame = String(exposedFrame);
+        if (warpNoise) warpNoise.setAttribute('seed', frame.warp);
+        if (grainNoise) grainNoise.setAttribute('seed', frame.grain);
+        if (dustNoise) dustNoise.setAttribute('seed', frame.dust);
+        if (printEdgeNoise) printEdgeNoise.setAttribute('seed', frame.warp + 71);
+        if (inkWearNoise) inkWearNoise.setAttribute('seed', frame.grain + 101);
+      }
+
+      function scheduleFrame(){
+        const frame = frames[index++ % frames.length];
+        paintFrame(frame);
+        timer = window.setTimeout(scheduleFrame, frame.hold);
+      }
+
+      function syncMotionPreference(){
+        window.clearTimeout(timer);
+        index = 0;
+        exposedFrame = 0;
+        paintFrame(frames[0]);
+        if (!reducedMotion.matches) scheduleFrame();
+      }
+
+      if (reducedMotion.addEventListener) {
+        reducedMotion.addEventListener('change', syncMotionPreference);
+      } else if (reducedMotion.addListener) {
+        reducedMotion.addListener(syncMotionPreference);
+      }
+      syncMotionPreference();
+    })();
+  </script>
+</body>
+</html>

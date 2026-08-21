@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku workspace icon">
+  <title>Meikku workspace icon</title>
+  <rect x="10" y="10" width="44" height="44" rx="0" fill="none" stroke="currentColor" stroke-width="5"/>
+  <polyline points="25,10 25,54" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="39,10 39,54" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="10,25 54,25" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="10,39 54,39" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="39" cy="25" r="3" fill="currentColor" stroke="currentColor" stroke-width="4.5"/>
+</svg>

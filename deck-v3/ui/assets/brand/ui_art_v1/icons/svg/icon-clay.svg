@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku clay icon">
+  <title>Meikku clay icon</title>
+  <polyline points="14,46 16,28 26,16 40,17 50,28 52,46 14,46" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="25.03,33.56 25.27,32.71 25.75,31.89 26.45,31.13 27.34,30.46 28.41,29.9 29.62,29.47 30.93,29.17 32.3,29.02 33.7,29.02 35.07,29.17 36.38,29.47 37.59,29.9 38.66,30.46 39.55,31.13 40.25,31.89 40.73,32.71 40.97,33.56" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="24" cy="40" r="2" fill="currentColor" stroke="currentColor" stroke-width="4.5"/>
+</svg>

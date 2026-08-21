@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Meikku — Make Together</title>
+    <link rel="icon" href="data:," />
+    <script>
+      if (new URLSearchParams(window.location.search).get("deck") !== "1") {
+        document.documentElement.classList.add("embed-mode");
+      }
+      window.__showFaceLab = new URLSearchParams(window.location.search).get("faces") === "1";
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="d1-demo-only">
+    <!-- ══════════════════════════════════════════════════════════
+         MEIKKU ICON SET
+         全部只用圆 / 方 / 三角 / 直线，画在 24×24 栅格上，描边 1.9。
+         与形状图例同源：● Meikku 的动作　■ 记录与状态　▶ 方向。
+         几个图标是这个产品专有的画法，不是通用素材：
+           ic-arm      直接画那条二连杆机械臂（和右栏是同一个形）
+           ic-scan     圆 + 扇形楔子＝径向扫描，不是通用「眼睛」
+           ic-point    十字丝 + 中心点，和工作区的注意力标记同形
+           ic-memory   两个错位方块＝当前记忆与被它取代的那条
+           ic-piece    圆坐在底座上＝我们做出来的那件东西
+         ══════════════════════════════════════════════════════════ -->
+    <svg class="mk-sprite" aria-hidden="true" focusable="false">
+      <defs>
+        <symbol id="ic-back" viewBox="0 0 24 24"><polygon points="16,3 16,21 5,12"/></symbol>
+        <symbol id="ic-memory" viewBox="0 0 24 24"><rect x="3" y="3" width="13" height="13"/><rect x="8" y="8" width="13" height="13"/></symbol>
+        <symbol id="ic-settings" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/><circle cx="12" cy="12" r="4"/></symbol>
+        <symbol id="ic-plus" viewBox="0 0 24 24"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></symbol>
+        <symbol id="ic-close" viewBox="0 0 24 24"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></symbol>
+        <symbol id="ic-next" viewBox="0 0 24 24"><polygon points="8,4 8,20 18,12"/></symbol>
+        <symbol id="ic-send" viewBox="0 0 24 24"><polygon points="12,3 21,21 12,16 3,21"/></symbol>
+        <symbol id="ic-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="10"/><path d="M5 12a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></symbol>
+        <symbol id="ic-camera" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="15"/><circle cx="12" cy="13.5" r="4"/><rect x="8" y="2" width="8" height="4"/></symbol>
+        <symbol id="ic-photos" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16"/><circle cx="8" cy="9" r="2"/><polygon points="22,20 14,10 4,20"/></symbol>
+        <symbol id="ic-reference" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/><polygon points="12,7 17,16 7,16"/></symbol>
+        <symbol id="ic-point" viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/><circle cx="12" cy="12" r="2.5"/></symbol>
+        <symbol id="ic-arm" viewBox="0 0 24 24"><line x1="4" y1="20" x2="11" y2="9"/><line x1="11" y1="9" x2="20" y2="6"/><circle cx="4" cy="20" r="2.4"/><circle cx="11" cy="9" r="2"/><circle cx="20" cy="6" r="1.6"/></symbol>
+        <symbol id="ic-scan" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><polygon points="12,12 21,8 21,16"/></symbol>
+        <symbol id="ic-piece" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6"/><rect x="3" y="17" width="18" height="4"/></symbol>
+        <symbol id="ic-handback" viewBox="0 0 24 24"><polygon points="9,4 9,14 2,9"/><polyline points="2,9 17,9 17,21"/></symbol>
+      </defs>
+    </svg>
+
+    <div class="deck-viewport">
+      <main class="deck-stage" id="deckStage" aria-live="polite">
+        <!-- ==============================================================
+             SLIDE 01 / ORIGINAL ANIMATED OPENING
+             Reuses the real Frame 01 canvas/SVG animation from the earlier
+             storyboard file. The iframe remains non-interactive so deck
+             navigation stays with the parent presentation.
+             ============================================================== -->
+        <section class="slide legacy-opening-slide" data-slide-title="Make together" aria-label="Original Meikku co-making opening animation">
+          <iframe
+            class="legacy-opening-frame"
+            src="about:blank"
+            data-src="../../../../../ui/meikku_storyboard_cybernetics_outline.html?solo=1#frame-01"
+            title="Meikku opening animation: a person and a robot shaping clay together"
+            tabindex="-1"
+            aria-hidden="true"
+          ></iframe>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 02 / PRODUCT EXPERIENCE
+             The D1 product UI + UX replay now follows the emotional opening.
+             Its IDs remain unchanged for the replay controller.
+             ============================================================== -->
+        <section class="slide opening-slide active visible" data-d1-demo data-slide-title="Product experience" aria-label="Meikku product UI and UX replay">
+          <div class="opening-story-hook" aria-label="Opening story">
+            <p class="opening-kicker">A SHARED PIECE / SESSION 2</p>
+            <h1>A PERSON, A ROBOT, AND A PIECE OF CLAY PICK UP WHERE THEY LEFT OFF.</h1>
+            <p class="opening-lede">Then one remembered story turns out to be wrong. Watch what changes next.</p>
+            <div class="opening-beatline" aria-label="Remember, correct, try again">
+              <span>REMEMBER</span><i></i><span>CORRECT</span><i></i><span>TRY AGAIN</span>
+            </div>
+          </div>
+          <div class="split-view">
+
+      <!-- ─── Left: Phone chat ─── -->
+      <div class="phone-frame">
+        <header class="chat-header">
+          <div class="header-left">
+            <div class="back-btn" aria-label="Back">
+              <svg class="mk-ic" aria-hidden="true"><use href="#ic-back"/></svg>
+            </div>
+            <div class="avatar robot-avatar mk-face is-idle" id="meikkuFace" aria-hidden="true">
+              <i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i>
+            </div>
+            <div class="header-info">
+              <span class="header-name">Meikku</span>
+              <span class="header-status"><i class="presence-dot"></i>Making together &middot; Session 2</span>
+            </div>
+          </div>
+          <div class="header-right">
+            <!-- Memory：图标与对话内 recall 行同款，形成呼应；角标为记忆条数 -->
+            <button class="icon-btn has-badge" id="memoryBtn" aria-label="Memory">
+              <svg class="mk-ic" aria-hidden="true"><use href="#ic-memory"/></svg>
+              <span class="icon-badge" id="memoryBadge">0</span>
+            </button>
+            <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+              <svg class="mk-ic" aria-hidden="true"><use href="#ic-settings"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="conn-bar" id="connBar" hidden>Reconnecting…</div>
+        <button class="jump-latest" id="jumpLatest" hidden>New messages</button>
+        <div class="chat-body" id="chatBody">
+          <div class="empty-state">A shared piece. Say anything to pick it up.</div>
+          <div class="session-divider">
+            <span>A shared piece, continued</span>
+          </div>
+        </div>
+
+        <div class="sheet-scrim" id="sheetScrim" hidden></div>
+
+        <!-- 一套 bottom sheet 承载 Memory / Control，内部用分段控件切换 -->
+        <div class="memory-panel" id="memoryPanel" hidden>
+          <div class="sheet-grabber"></div>
+          <div class="memory-panel-header">
+            <span class="sheet-title" id="sheetTitle">Memory</span>
+            <button id="memoryClose" aria-label="Close">&times;</button>
+          </div>
+          <div class="memory-panel-body" id="memoryPanelBody"></div>
+          <!-- Control：手柄式机械臂操控，摇杆驱动 TCP，肘部由二连杆 IK 解算 -->
+          <div class="memory-panel-body" id="controlPanelBody" hidden>
+            <div class="control-status">
+              <span class="control-now-label">Arm</span>
+              <span class="control-now-value" id="armStateLabel">IDLE</span>
+              <span class="manual-badge" id="manualBadge" hidden>You have control</span>
+            </div>
+            <div class="pad-row">
+              <div class="joystick" id="joystick">
+                <span class="joystick-axis joystick-axis-h"></span>
+                <span class="joystick-axis joystick-axis-v"></span>
+                <div class="joystick-knob" id="joystickKnob"></div>
+              </div>
+              <div class="pad-side">
+                <div class="mode-tabs speed-tabs">
+                  <button class="mode-tab active" data-speed="slow">Slow</button>
+                  <button class="mode-tab" data-speed="fast">Fast</button>
+                </div>
+                <button class="pad-btn" id="homeBtn">
+                  <svg class="mk-ic" aria-hidden="true"><use href="#ic-handback"/></svg>
+                  <span>Hand back</span>
+                </button>
+              </div>
+            </div>
+            <div class="control-note">Hold the stick to move the arm. Release to hold position. Hand back returns control to Meikku.</div>
+          </div>
+        </div>
+
+        <!-- ── 设置：独立全高 sheet，分组菜单 ── -->
+        <div class="settings-sheet" id="settingsSheet" hidden>
+          <div class="sheet-grabber"></div>
+          <div class="settings-head">
+            <span class="settings-title">Settings</span>
+            <button class="sheet-close" id="settingsClose" aria-label="Close">&times;</button>
+          </div>
+          <div class="settings-body">
+
+            <div class="set-group">
+              <div class="set-group-label">This session</div>
+              <div class="set-row">
+                <span class="set-label">Session</span>
+                <span class="set-value">2 &middot; Clay</span>
+              </div>
+              <div class="set-row">
+                <span class="set-label">Started</span>
+                <span class="set-value">14 min ago</span>
+              </div>
+              <button class="set-row is-action" data-open-panel="control">
+                <span class="set-label">Move the arm yourself</span>
+                <span class="set-chevron"></span>
+              </button>
+            </div>
+
+            <div class="set-group">
+              <div class="set-group-label">Meikku</div>
+              <button class="set-row is-toggle" data-toggle="voice" aria-pressed="true">
+                <span class="set-label">Speak out loud</span>
+                <span class="set-switch"></span>
+              </button>
+              <div class="set-row is-segment">
+                <span class="set-label">Before acting</span>
+                <div class="mode-tabs set-tabs" data-setting="initiative">
+                  <button class="mode-tab active" data-value="ask">Ask</button>
+                  <button class="mode-tab" data-value="try">Try</button>
+                </div>
+              </div>
+              <button class="set-row is-toggle" data-toggle="narrate" aria-pressed="true">
+                <span class="set-label">Show what it is thinking</span>
+                <span class="set-switch"></span>
+              </button>
+            </div>
+
+            <div class="set-group">
+              <div class="set-group-label">Memory</div>
+              <button class="set-row is-toggle" data-toggle="carry" aria-pressed="true">
+                <span class="set-label">Carry memory between sessions</span>
+                <span class="set-switch"></span>
+              </button>
+              <button class="set-row is-action" data-open-panel="memory">
+                <span class="set-label">What Meikku remembers</span>
+                <span class="set-count" id="setMemoryCount">1</span>
+                <span class="set-chevron"></span>
+              </button>
+              <button class="set-row is-action is-danger" data-confirm="Forget this session?">
+                <span class="set-label">Forget this session</span>
+              </button>
+            </div>
+
+            <div class="set-group">
+              <div class="set-group-label">Arm</div>
+              <div class="set-row is-segment">
+                <span class="set-label">Motion</span>
+                <div class="mode-tabs set-tabs" data-setting="motion">
+                  <button class="mode-tab active" data-value="gentle">Gentle</button>
+                  <button class="mode-tab" data-value="normal">Normal</button>
+                </div>
+              </div>
+              <div class="set-row">
+                <span class="set-label">Hardware</span>
+                <span class="set-value set-value-off">Not connected</span>
+              </div>
+            </div>
+
+            <!-- DNA §4：产品界面必须标注可信度，不得让演示被误认为当前能力 -->
+            <div class="claim-strip">
+              <span>Scripted replay</span><span>Simulated</span><span>No hardware</span>
+            </div>
+          </div>
+        </div>
+        <!-- + 号 sheet：不只是附件，是「能把什么带进这段对话」。
+             上组＝带进来的东西，下组＝一起做的事。
+             文案沿用单名词/短词，无副标题。 -->
+        <div class="action-sheet" id="attachSheet" hidden>
+          <div class="sheet-grabber"></div>
+          <button class="action-item">
+            <svg class="mk-ic" aria-hidden="true"><use href="#ic-camera"/></svg>
+            <span>Camera</span>
+          </button>
+          <button class="action-item">
+            <svg class="mk-ic" aria-hidden="true"><use href="#ic-photos"/></svg>
+            <span>Photos</span>
+          </button>
+          <button class="action-item">
+            <svg class="mk-ic" aria-hidden="true"><use href="#ic-reference"/></svg>
+            <span>Reference</span>
+          </button>
+          <div class="action-divider"></div>
+          <button class="action-item">
+            <svg class="mk-ic" aria-hidden="true"><use href="#ic-point"/></svg>
+            <span>Point at clay</span>
+          </button>
+          <button class="action-item" data-open-panel="control">
+            <svg class="mk-ic" aria-hidden="true"><use href="#ic-arm"/></svg>
+            <span>Move the arm</span>
+          </button>
+          <button class="action-item">
+            <svg class="mk-ic" aria-hidden="true"><use href="#ic-scan"/></svg>
+            <span>Look again</span>
+          </button>
+          <button class="action-item">
+            <svg class="mk-ic" aria-hidden="true"><use href="#ic-piece"/></svg>
+            <span>Save this piece</span>
+          </button>
+          <button class="action-cancel" id="attachCancel">Cancel</button>
+        </div>
+
+        <footer class="chat-input">
+          <!-- 两行式 composer：第一行纯文本，第二行左工具 / 右语音+发送 -->
+          <div class="composer">
+            <div class="input-field" id="inputField" contenteditable="true" role="textbox"
+                 aria-multiline="true" aria-label="Message Meikku"
+                 data-placeholder="What should we try next?"><span class="input-typing-text" id="inputTypingText"></span></div>
+            <div class="composer-toolbar">
+              <div class="composer-tools">
+                <button class="input-action-btn" id="attachBtn" aria-label="Attach file">
+                  <svg class="mk-ic" aria-hidden="true"><use href="#ic-plus"/></svg>
+                </button>
+                <button class="input-action-btn" id="cameraBtn" aria-label="Camera">
+                  <svg class="mk-ic" aria-hidden="true"><use href="#ic-camera"/></svg>
+                </button>
+              </div>
+              <div class="composer-submit">
+                <button class="input-action-btn" id="micBtn" aria-label="Voice input">
+                  <svg class="mk-ic" aria-hidden="true"><use href="#ic-mic"/></svg>
+                </button>
+                <button class="stop-btn" id="stopBtn" aria-label="Stop" hidden>
+                  <span class="stop-square"></span>
+                </button>
+                <button class="send-btn" id="sendBtn" aria-label="Send">
+                  <svg class="mk-ic" aria-hidden="true"><use href="#ic-send"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- 按住麦克风时覆盖 composer 的录音态 -->
+          <div class="recorder" id="recorder" hidden>
+            <span class="rec-dot"></span>
+            <span class="rec-time" id="recTime">0:00</span>
+            <div class="rec-wave" id="recWave"></div>
+            <span class="rec-hint" id="recHint">&#8592; Slide to cancel</span>
+          </div>
+
+          <div class="home-indicator"></div>
+        </footer>
+      </div>
+
+      <!-- ─── Right: Workspace animation ─── -->
+      <div class="workspace-frame">
+        <div class="ws-header">
+          <span class="ws-label">SHARED WORKSPACE</span>
+          <span class="ws-phase" id="wsPhase">GROUNDING</span>
+        </div>
+
+        <div class="ws-stage">
+          <!-- 实时底图。取不到相机画面时不再退回矢量兜底底图，而是显示下面的 #wsError：
+               在一张真实照片旁边播脚本动画会让人以为看到的是实况。 -->
+          <img class="ws-plate" id="wsPlate" alt="" hidden />
+
+          <!-- 拿不到相机画面时的错误态 -->
+          <div class="ws-error" id="wsError" hidden>
+            <span class="ws-error-tag">NO CAMERA FEED</span>
+            <p class="ws-error-detail" id="wsErrorDetail"></p>
+          </div>
+
+          <!-- 有画面但拿不到感知数据时的提示条 -->
+          <div class="ws-notice" id="wsNotice" hidden>LIVE FRAME · NO PERCEPTION DATA</div>
+
+          <!-- viewBox 就是 cam2 的像素画幅（640×480）。感知服务给出的
+               floorPolygonPx / image_point_px / centroidPx 都在这个坐标系里，
+               接真实数据时不需要任何换算。preserveAspectRatio 必须和
+               .ws-plate 的 object-fit: contain 保持一致，否则两层错位。 -->
+          <svg class="ws-canvas" id="wsCanvas" viewBox="0 0 640 480" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <!-- DNA §3：点阵网格，暗示共享的草图与规划平面 -->
+              <pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse">
+                <circle cx="2.5" cy="2.5" r=".3"/>
+              </pattern>
+              <!-- DNA §6 禁止柔和模糊阴影：stdDeviation=0 得到实心块位移 -->
+              <filter id="clayShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="1.6" dy="1.6" stdDeviation="0"/>
+              </filter>
+              <radialGradient id="clayGrad" cx="45%" cy="40%">
+                <stop offset="0%"/>
+                <stop offset="100%"/>
+              </radialGradient>
+            </defs>
+
+            <!-- 脚本回放的图形是在 100×100 的抽象方形里画的，和相机画幅无关。
+                 这一层把它等比放大 4.8 倍并水平居中，塞进 640×480 的画幅。
+                 接真实相机数据时把 transform 清空，下面所有图形直接吃像素坐标。 -->
+            <g id="demoSpace" transform="translate(80,0) scale(4.8)">
+
+            <!-- ── 兜底底图：代替尚未产出的渲染帧，有帧后整组隐藏 ── -->
+            <g id="basePlate">
+              <!-- 负 x 起点让点阵铺满整个 4:3 画幅，而不是只铺中间那个方块 -->
+              <rect x="-17" y="0" width="134" height="100" fill="url(#grid)"/>
+              <path id="clayShape" d="" stroke-width=".4" filter="url(#clayShadow)"/>
+              <g id="robotArm">
+                <line id="armUpper" stroke-width="1.6" stroke-linecap="round"/>
+                <line id="armLower" stroke-width="1.3" stroke-linecap="round"/>
+                <circle id="armBase" r="2.8"/>
+                <circle id="armElbow" r="1.8"/>
+                <circle id="armTcp" r="1.3" stroke-width=".5"/>
+                <path id="armDir" d="M-1.5,-1 L0,0 L-1.5,1" fill="none" stroke-width=".4" stroke-linecap="round" opacity=".6"/>
+              </g>
+            </g>
+
+            <!-- 测量专用：不绘制、不做过渡，供 getPointAtLength / getBBox 取即时几何 -->
+            <path id="cvMeasure" d="" fill="none" stroke="none" pointer-events="none"/>
+
+            <!-- ── CV 分析叠层：AI 对画面的解析，全部由 fixture 数据驱动 ── -->
+            <g id="cvOverlay">
+              <!-- 检测轮廓（marching ants） -->
+              <path id="cvContour" d="" />
+              <!-- 动作线：从 TCP 指向提案接触点（DNA §3 允许的 lime action path） -->
+              <line id="cvAction" x1="0" y1="0" x2="0" y2="0"/>
+              <!-- 注意力游标（黄=测量/live cursor） -->
+              <g id="attentionMarker" opacity="0">
+                <line x1="-5.2" y1="0" x2="-2.4" y2="0"/>
+                <line x1="2.4" y1="0" x2="5.2" y2="0"/>
+                <line x1="0" y1="-5.2" x2="0" y2="-2.4"/>
+                <line x1="0" y1="2.4" x2="0" y2="5.2"/>
+                <circle cx="0" cy="0" r=".8">
+                  <animate attributeName="r" values=".6;1.2;.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+              </g>
+            </g>
+
+            </g><!-- /#demoSpace -->
+
+            <!-- ── 实时叠层：坐标直接是 cam2 像素，不经任何变换 ──
+                 数据源 /runtime/environment_window_latest.json：
+                   registration.floorPolygonPx        工作面四角
+                   anchors[].image_point_px           121 个工作面网格 + 5 个材料特征
+                   endEffectorVision.centroidPx       刀尖
+                 图例（DNA §3 三载体）：■ 方＝已记录的状态　● 圆＝Meikku 的关注点　▶ 三角＝方向 -->
+            <g id="cvLive" hidden>
+              <!-- 工作面：AI 认出来的那块地面 -->
+              <polygon id="liveFloor" points=""/>
+              <!-- 投影网格：121 个 surface_patch 锚点，机器的坐标系铺到现实上 -->
+              <g id="liveGrid"></g>
+              <!-- 材料边界：由 4 个边缘锚点连出，虚线＝推断而非测量 -->
+              <polygon id="liveMaterial" points=""/>
+              <!-- 材料特征点：5 个 dynamic_material 锚点 -->
+              <g id="liveFeatures"></g>
+              <!-- 动作线：刀尖 → 当前选中的锚点 -->
+              <line id="liveAction" x1="0" y1="0" x2="0" y2="0" hidden/>
+              <!-- 刀尖游标 -->
+              <g id="liveTip" opacity="0">
+                <line x1="-25" y1="0" x2="-11" y2="0"/>
+                <line x1="11" y1="0" x2="25" y2="0"/>
+                <line x1="0" y1="-25" x2="0" y2="-11"/>
+                <line x1="0" y1="11" x2="0" y2="25"/>
+                <circle cx="0" cy="0" r="4"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <div class="ws-footer">
+          <div class="ws-info-row">
+            <span class="ws-clay-label" id="wsClayLabel">CLAY / SESSION 2</span>
+            <span class="ws-pose-label" id="wsPoseLabel">IDLE</span>
+          </div>
+          <div class="ws-chapter-row">
+            <span class="ws-chapter" id="wsChapter">RETURN</span>
+            <span class="ws-beat" id="wsBeat">01 / 14</span>
+          </div>
+          <div class="ws-caption" id="wsCaption">They return to the fold they left unfinished.</div>
+        </div>
+      </div>
+          </div>
+          <div class="opening-restart" aria-hidden="true">R / REPLAY EXPERIENCE</div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 03 / WHAT IT IS
+             Lead with the human-robot-material scene, not a category label.
+             ============================================================== -->
+        <section class="slide story-slide scene-slide" data-slide-title="What Meikku is" aria-label="What Meikku is">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>MEIKKU / WHAT IT IS</span>
+              <span>PERSON + ROBOT + CLAY</span>
+            </header>
+            <div class="scene-grid">
+              <div class="scene-copy">
+                <p class="slide-kicker reveal">A RELATIONSHIP BUILT THROUGH MAKING</p>
+                <h1 class="display-title reveal" data-editable data-edit-key="s02-title">A PERSON AND A ROBOT MEET AROUND A PIECE OF CLAY.</h1>
+                <p class="deck-lede reveal" data-editable data-edit-key="s02-lede">They talk through unfinished ideas, try them, change their minds, and let each surprise decide what comes next.</p>
+              </div>
+              <div class="relationship-stage reveal" aria-label="Person, robot, and clay in conversation">
+                <div class="dialogue-stamp human-stamp">MAYBE HERE?</div>
+                <div class="dialogue-stamp robot-stamp">WE COULD TRY A SMALL LIFT.</div>
+                <svg class="relationship-clay" viewBox="0 0 560 430" role="img" aria-label="Abstract clay form between a human mark and a robot mark">
+                  <path d="M89,318 C44,218 86,107 194,83 C284,63 330,121 389,92 C450,62 510,126 506,214 C502,306 410,362 292,365 C191,368 120,351 89,318 Z"/>
+                  <path class="clay-fold" d="M194,83 C261,120 259,190 319,204 C378,218 415,170 451,133"/>
+                </svg>
+                <div class="material-whisper">AND THE CLAY MAY ANSWER ANOTHER WAY.</div>
+              </div>
+            </div>
+            <footer class="slide-foot reveal">A person and a robot talk through ideas, try them in clay, and see where each surprise takes them next.</footer>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 04 / WHY THE OLD MODEL FAILS
+             ============================================================== -->
+        <section class="slide story-slide command-slide" data-slide-title="Why making stays open" aria-label="Why making stays open">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>THE GAP</span>
+              <span>MAKING CHANGES THE IDEA</span>
+            </header>
+            <h2 class="display-title title-wide reveal" data-editable data-edit-key="s03-title">THE BEST IDEA OFTEN ARRIVES AFTER THE FIRST TRY.</h2>
+            <div class="comparison-lanes">
+              <div class="command-lane reveal">
+                <p class="lane-label">THE COMMAND MODEL</p>
+                <div class="lane-sequence">
+                  <span>INSTRUCTION</span><i></i><span>EXECUTION</span><i></i><span>OUTPUT</span>
+                </div>
+                <p class="lane-end">It assumes the idea was finished before the material was touched.</p>
+              </div>
+              <div class="conversation-lane reveal">
+                <p class="lane-label">THE MAKING MODEL</p>
+                <div class="loop-words" aria-label="Idea, try, surprise, decide loop">
+                  <span>IDEA</span><span>TRY</span><span>SURPRISE</span><span>DECIDE</span>
+                  <svg viewBox="0 0 520 220" aria-hidden="true"><path d="M72,112 C88,32 190,24 258,60 C330,18 448,44 454,118 C460,189 350,207 273,168 C205,215 84,196 72,112 Z"/></svg>
+                </div>
+                <p class="lane-end">The most important decision often happens after the material answers.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 05 / HUMAN TRUTH
+             ============================================================== -->
+        <section class="slide story-slide discovery-slide" data-slide-title="Making reveals intention" aria-label="Making reveals intention">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>THE HUMAN TRUTH</span>
+              <span>WE LEARN BY TOUCHING</span>
+            </header>
+            <div class="discovery-copy">
+              <h2 class="display-title reveal" data-editable data-edit-key="s04-title">THE BEST PART OF MAKING IS CHANGING YOUR MIND.</h2>
+              <p class="deck-lede reveal" data-editable data-edit-key="s04-lede">We often discover what we want only after resistance, collapse, texture, or asymmetry gives us something new to feel.</p>
+            </div>
+            <div class="material-triptych reveal" aria-label="Idea becomes a trial, surprise, and next idea">
+              <div class="material-step">
+                <span>01 / IDEA</span>
+                <svg viewBox="0 0 280 220"><path d="M36,174 C21,102 67,38 139,42 C214,46 255,95 241,160 C228,210 67,213 36,174 Z"/></svg>
+              </div>
+              <div class="material-arrow">TRY</div>
+              <div class="material-step surprise-step">
+                <span>02 / SURPRISE</span>
+                <svg viewBox="0 0 280 220"><path d="M34,176 C22,104 65,37 138,43 C181,47 173,7 218,22 C258,38 262,105 239,161 C214,211 67,214 34,176 Z"/></svg>
+              </div>
+              <div class="material-arrow">NOTICE</div>
+              <div class="material-step next-step">
+                <span>03 / NEXT IDEA</span>
+                <svg viewBox="0 0 280 220"><path d="M35,177 C23,105 67,38 140,43 C186,46 198,24 224,48 C257,79 250,128 238,162 C214,211 67,214 35,177 Z"/></svg>
+              </div>
+            </div>
+            <p class="poster-note reveal">THE SURPRISE IS NOT A FAILURE. IT IS NEW INFORMATION.</p>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 06 / PRODUCT PROMISE
+             ============================================================== -->
+        <section class="slide story-slide rhythm-slide" data-slide-title="The product promise" aria-label="The product promise">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>THE PRODUCT PROMISE</span>
+              <span>NOT A PROMPT BOX</span>
+            </header>
+            <h2 class="display-title title-wide reveal" data-editable data-edit-key="s05-title">MEIKKU MAKES THE NEXT MOVE NEGOTIABLE.</h2>
+            <p class="deck-lede narrow-lede reveal">The experience is a shared rhythm—not a one-way instruction pipeline.</p>
+            <div class="verb-rail reveal" aria-label="Say, point, try, notice, and yield">
+              <div class="verb human-verb"><span>01</span><strong>SAY</strong><small>offer an unfinished idea</small></div>
+              <div class="verb human-verb"><span>02</span><strong>POINT</strong><small>make “here” visible</small></div>
+              <div class="verb robot-verb"><span>03</span><strong>TRY</strong><small>take one bounded action</small></div>
+              <div class="verb clay-verb"><span>04</span><strong>NOTICE</strong><small>let the material redirect us</small></div>
+              <div class="verb robot-verb"><span>05</span><strong>YIELD</strong><small>return the next decision</small></div>
+            </div>
+            <div class="rhythm-statement reveal">EVERY TURN STAYS OPEN TO REVISION.</div>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 07 / MATERIAL AGENCY
+             ============================================================== -->
+        <section class="slide story-slide material-vote-slide" data-slide-title="The material gets a vote" aria-label="The material gets a vote">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>THE THIRD PARTICIPANT</span>
+              <span>MATERIAL CONSEQUENCE</span>
+            </header>
+            <div class="material-vote-grid">
+              <div class="material-vote-copy">
+                <h2 class="display-title reveal" data-editable data-edit-key="s06-title">THE MATERIAL GETS A VOTE.</h2>
+                <p class="deck-lede reveal" data-editable data-edit-key="s06-lede">Clay has no intention—but what it actually does can change what the person and robot try next.</p>
+                <div class="claim-rule reveal"><span>IF IT RISES</span><span>IF IT COLLAPSES</span><span>IF IT RESISTS</span></div>
+              </div>
+              <div class="vote-graphic reveal" aria-label="Human and robot decisions redirected by clay">
+                <span class="vote-human">PERSON</span>
+                <span class="vote-robot">ROBOT</span>
+                <svg viewBox="0 0 640 610" role="img" aria-label="Large clay form redirecting person and robot paths">
+                  <path class="vote-path human-path" d="M62,124 C180,119 160,250 245,271"/>
+                  <path class="vote-path robot-path" d="M578,120 C459,124 483,243 393,271"/>
+                  <path class="vote-clay" d="M122,494 C77,357 123,199 260,177 C358,160 388,236 462,203 C527,173 572,245 560,356 C548,469 437,542 309,539 C218,537 153,526 122,494 Z"/>
+                  <path class="vote-return" d="M319,210 C305,99 195,81 116,88 M332,211 C359,97 468,78 548,91"/>
+                </svg>
+                <p>THE OUTCOME RETURNS TO THE CONVERSATION.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 08 / MEMORY AS RELATIONSHIP
+             ============================================================== -->
+        <section class="slide story-slide memory-story-slide" data-slide-title="Correctable memory" aria-label="Correctable shared memory">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>RELATIONSHIP CONTINUITY</span>
+              <span>MEMORY WITH A SOURCE</span>
+            </header>
+            <h2 class="display-title title-wide reveal" data-editable data-edit-key="s07-title">MEMORY SHOULD BE USEFUL—AND CORRECTABLE.</h2>
+            <div class="memory-story">
+              <article class="memory-panel-card old-memory reveal">
+                <span class="memory-state">MEIKKU REMEMBERED</span>
+                <p>“You liked the sideways lean.”</p>
+                <small>I INFERRED / LAST SESSION</small>
+              </article>
+              <div class="memory-repair reveal">
+                <span>THE PERSON CORRECTS THE STORY</span>
+                <p>“I only kept it because we were running out of time.”</p>
+              </div>
+              <article class="memory-panel-card new-memory reveal">
+                <span class="memory-state">NOW WE BOTH KNOW</span>
+                <p>“The lean was tolerated, not chosen.”</p>
+                <small>YOU SAID / REPLACES THE INFERENCE</small>
+              </article>
+            </div>
+            <p class="memory-consequence reveal">THE CORRECTION CHANGES THE NEXT TRY.</p>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 09 / UI DEMONSTRATION
+             ============================================================== -->
+        <section class="slide story-slide ui-slide" data-slide-title="Product UI" aria-label="How the product UI works">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>PRODUCT UI</span>
+              <span>MAKE COORDINATION VISIBLE</span>
+            </header>
+            <h2 class="display-title title-wide reveal" data-editable data-edit-key="s08-title">THE UI MAKES “HERE” SOMETHING WE CAN SHARE.</h2>
+            <div class="ui-anatomy reveal">
+              <div class="ui-phone-mini">
+                <div class="mini-header"><b>M</b><span>MEIKKU<small>CLAY SESSION</small></span></div>
+                <div class="mini-message human-mini">A little higher—here.</div>
+                <div class="mini-process">MAKING SURE WE MEAN THE SAME PLACE…</div>
+                <div class="mini-message robot-mini">This upper fold?</div>
+                <div class="mini-composer">What should we try next?</div>
+              </div>
+              <div class="ui-bridge" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="ui-workspace-mini">
+                <div class="mini-ws-head"><span>SHARED WORKSPACE</span><b>GROUNDING</b></div>
+                <svg viewBox="0 0 650 500">
+                  <defs><pattern id="miniGrid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="2"/></pattern></defs>
+                  <rect width="650" height="500" fill="url(#miniGrid)"/>
+                  <path class="mini-clay" d="M86,397 C53,264 123,129 273,117 C390,108 414,181 494,150 C560,126 606,213 578,333 C551,447 438,477 307,468 C190,461 111,442 86,397 Z"/>
+                  <path class="mini-arm" d="M590,431 L540,267 L436,207"/>
+                  <circle class="mini-attention" cx="448" cy="151" r="24"/>
+                  <path class="mini-action" d="M436,207 L448,151"/>
+                </svg>
+                <div class="mini-ws-foot">THE ROBOT SHOWS WHAT IT IS ATTENDING TO.</div>
+              </div>
+              <div class="ui-callout callout-chat">WHAT WE SAY</div>
+              <div class="ui-callout callout-space">WHAT WE SHARE</div>
+              <div class="ui-callout callout-attention">WHAT IT IS ATTENDING TO</div>
+            </div>
+            <p class="poster-note reveal">INVISIBLE COORDINATION BECOMES SOMETHING A PERSON CAN FEEL, QUESTION, AND REPAIR.</p>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 10 / UX DEMONSTRATION
+             ============================================================== -->
+        <section class="slide story-slide ux-slide" data-slide-title="Product UX" aria-label="How the product experience protects human agency">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>PRODUCT UX</span>
+              <span>AGENCY BEFORE AUTOMATION</span>
+            </header>
+            <h2 class="display-title title-wide reveal" data-editable data-edit-key="s09-title">YOU NEVER LOSE THE RIGHT TO CHANGE YOUR MIND.</h2>
+            <div class="ux-journey reveal" aria-label="The Meikku experience sequence">
+              <div class="ux-beat human-beat"><span>01</span><strong>POINT</strong><small>Make “here” shared.</small></div>
+              <div class="ux-beat robot-beat"><span>02</span><strong>ACKNOWLEDGE</strong><small>Show what was understood.</small></div>
+              <div class="ux-beat human-beat"><span>03</span><strong>CORRECT</strong><small>Repair meaning or memory.</small></div>
+              <div class="ux-beat robot-beat"><span>04</span><strong>TRY</strong><small>One bounded move.</small></div>
+              <div class="ux-beat clay-beat"><span>05</span><strong>NOTICE</strong><small>Let the outcome matter.</small></div>
+              <div class="ux-beat human-beat"><span>06</span><strong>KEEP / REDIRECT</strong><small>The person decides what counts.</small></div>
+            </div>
+            <div class="agency-line reveal">
+              <span class="honesty-badge">TALK BETWEEN MOVES</span>
+              <p>You can point, question, correct, shape directly, ask why, and decide what is worth keeping.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 11 / WHY IT MATTERS
+             ============================================================== -->
+        <section class="slide story-slide impact-slide" data-slide-title="Why this matters" aria-label="Why this project matters">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>WHY THIS MATTERS</span>
+              <span>EMBODIED AI</span>
+            </header>
+            <h2 class="display-title title-wide reveal" data-editable data-edit-key="s10-title">A BETTER ROBOT IS NOT JUST MORE CAPABLE. IT IS MORE NEGOTIABLE.</h2>
+            <div class="impact-bands">
+              <div class="impact-band reveal"><span>FROM</span><strong>OBEDIENCE</strong><i></i><span>TO</span><strong>NEGOTIATION</strong></div>
+              <div class="impact-band reveal"><span>FROM</span><strong>OUTPUT</strong><i></i><span>TO</span><strong>RELATIONSHIP</strong></div>
+              <div class="impact-band reveal"><span>FROM</span><strong>PERFECT EXECUTION</strong><i></i><span>TO</span><strong>MEANINGFUL SURPRISE</strong></div>
+            </div>
+            <p class="impact-note reveal">Meikku asks what embodied AI should become when the goal is not efficiency—but shared judgment.</p>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 12 / HONEST PROOF BOUNDARY
+             ============================================================== -->
+        <section class="slide story-slide reality-slide" data-slide-title="What exists now" aria-label="Current demo and core vision">
+          <div class="slide-shell">
+            <header class="slide-meta reveal">
+              <span>THE HONEST BOUNDARY</span>
+              <span>PROOF / VISION</span>
+            </header>
+            <h2 class="display-title title-wide reveal" data-editable data-edit-key="s11-title">A SMALL DEMO. A BIGGER QUESTION.</h2>
+            <div class="reality-split">
+              <div class="reality-now reveal">
+                <span class="reality-label demo-label">DEMO / NOW</span>
+                <h3>We can already rehearse the relationship.</h3>
+                <p>A deterministic product replay shows shared attention, memory recall, correction, a revised try, material response, and yield.</p>
+                <div class="claim-stamps"><span>SCRIPTED REPLAY</span><span>SIMULATED</span><span>NO HARDWARE</span></div>
+              </div>
+              <div class="reality-core reveal">
+                <span class="reality-label core-label">CORE / DIRECTION</span>
+                <h3>We are building toward a real material conversation.</h3>
+                <p>Human, robot, and clay continue across sessions—talking, trying, observing, repairing, and deciding what happens next.</p>
+                <div class="core-loop"><span>TALK</span><i></i><span>TRY</span><i></i><span>NOTICE</span><i></i><span>REMEMBER</span></div>
+              </div>
+            </div>
+            <p class="proof-line reveal">THE PROTOTYPE DOES NOT PROVE THE WHOLE FUTURE. IT MAKES THAT FUTURE DISCUSSABLE.</p>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             SLIDE 13 / LANDING
+             ============================================================== -->
+        <section class="slide story-slide closing-slide" data-slide-title="Make together" aria-label="Closing slide">
+          <div class="closing-field">
+            <p class="closing-brand reveal">MEIKKU</p>
+            <h2 class="closing-title reveal" data-editable data-edit-key="s12-title">MAKE TOGETHER.<br/>THEN DECIDE WHAT THE CLAY<br/>SUGGESTS NEXT.</h2>
+            <div class="closing-scene reveal" aria-label="Person, clay, and robot">
+              <span class="closing-person">PERSON</span>
+              <svg viewBox="0 0 620 260"><path d="M78,215 C58,135 123,58 223,60 C310,62 315,112 392,84 C466,57 554,113 543,190 C533,252 115,266 78,215 Z"/><path class="closing-fold" d="M222,60 C272,89 290,139 356,151 C417,162 455,116 488,92"/></svg>
+              <span class="closing-robot">ROBOT</span>
+            </div>
+            <p class="closing-sub reveal">A person and a robot talk through ideas, try them in clay, and follow what the material suggests next.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Presentation chrome lives outside the fixed 1920×1080 stage. -->
+    <div class="deck-chrome" aria-label="Presentation navigation">
+      <span class="deck-counter" id="deckCounter">01 / 13</span>
+      <span class="deck-progress-track"><i id="deckProgress"></i></span>
+      <span class="deck-slide-name" id="deckSlideName">Make together</span>
+      <span class="deck-keys">← → / SPACE</span>
+    </div>
+    <div class="edit-hotzone" aria-hidden="true"></div>
+    <button class="edit-toggle" id="editToggle" type="button" title="Edit deck copy (E)">EDIT</button>
+
+    <script>
+      if (!document.documentElement.classList.contains("embed-mode")) {
+        const openingFrame = document.querySelector(".legacy-opening-frame");
+        if (openingFrame?.dataset.src) openingFrame.src = openingFrame.dataset.src;
+      }
+    </script>
+    <script src="deck_evidence_data.js"></script>
+    <!-- 冻结的工作区叠层数据。必须排在 deck_evidence_page.js 之前。
+         用 <script> 而不是 fetch 读 json：浏览器禁止 file:// 页面发起 fetch，
+         而这份 demo 要能双击 html 直接打开。 -->
+    <script src="frozen/workspace_overlay.js"></script>
+    <script src="deck_evidence_page.js"></script>
+    <script src="deck_presentation.js"></script>
+
+    <!-- ══════════════════════════════════════════════════════════
+         FACE LAB —— deck 之外的独立父容器
+         不带 data-d1-demo，所以不进 deck 导航；也不受 .d1-demo-only 影响。
+         用 ?faces=1 打开。12 个状态的样式在 styles.css 里，
+         产品头像与这里共用同一份实现。
+         ══════════════════════════════════════════════════════════ -->
+    <section class="face-lab" id="faceLab" hidden aria-label="Meikku face set">
+      <button class="lab-close" id="faceLabClose">Close</button>
+      <h2>Meikku face set</h2>
+      <p>Twelve states, same three blocks. The markup matches the avatar in the header exactly,
+         so switching state means switching one class. Every dimension is a percentage, so 36px
+         and 96px behave identically.</p>
+      <div class="lab-grid">
+        <figure>
+          <div class="mk-face is-idle"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Idle</b><code>.is-idle</code><small>Resting. Blinks every 5.2s.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-listening"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Listening</b><code>.is-listening</code><small>You are talking. Eyes lean toward you.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-thinking"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Thinking</b><code>.is-thinking</code><small>Already wired to the typing indicator.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-proposing"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Proposing</b><code>.is-proposing</code><small>About to suggest something.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-watching"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Watching</b><code>.is-watching</code><small>Eyes drop to the clay while the arm moves.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-pleased"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Pleased</b><code>.is-pleased</code><small>It held.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-surprised"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Surprised</b><code>.is-surprised</code><small>The material did something unexpected.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-unsure"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Unsure</b><code>.is-unsure</code><small>Low confidence.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-corrected"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Corrected</b><code>.is-corrected</code><small>You put it right. Two blinks, then the mouth opens.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-sorry"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Sorry</b><code>.is-sorry</code><small>It got something wrong.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-your-turn"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Your turn</b><code>.is-your-turn</code><small>Handing the turn back.</small></figcaption>
+        </figure>
+        <figure>
+          <div class="mk-face is-away"><i class="eye eye-l"></i><i class="eye eye-r"></i><i class="mouth"></i></div>
+          <figcaption><b>Away</b><code>.is-away</code><small>Dormant.</small></figcaption>
+        </figure>
+      </div>
+    </section>
+    <script>
+      (function () {
+        var lab = document.getElementById("faceLab");
+        var close = document.getElementById("faceLabClose");
+        if (window.__showFaceLab) lab.hidden = false;
+        close.addEventListener("click", function () { lab.hidden = true; });
+        // Shift+F 随时唤出，方便挑表情
+        var ilab = document.getElementById("iconLab");
+        var iclose = document.getElementById("iconLabClose");
+        if (new URLSearchParams(window.location.search).get("icons") === "1") ilab.hidden = false;
+        iclose.addEventListener("click", function () { ilab.hidden = true; });
+        document.addEventListener("keydown", function (e) {
+          if (!e.shiftKey) return;
+          if (e.key === "F") lab.hidden = !lab.hidden;
+          if (e.key === "I") ilab.hidden = !ilab.hidden;
+        });
+      })();
+    </script>
+
+    <!-- 图标台：?icons=1 或 Shift+I -->
+    <section class="icon-lab" id="iconLab" hidden aria-label="Meikku icon set">
+      <button class="lab-close" id="iconLabClose">Close</button>
+      <h2>Meikku icon set</h2>
+      <p>Sixteen icons, drawn only from circle, square, triangle and straight lines on a 24-grid.
+         Stroke 1.9, square caps, no rounded joins. Every icon inherits currentColor, so the same
+         symbol works on paper, ink, cadmium and ultramarine without a second file.
+         Arm, Scan, Point, Memory and Piece are drawn for this product, not borrowed.</p>
+      <div class="ic-grid">
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-back"/></svg><figcaption><b>Back</b><code>#ic-back</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-next"/></svg><figcaption><b>Next</b><code>#ic-next</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-send"/></svg><figcaption><b>Send</b><code>#ic-send</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-plus"/></svg><figcaption><b>Add</b><code>#ic-plus</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-close"/></svg><figcaption><b>Close</b><code>#ic-close</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-memory"/></svg><figcaption><b>Memory</b><code>#ic-memory</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-settings"/></svg><figcaption><b>Settings</b><code>#ic-settings</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-mic"/></svg><figcaption><b>Voice</b><code>#ic-mic</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-camera"/></svg><figcaption><b>Camera</b><code>#ic-camera</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-photos"/></svg><figcaption><b>Photos</b><code>#ic-photos</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-reference"/></svg><figcaption><b>Reference</b><code>#ic-reference</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-point"/></svg><figcaption><b>Point</b><code>#ic-point</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-arm"/></svg><figcaption><b>Arm</b><code>#ic-arm</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-scan"/></svg><figcaption><b>Scan</b><code>#ic-scan</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-piece"/></svg><figcaption><b>Piece</b><code>#ic-piece</code></figcaption></figure>
+        <figure><svg class="mk-ic" aria-hidden="true"><use href="#ic-handback"/></svg><figcaption><b>Hand back</b><code>#ic-handback</code></figcaption></figure>
+      </div>
+      <div class="ic-ctx">
+        <div class="on-paper"><svg class="mk-ic"><use href="#ic-arm"/></svg><svg class="mk-ic"><use href="#ic-scan"/></svg><svg class="mk-ic"><use href="#ic-point"/></svg></div>
+        <div class="on-slate"><svg class="mk-ic"><use href="#ic-arm"/></svg><svg class="mk-ic"><use href="#ic-scan"/></svg><svg class="mk-ic"><use href="#ic-point"/></svg></div>
+        <div class="on-cadmium"><svg class="mk-ic"><use href="#ic-arm"/></svg><svg class="mk-ic"><use href="#ic-scan"/></svg><svg class="mk-ic"><use href="#ic-point"/></svg></div>
+        <div class="on-blue"><svg class="mk-ic"><use href="#ic-arm"/></svg><svg class="mk-ic"><use href="#ic-scan"/></svg><svg class="mk-ic"><use href="#ic-point"/></svg></div>
+      </div>
+    </section>
+  </body>
+</html>

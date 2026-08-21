@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku proposal icon">
+  <title>Meikku proposal icon</title>
+  <polyline points="10,48 22,35 35,39 48,22" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-dasharray="7 5"/>
+  <circle cx="48" cy="20" r="7" fill="none" stroke="currentColor" stroke-width="5"/>
+  <circle cx="48" cy="20" r="2.5" fill="currentColor" stroke="currentColor" stroke-width="4.5"/>
+</svg>

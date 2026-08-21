@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="t d">
+  <title id="t">Meikku key art — the high five</title>
+  <desc id="d">Closing key art: a person and the Meikku arm meet in a high five, an open hand and a two-prong gripper touching, with three impact rays at the contact on a yellow plate over a blue field.</desc>
+
+  <defs>
+    <pattern id="dotsh" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="2" fill="#D8D8D3"/>
+    </pattern>
+  </defs>
+
+  <rect width="1400" height="760" fill="#FCFCFA"/>
+  <rect width="1400" height="760" fill="url(#dotsh)"/>
+
+  <!-- 两块场：群青把两个人框进同一个空间，镉黄只照住相遇的那一下 -->
+  <rect x="70" y="50" width="1260" height="560" fill="#1052CC" stroke="#232322" stroke-width="8"/>
+  <rect x="560" y="70" width="300" height="330" fill="#F7C600" stroke="#232322" stroke-width="8"/>
+
+  <g stroke="#232322" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+
+    <line x1="60" y1="700" x2="1340" y2="700" stroke-width="8"/>
+
+    <!-- Player 1：站起来了 -->
+    <path d="M 428 552 L 412 626 L 406 700" fill="none" stroke-width="46"/>
+    <path d="M 428 552 L 412 626 L 406 700" fill="none" stroke="#EBEBE7" stroke-width="32"/>
+    <path d="M 406 700 L 354 704" fill="none" stroke-width="32"/>
+    <path d="M 406 700 L 358 704" fill="none" stroke="#EBEBE7" stroke-width="17"/>
+    <path d="M 470 552 L 486 624 L 492 700" fill="none" stroke-width="46"/>
+    <path d="M 470 552 L 486 624 L 492 700" fill="none" stroke="#EBEBE7" stroke-width="32"/>
+    <path d="M 492 700 L 546 704" fill="none" stroke-width="32"/>
+    <path d="M 492 700 L 542 704" fill="none" stroke="#EBEBE7" stroke-width="17"/>
+
+    <!-- 垂下的那只手 -->
+    <path d="M 392 388 L 366 486" fill="none" stroke-width="38"/>
+    <path d="M 392 388 L 366 486" fill="none" stroke="#EBEBE7" stroke-width="24"/>
+    <circle cx="362" cy="504" r="21" fill="#EBEBE7"/>
+
+    <path d="M 384 556 L 392 384 Q 394 346 442 342 Q 490 340 496 378 L 508 556 Z" fill="#EBEBE7"/>
+    <rect x="430" y="308" width="40" height="44" fill="#EBEBE7"/>
+    <circle cx="450" cy="262" r="60" fill="#EBEBE7"/>
+    <path d="M 390 264 Q 388 196 450 196 Q 512 196 510 264 L 493 264 Q 493 228 450 228 Q 407 228 407 264 Z" fill="#232322"/>
+    <circle cx="485" cy="256" r="8" fill="#232322" stroke="none"/>
+    <path d="M 473 288 Q 487 302 500 284" fill="none" stroke-width="5"/>
+
+    <!-- Player 2：从右边够上来 -->
+    <path d="M 1000 700 L 1014 596 L 1160 596 L 1174 700 Z" fill="#EBEBE7"/>
+    <line x1="1087" y1="596" x2="960" y2="400" stroke-width="44"/>
+    <line x1="1087" y1="596" x2="960" y2="400" stroke="#EBEBE7" stroke-width="28"/>
+    <line x1="960" y1="400" x2="782" y2="242" stroke-width="38"/>
+    <line x1="960" y1="400" x2="782" y2="242" stroke="#EBEBE7" stroke-width="24"/>
+    <circle cx="1087" cy="596" r="30" fill="#EBEBE7"/>
+    <circle cx="960" cy="400" r="40" fill="#EBEBE7"/>
+    <circle cx="960" cy="400" r="16" fill="none" stroke="#1052CC" stroke-width="11"/>
+    <circle cx="782" cy="242" r="26" fill="#EBEBE7"/>
+    <line x1="782" y1="242" x2="716" y2="212" stroke-width="19"/>
+    <line x1="782" y1="242" x2="718" y2="272" stroke-width="19"/>
+  </g>
+
+  <!-- 举起来的那只手：外廓一遍、内填一遍，手上不留内部线 -->
+  <g fill="#232322" stroke="#232322" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 496 380 L 576 300 L 654 206" fill="none" stroke-width="42"/>
+    <path d="M 654 206 L 628 176 M 654 206 L 652 166 M 654 206 L 680 178" stroke-width="26"/>
+    <circle cx="654" cy="206" r="34" stroke="none"/>
+  </g>
+  <g fill="#EBEBE7" stroke="#EBEBE7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 496 380 L 576 300 L 654 206" fill="none" stroke-width="28"/>
+    <path d="M 654 206 L 631 180 M 654 206 L 652 171 M 654 206 L 676 181" stroke-width="12"/>
+    <circle cx="654" cy="206" r="27" stroke="none"/>
+  </g>
+
+  <!-- 相遇的那一下：logo 里的三道射线 -->
+  <g stroke="#232322" stroke-width="16" stroke-linecap="round">
+    <line x1="710" y1="146" x2="710" y2="96"/>
+    <line x1="692" y1="150" x2="668" y2="114"/>
+    <line x1="742" y1="158" x2="778" y2="124"/>
+  </g>
+</svg>

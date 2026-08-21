@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku warning icon">
+  <title>Meikku warning icon</title>
+  <polyline points="32,9 56,53 8,53 32,9" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="32,24 32,38" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="32" cy="46" r="3" fill="currentColor" stroke="currentColor" stroke-width="4.5"/>
+</svg>

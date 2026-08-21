@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="26" viewBox="0 0 40 26">
+  <title>Meikku section seam — pinked edge (slate)</title>
+  <path d="M0 26 L0 14 L10 4 L20 14 L30 4 L40 14 L40 26 Z" fill="#232322"/>
+  <path d="M0 14 L10 4 L20 14 L30 4 L40 14" fill="none" stroke="#232322" stroke-width="4"/>
+</svg>

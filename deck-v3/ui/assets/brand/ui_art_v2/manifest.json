@@ -1,0 +1,213 @@
+{
+  "schema": "meikku-ui-art-manifest-v2",
+  "version": "2.2.0",
+  "generated": "2026-08-17",
+  "root": "ui/assets/brand/ui_art_v2",
+  "extends": "ui/assets/brand/ui_art_v1/manifest.json",
+  "purpose": "Reusable world-building, frame-breaking, and world-object art for Meikku interfaces and web pages",
+  "sources_studied": [
+    "https://supermariobroswonder.nintendo.com/",
+    "https://animalcrossing.nintendo.com/",
+    "https://splatoon.nintendo.com/ (Splatoon Raiders)",
+    "https://pikmin.nintendo.com/",
+    "https://kirby.nintendo.com/",
+    "https://mariokart8.nintendo.com/",
+    "https://metroid.nintendo.com/",
+    "https://scarletviolet.pokemon.com/",
+    "https://www.nintendo.com/ (Zelda / store franchise template)",
+    "https://www.nintendo.co.jp/zelda/totk/ (JP sliced-asset discipline)",
+    "https://github.com/guokaigdg/animal-island-ui/tree/main"
+  ],
+  "categories": {
+    "frame_breakers": {
+      "role": "oversized composition art that may cross a section boundary behind information",
+      "assets": [
+        { "id": "clay-orbit", "path": "frame_breakers/clay-orbit.svg", "role": "dominant organic material field behind or beside one hero actor" },
+        { "id": "proposal-arc", "path": "frame_breakers/proposal-arc.svg", "role": "one crossing trajectory that connects idea, trial, correction, and return" },
+        { "id": "shared-table-ridge", "path": "frame_breakers/shared-table-ridge.svg", "role": "grounded edge motif behind the information plane" },
+        { "id": "tool-swarm", "path": "frame_breakers/tool-swarm.svg", "role": "sparse background punctuation using clay tools, token, and material objects" }
+      ]
+    },
+    "objects": {
+      "role": "the Meikku world-object family: flat pigment item illustrations with slate keylines, equivalent to a game site's power-up / item icon library; use at 48-160px on paper or clay fields",
+      "viewbox": "128x128",
+      "assets": [
+        { "id": "object-clay-lump", "path": "objects/object-clay-lump.svg", "group": "material" },
+        { "id": "object-clay-coil", "path": "objects/object-clay-coil.svg", "group": "material" },
+        { "id": "object-clay-slab", "path": "objects/object-clay-slab.svg", "group": "material" },
+        { "id": "object-pinch-pot", "path": "objects/object-pinch-pot.svg", "group": "material" },
+        { "id": "object-coil-vessel", "path": "objects/object-coil-vessel.svg", "group": "material" },
+        { "id": "object-clay-bowl", "path": "objects/object-clay-bowl.svg", "group": "material" },
+        { "id": "object-test-tile", "path": "objects/object-test-tile.svg", "group": "material" },
+        { "id": "object-rib-tool", "path": "objects/object-rib-tool.svg", "group": "tool" },
+        { "id": "object-wire-cutter", "path": "objects/object-wire-cutter.svg", "group": "tool" },
+        { "id": "object-loop-tool", "path": "objects/object-loop-tool.svg", "group": "tool" },
+        { "id": "object-paddle", "path": "objects/object-paddle.svg", "group": "tool" },
+        { "id": "object-needle-tool", "path": "objects/object-needle-tool.svg", "group": "tool" },
+        { "id": "object-brush", "path": "objects/object-brush.svg", "group": "tool" },
+        { "id": "object-sponge", "path": "objects/object-sponge.svg", "group": "tool" },
+        { "id": "object-water-cup", "path": "objects/object-water-cup.svg", "group": "tool" },
+        { "id": "object-turntable", "path": "objects/object-turntable.svg", "group": "station" },
+        { "id": "object-tool-roll", "path": "objects/object-tool-roll.svg", "group": "station" },
+        { "id": "object-workspace-mat", "path": "objects/object-workspace-mat.svg", "group": "station" },
+        { "id": "object-kraft-box", "path": "objects/object-kraft-box.svg", "group": "station" },
+        { "id": "object-token", "path": "objects/object-token.svg", "group": "ritual" },
+        { "id": "object-ticket", "path": "objects/object-ticket.svg", "group": "ritual" },
+        { "id": "object-session-card", "path": "objects/object-session-card.svg", "group": "memory" },
+        { "id": "object-memory-box", "path": "objects/object-memory-box.svg", "group": "memory" },
+        { "id": "object-specimen-tray", "path": "objects/object-specimen-tray.svg", "group": "memory" },
+        { "id": "object-journal", "path": "objects/object-journal.svg", "group": "memory" }
+      ]
+    },
+    "frames": {
+      "role": "conversation bubbles and content frames; text and imagery are supplied by the consuming layout, never baked into the asset",
+      "viewbox": "320x220",
+      "assets": [
+        { "id": "bubble-speech-left", "path": "frames/bubble-speech-left.svg", "role": "spoken line, tail lower-left; either participant may use either side" },
+        { "id": "bubble-speech-right", "path": "frames/bubble-speech-right.svg", "role": "spoken line, tail lower-right" },
+        { "id": "bubble-proposal-dashed", "path": "frames/bubble-proposal-dashed.svg", "role": "an offered idea not yet chosen; dashed = candidate per effect language" },
+        { "id": "frame-notice-taped", "path": "frames/frame-notice-taped.svg", "role": "workshop notice pinned with tape; announcements and tips" },
+        { "id": "frame-evidence-tab", "path": "frames/frame-evidence-tab.svg", "role": "evidence window with a solid claim-label tab; pair with LIVE / SIMULATED / CORE text in the tab" },
+        { "id": "frame-corner-brackets", "path": "frames/frame-corner-brackets.svg", "role": "light corner containment for imagery that should not get a full border" }
+      ]
+    },
+    "stamps": {
+      "role": "rubber-stamp claim labels and ritual marks; the word carries the meaning, pigment is reinforcement only",
+      "assets": [
+        { "id": "stamp-live", "path": "stamps/stamp-live.svg" },
+        { "id": "stamp-scripted-live", "path": "stamps/stamp-scripted-live.svg" },
+        { "id": "stamp-simulated", "path": "stamps/stamp-simulated.svg" },
+        { "id": "stamp-recorded", "path": "stamps/stamp-recorded.svg" },
+        { "id": "stamp-core", "path": "stamps/stamp-core.svg" },
+        { "id": "stamp-one-turn", "path": "stamps/stamp-one-turn.svg", "role": "token value mark for arcade/admission surfaces" },
+        { "id": "stamp-kept", "path": "stamps/stamp-kept.svg", "role": "memory kept / correction accepted mark" },
+        { "id": "seal-highfive", "path": "stamps/seal-highfive.svg", "role": "identity seal derived from the official mark's ray grammar; not a replacement logo" }
+      ]
+    },
+    "banners": {
+      "role": "section headers, titles, and navigation patches; consuming layout sets the type",
+      "assets": [
+        { "id": "banner-section-plate", "path": "banners/banner-section-plate.svg" },
+        { "id": "ribbon-title", "path": "banners/ribbon-title.svg" },
+        { "id": "patch-nav", "path": "banners/patch-nav.svg" },
+        { "id": "flag-corner", "path": "banners/flag-corner.svg" }
+      ]
+    },
+    "buttons": {
+      "role": "button plate art for four states; keep labels 16-20px Bungee in the consuming layer; hover/pressed pigment shown here is a local example",
+      "assets": [
+        { "id": "button-plate-default", "path": "buttons/button-plate-default.svg" },
+        { "id": "button-plate-hover", "path": "buttons/button-plate-hover.svg" },
+        { "id": "button-plate-pressed", "path": "buttons/button-plate-pressed.svg" },
+        { "id": "button-plate-disabled", "path": "buttons/button-plate-disabled.svg" }
+      ]
+    },
+    "containers": {
+      "role": "world-material media frames: Splatoon frames media in ink, Meikku frames it in clay, coil, torn zine paper, pigment stroke, token teeth, rays, workbench grid, and tape; media windows only — controls and evidence stay rectangular",
+      "viewbox": "480x360, uniform ~72-unit band, transparent window, CSS border-image friendly",
+      "rebuild": "python tools/build_meikku_ui_containers_v2.py (deterministic)",
+      "assets": [
+        { "id": "frame-clay-pressed", "path": "containers/frame-clay-pressed.svg" },
+        { "id": "frame-coil", "path": "containers/frame-coil.svg" },
+        { "id": "frame-zine-torn", "path": "containers/frame-zine-torn.svg" },
+        { "id": "frame-pigment-stroke", "path": "containers/frame-pigment-stroke.svg", "role": "pigment declared locally per artifact" },
+        { "id": "frame-token-teeth", "path": "containers/frame-token-teeth.svg" },
+        { "id": "frame-ray-notched", "path": "containers/frame-ray-notched.svg" },
+        { "id": "frame-workbench", "path": "containers/frame-workbench.svg" },
+        { "id": "frame-tape-full", "path": "containers/frame-tape-full.svg" }
+      ]
+    },
+    "controls": {
+      "role": "control-plate art for mockups and styling reference; runtime surfaces implement native controls styled to match; state is geometry (solid vs outline, closed shadow, dashed), never color alone",
+      "assets": [
+        { "id": "control-toggle-on", "path": "controls/control-toggle-on.svg" },
+        { "id": "control-toggle-off", "path": "controls/control-toggle-off.svg" },
+        { "id": "control-checkbox-on", "path": "controls/control-checkbox-on.svg" },
+        { "id": "control-checkbox-off", "path": "controls/control-checkbox-off.svg" },
+        { "id": "control-radio-on", "path": "controls/control-radio-on.svg" },
+        { "id": "control-radio-off", "path": "controls/control-radio-off.svg" },
+        { "id": "control-slider", "path": "controls/control-slider.svg" },
+        { "id": "control-stepper", "path": "controls/control-stepper.svg" },
+        { "id": "control-tab-strip", "path": "controls/control-tab-strip.svg" },
+        { "id": "control-input-field", "path": "controls/control-input-field.svg" },
+        { "id": "control-dropdown", "path": "controls/control-dropdown.svg" },
+        { "id": "control-tooltip", "path": "controls/control-tooltip.svg" },
+        { "id": "control-toast", "path": "controls/control-toast.svg" },
+        { "id": "control-pagination", "path": "controls/control-pagination.svg" }
+      ]
+    },
+    "dividers": {
+      "role": "world-object section dividers extending the four v1 dividers",
+      "assets": [
+        { "id": "divider-coil-wave", "path": "dividers/divider-coil-wave.svg" },
+        { "id": "divider-tool-row", "path": "dividers/divider-tool-row.svg" },
+        { "id": "divider-turn-blocks", "path": "dividers/divider-turn-blocks.svg" },
+        { "id": "divider-scallop-clay", "path": "dividers/divider-scallop-clay.svg", "role": "wavy entry edge into a clay field; overlap the previous section" },
+        { "id": "divider-scallop-clay-flip", "path": "dividers/divider-scallop-clay-flip.svg", "role": "wavy exit edge out of a clay field (stroke on the wave only); also usable as an alpha mask to end a colored band organically" }
+      ]
+    },
+    "patterns": {
+      "role": "seamless ambient tiles extending the six v1 patterns; keep at 0.10-0.20 effective presence behind content",
+      "assets": [
+        { "id": "pattern-coil-lines", "path": "patterns/pattern-coil-lines.svg" },
+        { "id": "pattern-tool-scatter", "path": "patterns/pattern-tool-scatter.svg" },
+        { "id": "pattern-thumbprint", "path": "patterns/pattern-thumbprint.svg" },
+        { "id": "pattern-hatch-zone", "path": "patterns/pattern-hatch-zone.svg" }
+      ]
+    },
+    "meters": {
+      "role": "progress and turn-economy art; values shown are static art, never fake runtime data",
+      "assets": [
+        { "id": "meter-turns", "path": "meters/meter-turns.svg" },
+        { "id": "meter-session-coil", "path": "meters/meter-session-coil.svg" }
+      ]
+    },
+    "scene_edges": {
+      "role": "footer scenes, shelf strips, and paired side flanks that ground a page in the shared-table world; always behind information",
+      "assets": [
+        { "id": "scene-footer-shared-table", "path": "scene_edges/scene-footer-shared-table.svg", "role": "page footer scene: hand and gripper converge on one vessel across the table horizon" },
+        { "id": "scene-shelf-strip", "path": "scene_edges/scene-shelf-strip.svg", "role": "top or band strip of workshop objects on a shelf line" },
+        { "id": "flank-tools-left", "path": "scene_edges/flank-tools-left.svg", "role": "left page-margin punctuation; pair with flank-tools-right" },
+        { "id": "flank-tools-right", "path": "scene_edges/flank-tools-right.svg", "role": "right page-margin punctuation" }
+      ]
+    }
+  },
+  "composition": {
+    "layer_order": [
+      "quiet paper or slate field",
+      "one world-scale stage",
+      "person + verified SO-101 + clay actor cluster",
+      "one proposal or correction trajectory",
+      "quiet edge punctuation behind content",
+      "hard-contained headings, body copy, cards, evidence, and claim labels",
+      "functional controls above all non-interactive art"
+    ],
+    "maximums_per_viewport": {
+      "dominant_scenes": 1,
+      "crossing_trajectories": 1,
+      "background_edge_punctuations": 1,
+      "simultaneous_leading_pigments": 2
+    },
+    "never": [
+      "copy Nintendo characters, logos, scenery, or Animal Island source artwork",
+      "apply v2 frame-breakers to the opening #frame-01 hero in ui/meikku_world.html",
+      "apply v2 frame-breakers across the #after to #press-start closing boundary",
+      "clip an oversized decorative asset at a section edge or viewport edge",
+      "give decoration the same or higher z-index than information",
+      "attach decorative pseudo-elements to cards where they can paint over copy or imagery",
+      "turn every panel into an irregular shape",
+      "let art obscure controls, claim labels, evidence captions, or stop states",
+      "use permanent human-versus-robot pigment ownership",
+      "present Core scene art as Demo runtime evidence",
+      "bake live-sounding numbers into meter art or stamp a claim label the surface cannot prove"
+    ]
+  },
+  "typography_note": "Stamp and seal text uses Bungee with an Arial Black fallback embedded as SVG text. Inside pages that load Bungee the stamps render exactly; standalone contexts degrade to the approved heavy block fallback.",
+  "routing": {
+    "core": "full stage, photographic actor cluster, and richer depth cues behind the information plane; scene edges and objects may build the world freely",
+    "demo": "rectangular evidence window plus one lightweight background frame-breaker; stamps carry the claim vocabulary",
+    "web": "SVG assets as img, mask, or background layers; patterns via background-repeat",
+    "unity": "rasterize objects at 64/128 and scene edges at target resolution; keep runtime controls native",
+    "exhibition": "shared-table ridge, footer scene, and sparse objects behind or outside the proof surface"
+  }
+}

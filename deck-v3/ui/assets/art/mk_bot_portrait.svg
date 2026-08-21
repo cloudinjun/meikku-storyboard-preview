@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900" role="img" aria-labelledby="t d">
+  <title id="t">Meikku — character plate</title>
+  <desc id="d">Portrait of the Meikku arm on a yellow plate: a weighted base, two segments, a camera ring at the elbow, and a two-prong gripper, with four interchangeable tool tips shown below.</desc>
+  <defs>
+    <pattern id="dotsp" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="2" fill="#D8D8D3"/></pattern>
+  </defs>
+  <rect width="900" height="900" fill="#FCFCFA"/>
+  <rect width="900" height="900" fill="url(#dotsp)"/>
+
+  <!-- 硬投影：零模糊、固定右下 -->
+  <rect x="134" y="114" width="660" height="600" fill="#232322"/>
+  <rect x="120" y="100" width="660" height="600" fill="#F7C600" stroke="#232322" stroke-width="8"/>
+
+  <g stroke="#232322" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 配重底座：它是坐在桌上的，不是悬浮的 -->
+    <path d="M 348 700 L 366 622 L 468 622 L 486 700 Z" fill="#EBEBE7"/>
+
+    <!-- 大臂 -->
+    <line x1="417" y1="622" x2="270" y2="400" stroke-width="52"/>
+    <line x1="417" y1="622" x2="270" y2="400" stroke="#EBEBE7" stroke-width="33"/>
+    <!-- 小臂 -->
+    <line x1="270" y1="400" x2="562" y2="240" stroke-width="46"/>
+    <line x1="270" y1="400" x2="562" y2="240" stroke="#EBEBE7" stroke-width="29"/>
+
+    <circle cx="417" cy="622" r="34" fill="#EBEBE7"/>
+    <!-- 肘部就是它的头：一只在看的眼睛 -->
+    <circle cx="270" cy="400" r="46" fill="#EBEBE7"/>
+    <circle cx="270" cy="400" r="19" fill="none" stroke="#1052CC" stroke-width="12"/>
+
+    <circle cx="562" cy="240" r="27" fill="#EBEBE7"/>
+    <line x1="562" y1="240" x2="638" y2="196" stroke-width="22"/>
+    <line x1="562" y1="240" x2="628" y2="296" stroke-width="22"/>
+  </g>
+
+  <!-- 四个可换工具头 -->
+  <g stroke="#232322" stroke-width="7" stroke-linejoin="round">
+    <rect x="120" y="740" width="150" height="140" fill="#FCFCFA"/>
+    <rect x="290" y="740" width="150" height="140" fill="#FCFCFA"/>
+    <rect x="460" y="740" width="150" height="140" fill="#FCFCFA"/>
+    <rect x="630" y="740" width="150" height="140" fill="#FCFCFA"/>
+  </g>
+  <g fill="#232322">
+    <path d="M 169 840 L 195 772 L 221 840 Z"/>
+    <rect x="357" y="772" width="16" height="34"/>
+    <rect x="333" y="806" width="64" height="34"/>
+    <rect x="527" y="768" width="16" height="26"/>
+  </g>
+  <g fill="none" stroke="#232322" stroke-width="12">
+    <circle cx="535" cy="822" r="28"/>
+    <circle cx="705" cy="818" r="24"/>
+  </g>
+  <g fill="#232322">
+    <rect x="697" y="762" width="16" height="30"/>
+    <rect x="663" y="810" width="84" height="14"/>
+  </g>
+</svg>

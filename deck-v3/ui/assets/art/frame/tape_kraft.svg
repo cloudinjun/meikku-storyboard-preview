@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="46" viewBox="0 0 200 46">
+  <title>Meikku frame — kraft tape strip</title>
+  <path d="M0 3 L10 12 L0 22 L10 32 L0 43 L200 43 L190 32 L200 22 L190 12 L200 3 Z" fill="#C9A87C"/>
+  <path d="M0 3 L200 3 M0 43 L200 43" stroke="#232322" stroke-width="4" fill="none"/>
+  <path d="M34 12 L64 12 M120 30 L158 30" stroke="#232322" stroke-width="2.5" opacity=".35" fill="none"/>
+</svg>

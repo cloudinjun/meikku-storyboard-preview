@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 220" preserveAspectRatio="none" role="img" aria-labelledby="title desc">
+  <title id="title">Meikku shared table ridge</title>
+  <desc id="desc">A warm near-black foreground edge with an irregular clay-like horizon and pigment marks.</desc>
+  <path fill="#232322" d="M0 77c111-33 204 28 315 4 121-27 209-10 326 12 151 28 252-43 400-37 131 5 220 45 346 21 73-14 142-8 213 9v134H0Z"/>
+  <path fill="none" stroke="#FCFCFA" stroke-width="8" stroke-dasharray="2 24" stroke-linecap="round" opacity=".42" d="M0 97c111-33 204 28 315 4 121-27 209-10 326 12 151 28 252-43 400-37 131 5 220 45 346 21 73-14 142-8 213 9"/>
+  <path fill="#1052CC" d="M205 145h178v28H205z"/><path fill="#0E7A42" d="M425 145h126v28H425z"/>
+  <path fill="#F7C600" d="M594 145h96v28h-96z"/><path fill="#D42718" d="M733 145h148v28H733z"/>
+</svg>

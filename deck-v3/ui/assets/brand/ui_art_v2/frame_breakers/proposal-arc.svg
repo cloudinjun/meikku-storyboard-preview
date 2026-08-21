@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" role="img" aria-labelledby="title desc">
+  <title id="title">Meikku proposal and correction trajectories</title>
+  <desc id="desc">A blue proposal arc, green continuation, yellow shared point, and red correction loop.</desc>
+  <path fill="none" stroke="#232322" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" opacity=".16" d="M44 292C191 301 225 83 399 100c150 14 184 181 336 112 55-25 86-81 118-146"/>
+  <path fill="none" stroke="#1052CC" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M44 278C191 287 225 69 399 86c150 14 184 181 336 112 55-25 86-81 118-146"/>
+  <path fill="none" stroke="#0E7A42" stroke-width="10" stroke-dasharray="18 20" stroke-linecap="round" d="M65 321c139-11 210-126 347-124 129 2 184 97 307 66"/>
+  <path fill="none" stroke="#D42718" stroke-width="14" stroke-linecap="round" d="M610 236c-48-3-82-31-79-65 3-37 47-60 86-45 34 13 48 55 27 84-18 25-59 29-85 9"/>
+  <g stroke="#232322" stroke-width="8">
+    <circle cx="44" cy="278" r="19" fill="#FCFCFA"/><circle cx="399" cy="86" r="23" fill="#F7C600"/>
+    <circle cx="735" cy="198" r="19" fill="#FCFCFA"/><circle cx="853" cy="52" r="23" fill="#D42718"/>
+  </g>
+</svg>

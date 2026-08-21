@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Meikku UI Art v2 — Contact Sheet</title>
+<style>
+body{font-family:"Space Grotesk",Arial,sans-serif;background:#FCFCFA;color:#232322;margin:0;padding:32px}
+h1{font-family:"Bungee","Arial Black",sans-serif;font-size:28px;letter-spacing:.04em}
+h2{font-family:"Bungee","Arial Black",sans-serif;font-size:18px;letter-spacing:.05em;border-bottom:4px solid #232322;padding-bottom:8px;margin-top:40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;margin-top:16px}
+.cell{border:3px solid #232322;background:#FCFCFA;padding:10px;text-align:center}
+.cell.dark{background:#232322;color:#FCFCFA}
+.cell.clay{background:#EBEBE7}
+.cell img{width:100%;height:110px;object-fit:contain;display:block}
+.cell small{display:block;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.wide{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.full .cell img{height:80px}
+.strip .cell{grid-column:1/-1}
+.strip .cell img{height:auto;max-height:160px;width:100%}
+</style>
+</head>
+<body>
+<h1>MEIKKU UI ART V2 — WORLD LAYER CONTACT SHEET</h1>
+
+<h2>Objects (25)</h2>
+<div class="grid" id="objects"></div>
+<h2>Frames &amp; bubbles (6)</h2>
+<div class="grid wide" id="frames"></div>
+<h2>Stamps &amp; seals (8)</h2>
+<div class="grid wide" id="stamps"></div>
+<h2>Banners (4)</h2>
+<div class="grid wide" id="banners"></div>
+<h2>Button plates (4)</h2>
+<div class="grid wide" id="buttons"></div>
+<h2>Dividers (4)</h2>
+<div class="grid full strip" id="dividers"></div>
+<h2>Patterns (4, tiled)</h2>
+<div class="grid" id="patterns"></div>
+<h2>Container borders (8)</h2>
+<div class="grid wide" id="containers"></div>
+<h2>Controls (14)</h2>
+<div class="grid wide" id="controls"></div>
+<h2>Meters (2)</h2>
+<div class="grid wide" id="meters"></div>
+<h2>Scene edges (4)</h2>
+<div class="grid strip" id="scenes"></div>
+
+<script>
+const groups = {
+objects:["object-clay-lump","object-clay-coil","object-clay-slab","object-pinch-pot","object-coil-vessel","object-clay-bowl","object-test-tile","object-rib-tool","object-wire-cutter","object-loop-tool","object-paddle","object-needle-tool","object-brush","object-sponge","object-water-cup","object-turntable","object-tool-roll","object-workspace-mat","object-kraft-box","object-token","object-ticket","object-session-card","object-memory-box","object-specimen-tray","object-journal"],
+frames:["bubble-speech-left","bubble-speech-right","bubble-proposal-dashed","frame-notice-taped","frame-evidence-tab","frame-corner-brackets"],
+stamps:["stamp-live","stamp-scripted-live","stamp-simulated","stamp-recorded","stamp-core","stamp-one-turn","stamp-kept","seal-highfive"],
+banners:["banner-section-plate","ribbon-title","patch-nav","flag-corner"],
+buttons:["button-plate-default","button-plate-hover","button-plate-pressed","button-plate-disabled"],
+dividers:["divider-coil-wave","divider-tool-row","divider-turn-blocks","divider-scallop-clay"],
+patterns:["pattern-coil-lines","pattern-tool-scatter","pattern-thumbprint","pattern-hatch-zone"],
+containers:["frame-clay-pressed","frame-coil","frame-zine-torn","frame-pigment-stroke","frame-token-teeth","frame-ray-notched","frame-workbench","frame-tape-full"],
+controls:["control-toggle-on","control-toggle-off","control-checkbox-on","control-checkbox-off","control-radio-on","control-radio-off","control-slider","control-stepper","control-tab-strip","control-input-field","control-dropdown","control-tooltip","control-toast","control-pagination"],
+meters:["meter-turns","meter-session-coil"],
+scenes:["scene-footer-shared-table","scene-shelf-strip","flank-tools-left","flank-tools-right"]
+};
+const dirs = {objects:"objects",frames:"frames",stamps:"stamps",banners:"banners",buttons:"buttons",containers:"containers",controls:"controls",dividers:"dividers",patterns:"patterns",meters:"meters",scenes:"scene_edges"};
+for(const [g,names] of Object.entries(groups)){
+  const el=document.getElementById(g);
+  for(const n of names){
+    const c=document.createElement('div');c.className='cell'+(g==='objects'?' clay':'');
+    if(g==='patterns'){
+      c.innerHTML=`<div style="height:110px;background:url('../${dirs[g]}/${n}.svg');background-size:80px"></div><small>${n}</small>`;
+    } else {
+      c.innerHTML=`<img src="../${dirs[g]}/${n}.svg" alt="${n}"><small>${n}</small>`;
+    }
+    el.appendChild(c);
+  }
+}
+</script>
+</body>
+</html>

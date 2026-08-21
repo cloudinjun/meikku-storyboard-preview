@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku settings icon">
+  <title>Meikku settings icon</title>
+  <circle cx="32" cy="32" r="10" fill="none" stroke="currentColor" stroke-width="5"/>
+  <circle cx="32" cy="32" r="3" fill="currentColor" stroke="currentColor" stroke-width="4.5"/>
+  <polyline points="46.0,32.0 53.0,32.0" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="41.89949493661167,41.89949493661167 46.8492424049175,46.8492424049175" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="32.0,46.0 32.0,53.0" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="22.100505063388336,41.89949493661167 17.150757595082503,46.8492424049175" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="18.0,32.0 11.0,32.0" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="22.100505063388333,22.100505063388336 17.1507575950825,17.150757595082503" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="31.999999999999996,18.0 31.999999999999996,11.0" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="41.89949493661166,22.100505063388333 46.84924240491749,17.1507575950825" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

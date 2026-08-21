@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="160" viewBox="0 0 220 160">
+  <title>Meikku wallpaper - candidate paths</title>
+  <g fill="none" stroke="#E9E6DD" stroke-width="4" stroke-linecap="round" stroke-dasharray="13 11">
+    <path d="M 18 128 Q 74 56 142 96"/>
+    <path d="M 108 34 Q 156 66 204 36"/>
+  </g>
+</svg>

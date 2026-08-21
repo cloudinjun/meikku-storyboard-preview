@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" role="img" aria-labelledby="title desc">
+  <title id="title">Meikku clay tool swarm</title>
+  <desc id="desc">A sparse set of clay tools, a token, a rib, a sponge, and small pigment marks.</desc>
+  <g fill="none" stroke="#232322" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m45 225 180-92m-154 78 39 54m89-146 39 54"/>
+    <path d="M285 201c42-86 126-111 202-43-45 38-106 60-202 43Z" fill="#EBEBE7"/>
+    <path d="m527 209 113-129 42 37-113 129Z"/>
+    <path d="M719 80h115l-20 95H739Z" fill="#EBEBE7"/>
+    <circle cx="694" cy="219" r="54" fill="#F7C600"/>
+    <circle cx="694" cy="219" r="28"/><path d="M694 191v56m-28-28h56"/>
+  </g>
+  <path fill="#1052CC" d="m241 54 31 12-19 48-31-12z"/><circle cx="501" cy="68" r="18" fill="#0E7A42"/>
+  <path fill="#D42718" d="m838 201 31 11-18 53-31-11z"/>
+</svg>

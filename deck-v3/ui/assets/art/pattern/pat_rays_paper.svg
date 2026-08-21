@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <title>Meikku wallpaper - impact rays</title>
+  <g fill="none" stroke="#EDEAE1" stroke-width="5" stroke-linecap="round">
+    <path d="M 42 28 L 42 41.2"/>
+    <path d="M 25.2 36.0 L 36.0 44.4"/>
+    <path d="M 58.8 36.0 L 48.0 44.4"/>
+  </g>
+  <g fill="none" stroke="#EDEAE1" stroke-width="5" stroke-linecap="round">
+    <path d="M 122 108 L 122 121.2"/>
+    <path d="M 105.2 116.0 L 116.0 124.4"/>
+    <path d="M 138.8 116.0 L 128.0 124.4"/>
+  </g>
+</svg>

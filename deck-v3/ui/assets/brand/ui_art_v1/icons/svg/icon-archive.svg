@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku archive icon">
+  <title>Meikku archive icon</title>
+  <rect x="12" y="16" width="40" height="36" rx="0" fill="none" stroke="currentColor" stroke-width="5"/>
+  <polyline points="12,30 52,30" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="26,40 38,40" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

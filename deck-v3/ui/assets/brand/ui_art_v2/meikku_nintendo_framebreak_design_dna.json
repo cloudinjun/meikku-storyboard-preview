@@ -1,0 +1,418 @@
+{
+    "meta":  {
+                 "name":  "Meikku Shared-Table World / Frame-Breaking UI Art",
+                 "description":  "An original Meikku composition system distilled from five official Nintendo promotional pages and the asset-system discipline of Animal Island UI, without copying their characters, logos, scenery, or source artwork.",
+                 "source_references":  [
+                                           "Mario Kart World official site",
+                                           "The Legend of Zelda official home",
+                                           "Animal Crossing: New Horizons official site",
+                                           "Splatoon 3 official site",
+                                           "Pikmin 4 official site",
+                                           "guokaigdg/animal-island-ui repository"
+                                       ],
+                 "created_at":  "2026-08-13"
+             },
+    "design_system":  {
+                          "color":  {
+                                        "palette_type":  "split-complementary shared pigment field on neutral paper/slate poles",
+                                        "primary":  {
+                                                        "hex":  "#232322",
+                                                        "role":  "structure, type, hard containment, grounded foreground"
+                                                    },
+                                        "secondary":  {
+                                                          "hex":  "#FCFCFA",
+                                                          "role":  "paper field, breathing space, light text on dark fills"
+                                                      },
+                                        "accent":  {
+                                                       "hex":  "#1052CC",
+                                                       "role":  "one locally declared leading trajectory or emphasis"
+                                                   },
+                                        "neutral":  {
+                                                        "scale":  [
+                                                                      "#FCFCFA",
+                                                                      "#EBEBE7",
+                                                                      "#D8D8D3",
+                                                                      "#5C5C58",
+                                                                      "#232322"
+                                                                  ],
+                                                        "usage":  "paper, material field, grid, secondary copy, structure"
+                                                    },
+                                        "semantic":  {
+                                                         "success":  "local legend only",
+                                                         "warning":  "local legend only",
+                                                         "error":  "local legend only",
+                                                         "info":  "local legend only"
+                                                     },
+                                        "surface":  {
+                                                        "background":  "#FCFCFA",
+                                                        "card":  "#EBEBE7",
+                                                        "elevated":  "#FCFCFA"
+                                                    },
+                                        "contrast_strategy":  "dark-on-light dominant with paper text on slate/blue/green/red; yellow carries slate text"
+                                    },
+                          "typography":  {
+                                             "type_scale":  {
+                                                                "display":  {
+                                                                                "size":  "96px",
+                                                                                "weight":  "400",
+                                                                                "line_height":  "1.0",
+                                                                                "tracking":  "0.04em"
+                                                                            },
+                                                                "heading_1":  {
+                                                                                  "size":  "52px",
+                                                                                  "weight":  "400",
+                                                                                  "line_height":  "1.05",
+                                                                                  "tracking":  "0.03em"
+                                                                              },
+                                                                "heading_2":  {
+                                                                                  "size":  "44px",
+                                                                                  "weight":  "400",
+                                                                                  "line_height":  "1.1",
+                                                                                  "tracking":  "0.03em"
+                                                                              },
+                                                                "heading_3":  {
+                                                                                  "size":  "30px",
+                                                                                  "weight":  "400",
+                                                                                  "line_height":  "1.08",
+                                                                                  "tracking":  "0.05em"
+                                                                              },
+                                                                "body":  {
+                                                                             "size":  "18px",
+                                                                             "weight":  "400",
+                                                                             "line_height":  "1.5",
+                                                                             "tracking":  "0.01em"
+                                                                         },
+                                                                "body_small":  {
+                                                                                   "size":  "16px",
+                                                                                   "weight":  "400",
+                                                                                   "line_height":  "1.45",
+                                                                                   "tracking":  "0.01em"
+                                                                               },
+                                                                "caption":  {
+                                                                                "size":  "14px",
+                                                                                "weight":  "400",
+                                                                                "line_height":  "1.4",
+                                                                                "tracking":  "0"
+                                                                            },
+                                                                "overline":  {
+                                                                                 "size":  "13px",
+                                                                                 "weight":  "700",
+                                                                                 "line_height":  "1.5",
+                                                                                 "tracking":  "0.1em"
+                                                                             }
+                                                            },
+                                             "font_families":  {
+                                                                   "heading":  "Bungee",
+                                                                   "body":  "Space Grotesk",
+                                                                   "mono":  "Space Grotesk with tabular numerals"
+                                                               },
+                                             "font_style_notes":  "Chunky public display voice plus compact geometric explanation; no third family."
+                                         },
+                          "spacing":  {
+                                          "base_unit":  "8px",
+                                          "scale":  [
+                                                        "8px",
+                                                        "16px",
+                                                        "24px",
+                                                        "32px",
+                                                        "48px",
+                                                        "64px",
+                                                        "88px"
+                                                    ],
+                                          "content_density":  "spacious scene field with compact evidence anchors",
+                                          "section_rhythm":  "one dominant scene followed by one concise rule or proof band"
+                                      },
+                          "layout":  {
+                                         "grid_system":  "12-column functional grid over a background-only decorative stage",
+                                         "max_content_width":  "1560px desktop story stage with a fluid product viewport",
+                                         "columns":  "asymmetric 7/5 or 8/4 when copy is present",
+                                         "gutter":  "32px",
+                                         "breakpoints":  [
+                                                             "390px",
+                                                             "768px",
+                                                             "1280px",
+                                                             "1920px"
+                                                         ],
+                                         "alignment_tendency":  "asymmetric stage with hard-aligned evidence and controls"
+                                     },
+                          "shape":  {
+                                        "border_radius":  {
+                                                              "small":  "0",
+                                                              "medium":  "0",
+                                                              "large":  "0",
+                                                              "pill":  "999px only for compact chips"
+                                                          },
+                                        "border_usage":  "4px slate containment for controls/evidence; organic clip paths for scene art",
+                                        "divider_style":  "material ridge, proposal path, or pigment seam instead of a generic horizontal rule"
+                                    },
+                          "elevation":  {
+                                            "shadow_style":  "hard block shadow",
+                                            "levels":  {
+                                                           "low":  "3px 3px 0 #232322",
+                                                           "medium":  "6px 6px 0 #232322",
+                                                           "high":  "12px 12px 0 #232322"
+                                                       },
+                                            "depth_cues":  "scale change, overlap among actor imagery, clipped photography, hard shadows, and grounded background edges; decoration never overlaps information"
+                                        },
+                          "iconography":  {
+                                              "style":  "bold single-color semantic silhouettes and line icons",
+                                              "stroke_weight":  "8â€“12% of icon size",
+                                              "size_scale":  [
+                                                                 "16px",
+                                                                 "24px",
+                                                                 "32px",
+                                                                 "64px",
+                                                                 "128px"
+                                                             ],
+                                              "preferred_set":  "Meikku UI Art v1 semantic icons"
+                                          },
+                          "motion":  {
+                                         "easing":  "none",
+                                         "duration_scale":  {
+                                                                "micro":  "0ms",
+                                                                "normal":  "0ms",
+                                                                "macro":  "0ms"
+                                                            },
+                                         "entrance_pattern":  "content and decoration are present immediately; no fade-in or scroll entrance",
+                                         "exit_pattern":  "no decorative exit animation",
+                                         "philosophy":  "static hierarchy first; state changes may switch instantly, but content never fades into view"
+                                     },
+                          "components":  {
+                                             "button_style":  "hard-contained, high-contrast, 44px minimum; art can point toward but never reshape critical controls",
+                                             "input_style":  "paper field, slate border, clear native focus state",
+                                             "card_style":  "reserved for evidence and actions; avoid a wall of equal cards",
+                                             "navigation_pattern":  "compact anchored rail or patch over the scene safe area",
+                                             "modal_style":  "hard-contained paper/slate sheet above a quieted scene",
+                                             "list_style":  "short labeled rows or spatial callouts, not decorative tiles",
+                                             "component_notes":  "Functional UI stays rectangular and predictable. Decorative world, trajectory, texture, tape, stamp, and frame-breaker layers always remain behind headings, body copy, cards, active actor imagery, evidence, labels, and controls. The opening #frame-01 hero and closing #after / #press-start pair are explicitly excluded."
+                                         }
+                      },
+    "design_style":  {
+                         "aesthetic":  {
+                                           "mood":  [
+                                                        "warm",
+                                                        "companionable",
+                                                        "material",
+                                                        "playful",
+                                                        "credible"
+                                                    ],
+                                           "visual_metaphor":  "a shared making table becoming a small explorable world",
+                                           "era_influence":  "Bauhaus poster structure, workshop print, tactile game-promo staging",
+                                           "genre":  "embodied companion product world",
+                                           "personality_traits":  [
+                                                                      "inviting",
+                                                                      "curious",
+                                                                      "plainspoken",
+                                                                      "energetic",
+                                                                      "honest"
+                                                                  ],
+                                           "adjectives":  [
+                                                              "grounded",
+                                                              "overlapping",
+                                                              "directional",
+                                                              "tactile",
+                                                              "non-sci-fi"
+                                                          ]
+                                       },
+                         "visual_language":  {
+                                                 "complexity":  "rich focal stage with restrained supporting UI",
+                                                 "ornamentation":  "meaningful but low-opacity scene edges, trajectories, tools, and material contours",
+                                                 "whitespace_usage":  "large quiet paper regions around one dominant actor cluster",
+                                                 "visual_weight_distribution":  "heavy lower ground, one off-center hero cluster, light evidence anchors",
+                                                 "focal_strategy":  "single shared-table scene with progressive reveal",
+                                                 "contrast_level":  "high foreground information contrast over deliberately quiet decorative layers",
+                                                 "texture_usage":  "clay speckles, paper grain, grid, and hard print edges"
+                                             },
+                         "composition":  {
+                                             "hierarchy_method":  "scale contrast, overlap, and directional trajectory before card count",
+                                             "balance_type":  "asymmetric grounded balance",
+                                             "flow_direction":  "from idea label through shared actor cluster to material consequence and return",
+                                             "grouping_strategy":  "spatial proximity inside one scene; evidence remains in bounded anchors",
+                                             "negative_space_role":  "protects conversation, claim labels, and the visible clay consequence"
+                                         },
+                         "imagery":  {
+                                         "photo_treatment":  "verified SO-101/person/clay photography clipped by original organic material masks",
+                                         "illustration_style":  "flat pigment vector forms with slate keylines and material contour marks",
+                                         "graphic_elements":  "clay orbit, proposal arc, shared-table ridge, sparse tool swarm, local claim patches",
+                                         "pattern_usage":  "quiet ambient field only; never compete with the shared scene",
+                                         "image_shape":  "organic scene window that crosses one grid boundary while preserving a rectangular evidence crop in Demo"
+                                     },
+                         "interaction_feel":  {
+                                                  "feedback_style":  "one physical-feeling response near the acted-on object",
+                                                  "hover_behavior":  "instant color or border response on actionable controls only",
+                                                  "transition_personality":  "instant; no fade-in or decorative entrance motion",
+                                                  "loading_style":  "static material mark",
+                                                  "microinteraction_density":  "low and functional only"
+                                              },
+                         "brand_voice_in_ui":  {
+                                                   "tone":  "companion-first, concrete, and evidence-aware",
+                                                   "formality":  "friendly professional",
+                                                   "cta_style":  "friendly invitation such as Try together, Look again, Keep this, or Ask why",
+                                                   "empty_state_approach":  "the material remains present while the next turn is open",
+                                                   "error_tone":  "plain repair language without blame or false certainty"
+                                               }
+                     },
+    "visual_effects":  {
+                           "overview":  {
+                                            "effect_intensity":  "low",
+                                            "performance_tier":  "lightweight",
+                                            "fallback_strategy":  "static low-opacity SVG and clipped photo; preserve evidence/control geometry",
+                                            "primary_technology":  "static CSS and SVG"
+                                        },
+                           "background_effects":  {
+                                                      "type":  "pattern-fill",
+                                                      "description":  "quiet paper/clay speckle or grid field that never competes with foreground information",
+                                                      "technology":  "CSS/SVG",
+                                                      "params":  {
+                                                                     "color_palette":  [
+                                                                                           "#FCFCFA",
+                                                                                           "#EBEBE7",
+                                                                                           "#D8D8D3"
+                                                                                       ],
+                                                                     "speed":  "static",
+                                                                     "density":  "low",
+                                                                     "opacity":  "0.1-0.2",
+                                                                     "blend_mode":  "soft-light"
+                                                                 }
+                                                  },
+                           "particle_systems":  {
+                                                    "enabled":  false,
+                                                    "type":  "none",
+                                                    "description":  "No ambient particles; clay speckles are static texture.",
+                                                    "technology":  "none",
+                                                    "params":  {
+                                                                   "count":  0,
+                                                                   "shape":  "none",
+                                                                   "size_range":  "none",
+                                                                   "movement_pattern":  "none",
+                                                                   "color_behavior":  "none",
+                                                                   "interaction":  "none",
+                                                                   "spawn_area":  "none"
+                                                               }
+                                                },
+                           "3d_elements":  {
+                                               "enabled":  false,
+                                               "type":  "none",
+                                               "description":  "Use verified photography or runtime scene evidence, not decorative WebGL.",
+                                               "technology":  "none",
+                                               "params":  {
+                                                              "renderer":  "none",
+                                                              "lighting":  "source image",
+                                                              "camera":  "source image",
+                                                              "materials":  "none",
+                                                              "geometry":  "none",
+                                                              "post_processing":  [
+
+                                                                                  ],
+                                                              "interaction_model":  "none"
+                                                          }
+                                           },
+                           "shader_effects":  {
+                                                  "enabled":  false,
+                                                  "type":  "none",
+                                                  "description":  "No shader-driven decoration.",
+                                                  "technology":  "none",
+                                                  "params":  {
+                                                                 "uniforms":  {
+
+                                                                              },
+                                                                 "vertex_manipulation":  "none",
+                                                                 "fragment_output":  "none",
+                                                                 "noise_type":  "none",
+                                                                 "distortion":  "none"
+                                                             }
+                                              },
+                           "scroll_effects":  {
+                                                  "parallax":  {
+                                                                   "enabled":  false,
+                                                                   "layers":  "0",
+                                                                   "depth_range":  "0px",
+                                                                   "speed_curve":  "none"
+                                                               },
+                                                  "scroll_triggered_animations":  {
+                                                                                      "enabled":  false,
+                                                                                      "trigger_points":  [
+
+                                                                                                         ],
+                                                                                      "animation_type":  "none",
+                                                                                      "scrub_behavior":  "none"
+                                                                                  },
+                                                  "scroll_morphing":  {
+                                                                          "enabled":  false,
+                                                                          "description":  "Scene shape remains stable to preserve orientation."
+                                                                      }
+                                              },
+                           "text_effects":  {
+                                                "type":  "none",
+                                                "description":  "All text is immediately visible; no opacity or entrance effects.",
+                                                "technology":  "none",
+                                                "params":  {
+                                                               "split_strategy":  "none",
+                                                               "animation_per_unit":  "none",
+                                                               "stagger":  "0ms",
+                                                               "effect_style":  "static"
+                                                           }
+                                            },
+                           "cursor_effects":  {
+                                                  "enabled":  false,
+                                                  "type":  "none",
+                                                  "description":  "Native cursor on critical UI; v1 optional cursors only on noncritical playful zones.",
+                                                  "params":  {
+                                                                 "shape":  "native",
+                                                                 "size":  "native",
+                                                                 "blend_mode":  "normal",
+                                                                 "trail":  "none",
+                                                                 "interaction_zone":  "noncritical art only"
+                                                             }
+                                              },
+                           "image_effects":  {
+                                                 "type":  "static-clip",
+                                                 "description":  "Scene photography is immediately present inside a stable organic clay mask.",
+                                                 "technology":  "CSS clip-path/SVG mask",
+                                                 "params":  {
+                                                                "filter_pipeline":  [
+                                                                                        "none"
+                                                                                    ],
+                                                                "hover_transform":  "none",
+                                                                "reveal_animation":  "none",
+                                                                "distortion_type":  "none"
+                                                            }
+                                             },
+                           "glassmorphism_neumorphism":  {
+                                                             "enabled":  false,
+                                                             "style":  "none",
+                                                             "params":  {
+                                                                            "blur_radius":  "0",
+                                                                            "transparency":  "0",
+                                                                            "border_treatment":  "hard slate border",
+                                                                            "shadow_type":  "hard block",
+                                                                            "light_source_angle":  "none"
+                                                                        }
+                                                         },
+                           "canvas_drawings":  {
+                                                   "enabled":  false,
+                                                   "type":  "none",
+                                                   "description":  "SVG carries the trajectory and material edge language.",
+                                                   "technology":  "none",
+                                                   "params":  {
+                                                                  "draw_method":  "none",
+                                                                  "animation_loop":  "none",
+                                                                  "color_scheme":  "Meikku tokens",
+                                                                  "responsiveness":  "SVG viewBox",
+                                                                  "interaction":  "none"
+                                                              }
+                                               },
+                           "svg_animations":  {
+                                                  "enabled":  false,
+                                                  "type":  "none",
+                                                  "description":  "Proposal and correction paths are static, low-opacity supporting marks.",
+                                                  "params":  {
+                                                                 "animation_method":  "none",
+                                                                 "path_morphing":  false,
+                                                                 "stroke_animation":  false,
+                                                                 "filter_effects":  "none"
+                                                             }
+                                              },
+                           "composite_notes":  "Decorative layers use the background layer only and may overlap one another, but they never paint over headings, body copy, cards, active actor imagery, evidence, labels, or controls. Opacity is supportive, not the sole safeguard; stacking order enforces the hierarchy. Decorative silhouettes must resolve without clipped ends. The opening #frame-01 hero and closing #after / #press-start pair keep stable contained compositions and receive no v2 frame-breakers. All content is immediately visible with no fade-in, parallax, or path drawing."
+                       }
+}

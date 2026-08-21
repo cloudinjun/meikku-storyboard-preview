@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="190" height="150" viewBox="0 0 190 150" role="img" aria-hidden="true">
+  <title>Meikku frame — gripper reaching over the plate edge</title>
+  <g stroke="#232322" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="176" y1="142" x2="86" y2="58" stroke-width="34"/>
+    <line x1="176" y1="142" x2="86" y2="58" stroke="#EBEBE7" stroke-width="20"/>
+    <circle cx="86" cy="58" r="24" fill="#EBEBE7"/>
+    <circle cx="86" cy="58" r="10" fill="none" stroke="#1052CC" stroke-width="8"/>
+    <line x1="86" y1="58" x2="26" y2="34" stroke-width="16"/>
+    <line x1="86" y1="58" x2="34" y2="88" stroke-width="16"/>
+  </g>
+</svg>

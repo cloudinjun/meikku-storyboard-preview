@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="t d">
+  <title id="t">Meikku starter kit — flat lay</title>
+  <desc id="d">Top view of the fold-out work mat with the Meikku arm, landmark stamps, four tool tips, three clay refills, prompt cards, a session memory box, a care cloth, and a brush.</desc>
+  <defs>
+    <pattern id="dotsk" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="2" fill="#D8D8D3"/></pattern>
+  </defs>
+  <rect width="1200" height="760" fill="#FCFCFA"/>
+
+  <!-- 展开的工作垫：所有东西都摊在同一个共享平面上 -->
+  <rect x="60" y="60" width="1080" height="640" fill="#EBEBE7" stroke="#232322" stroke-width="8"/>
+  <rect x="60" y="60" width="1080" height="640" fill="url(#dotsk)"/>
+  <line x1="700" y1="60" x2="700" y2="700" stroke="#D8D8D3" stroke-width="6"/>
+
+  <g stroke="#232322" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- 地标印章：先有共同的「这里」 -->
+    <rect x="110" y="110" width="70" height="70" fill="#FCFCFA"/>
+    <rect x="200" y="110" width="70" height="70" fill="#FCFCFA"/>
+    <rect x="290" y="110" width="70" height="70" fill="#FCFCFA"/>
+
+    <!-- Meikku 俯视 -->
+    <line x1="260" y1="520" x2="400" y2="360" stroke-width="58"/>
+    <line x1="260" y1="520" x2="400" y2="360" stroke="#FCFCFA" stroke-width="40"/>
+    <line x1="400" y1="360" x2="560" y2="300" stroke-width="48"/>
+    <line x1="400" y1="360" x2="560" y2="300" stroke="#FCFCFA" stroke-width="32"/>
+    <circle cx="260" cy="520" r="74" fill="#FCFCFA"/>
+    <circle cx="260" cy="520" r="30" fill="#EBEBE7"/>
+    <circle cx="400" cy="360" r="36" fill="#FCFCFA"/>
+    <circle cx="400" cy="360" r="14" fill="none" stroke="#1052CC" stroke-width="9"/>
+    <circle cx="560" cy="300" r="25" fill="#FCFCFA"/>
+    <line x1="560" y1="300" x2="622" y2="268" stroke-width="18"/>
+    <line x1="560" y1="300" x2="620" y2="334" stroke-width="18"/>
+
+    <!-- 四个工具头 -->
+    <rect x="706" y="110" width="92" height="92" fill="#FCFCFA"/>
+    <rect x="818" y="110" width="92" height="92" fill="#FCFCFA"/>
+    <rect x="930" y="110" width="92" height="92" fill="#FCFCFA"/>
+    <rect x="1042" y="110" width="92" height="92" fill="#FCFCFA"/>
+
+    <!-- 三块补充黏土，牛皮纸封条 -->
+    <rect x="706" y="250" width="126" height="96" fill="#D8D8D3"/>
+    <rect x="860" y="250" width="126" height="96" fill="#D8D8D3"/>
+    <rect x="1014" y="250" width="126" height="96" fill="#D8D8D3"/>
+    <rect x="706" y="282" width="126" height="26" fill="#C9A87C"/>
+    <rect x="860" y="282" width="126" height="26" fill="#C9A87C"/>
+    <rect x="1014" y="282" width="126" height="26" fill="#C9A87C"/>
+
+    <!-- 提议卡：把想法变成可以被拒绝的邀请 -->
+    <rect x="706" y="404" width="180" height="124" fill="#FCFCFA"/>
+    <rect x="722" y="388" width="180" height="124" fill="#FCFCFA"/>
+    <line x1="742" y1="416" x2="838" y2="416" stroke-width="6"/>
+    <line x1="742" y1="440" x2="866" y2="440" stroke-width="6"/>
+
+    <!-- 记忆盒：把这次留下来 -->
+    <rect x="944" y="392" width="196" height="136" fill="#FCFCFA"/>
+    <line x1="944" y1="428" x2="1140" y2="428" stroke-width="6"/>
+    <path d="M 1000 500 Q 992 468 1020 458 Q 1052 450 1068 470 Q 1084 490 1076 500 Z" fill="#D8D8D3"/>
+
+    <!-- 收拾：布和刷子 -->
+    <rect x="706" y="562" width="140" height="112" fill="#FCFCFA"/>
+    <line x1="706" y1="600" x2="846" y2="600" stroke-width="5"/>
+    <line x1="706" y1="638" x2="846" y2="638" stroke-width="5"/>
+    <rect x="900" y="596" width="176" height="30" fill="#FCFCFA"/>
+    <rect x="1076" y="584" width="58" height="54" fill="#C9A87C"/>
+  </g>
+
+  <!-- 印章上的形状：共同的参照物 -->
+  <g fill="#232322">
+    <path d="M 145 128 L 168 166 L 122 166 Z"/>
+    <rect x="216" y="126" width="38" height="38"/>
+    <path d="M 752 178 L 774 130 L 796 178 Z"/>
+    <rect x="856" y="128" width="16" height="30"/>
+    <rect x="836" y="158" width="56" height="30"/>
+    <rect x="1080" y="126" width="16" height="26"/>
+    <rect x="1054" y="168" width="68" height="14"/>
+  </g>
+  <g fill="none" stroke="#232322" stroke-width="10">
+    <circle cx="325" cy="145" r="21"/>
+    <circle cx="976" cy="164" r="26"/>
+    <circle cx="1088" cy="164" r="22"/>
+  </g>
+</svg>

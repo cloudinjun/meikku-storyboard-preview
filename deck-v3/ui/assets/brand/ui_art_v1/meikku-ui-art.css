@@ -1,0 +1,53 @@
+:root{--mk-paper:#FCFCFA;--mk-clay:#EBEBE7;--mk-grid:#D8D8D3;--mk-stone:#5C5C58;--mk-slate:#232322;--mk-blue:#1052CC;--mk-green:#0E7A42;--mk-yellow:#F7C600;--mk-red:#D42718}
+.mk-icon{display:inline-block;width:1.5rem;height:1.5rem;background:currentColor;mask:var(--mk-icon) center/contain no-repeat;-webkit-mask:var(--mk-icon) center/contain no-repeat}
+.mk-icon[data-icon="listen"]{--mk-icon:url("icons/svg/icon-listen.svg")}
+.mk-icon[data-icon="offer"]{--mk-icon:url("icons/svg/icon-offer.svg")}
+.mk-icon[data-icon="try-together"]{--mk-icon:url("icons/svg/icon-try-together.svg")}
+.mk-icon[data-icon="remember"]{--mk-icon:url("icons/svg/icon-remember.svg")}
+.mk-icon[data-icon="grow"]{--mk-icon:url("icons/svg/icon-grow.svg")}
+.mk-icon[data-icon="clay"]{--mk-icon:url("icons/svg/icon-clay.svg")}
+.mk-icon[data-icon="so101"]{--mk-icon:url("icons/svg/icon-so101.svg")}
+.mk-icon[data-icon="co-make"]{--mk-icon:url("icons/svg/icon-co-make.svg")}
+.mk-icon[data-icon="token"]{--mk-icon:url("icons/svg/icon-token.svg")}
+.mk-icon[data-icon="ticket"]{--mk-icon:url("icons/svg/icon-ticket.svg")}
+.mk-icon[data-icon="proposal"]{--mk-icon:url("icons/svg/icon-proposal.svg")}
+.mk-icon[data-icon="accept"]{--mk-icon:url("icons/svg/icon-accept.svg")}
+.mk-icon[data-icon="revise"]{--mk-icon:url("icons/svg/icon-revise.svg")}
+.mk-icon[data-icon="reject"]{--mk-icon:url("icons/svg/icon-reject.svg")}
+.mk-icon[data-icon="pause"]{--mk-icon:url("icons/svg/icon-pause.svg")}
+.mk-icon[data-icon="reset"]{--mk-icon:url("icons/svg/icon-reset.svg")}
+.mk-icon[data-icon="camera"]{--mk-icon:url("icons/svg/icon-camera.svg")}
+.mk-icon[data-icon="microphone"]{--mk-icon:url("icons/svg/icon-microphone.svg")}
+.mk-icon[data-icon="workspace"]{--mk-icon:url("icons/svg/icon-workspace.svg")}
+.mk-icon[data-icon="archive"]{--mk-icon:url("icons/svg/icon-archive.svg")}
+.mk-icon[data-icon="inspect"]{--mk-icon:url("icons/svg/icon-inspect.svg")}
+.mk-icon[data-icon="help"]{--mk-icon:url("icons/svg/icon-help.svg")}
+.mk-icon[data-icon="settings"]{--mk-icon:url("icons/svg/icon-settings.svg")}
+.mk-icon[data-icon="play-turn"]{--mk-icon:url("icons/svg/icon-play-turn.svg")}
+.mk-icon[data-icon="warning"]{--mk-icon:url("icons/svg/icon-warning.svg")}
+.mk-icon[data-icon="menu"]{--mk-icon:url("icons/svg/icon-menu.svg")}
+.mk-icon[data-icon="close"]{--mk-icon:url("icons/svg/icon-close.svg")}
+.mk-icon[data-icon="back"]{--mk-icon:url("icons/svg/icon-back.svg")}
+.mk-icon[data-icon="send"]{--mk-icon:url("icons/svg/icon-send.svg")}
+.mk-icon[data-icon="edit"]{--mk-icon:url("icons/svg/icon-edit.svg")}
+.mk-icon[data-icon="save"]{--mk-icon:url("icons/svg/icon-save.svg")}
+.mk-icon[data-icon="delete"]{--mk-icon:url("icons/svg/icon-delete.svg")}
+.mk-icon[data-icon="undo"]{--mk-icon:url("icons/svg/icon-undo.svg")}
+.mk-icon[data-icon="redo"]{--mk-icon:url("icons/svg/icon-redo.svg")}
+.mk-icon[data-icon="add"]{--mk-icon:url("icons/svg/icon-add.svg")}
+.mk-icon[data-icon="remove"]{--mk-icon:url("icons/svg/icon-remove.svg")}
+.mk-icon[data-icon="filter"]{--mk-icon:url("icons/svg/icon-filter.svg")}
+.mk-icon[data-icon="sound-on"]{--mk-icon:url("icons/svg/icon-sound-on.svg")}
+.mk-icon[data-icon="sound-off"]{--mk-icon:url("icons/svg/icon-sound-off.svg")}
+.mk-icon[data-icon="timer"]{--mk-icon:url("icons/svg/icon-timer.svg")}
+.mk-icon[data-icon="source-link"]{--mk-icon:url("icons/svg/icon-source-link.svg")}
+.mk-icon[data-icon="share"]{--mk-icon:url("icons/svg/icon-share.svg")}
+.mk-wallpaper{background:var(--mk-paper) var(--mk-wallpaper) center/cover no-repeat}
+.mk-wallpaper--shared-table{--mk-wallpaper:url("wallpapers/desktop/wallpaper-shared-table-clean-2560x1440.png")}
+.mk-wallpaper--pigment-grid{--mk-wallpaper:url("wallpapers/desktop/wallpaper-pigment-grid-clean-2560x1440.png")}
+.mk-wallpaper--play-field{--mk-wallpaper:url("wallpapers/desktop/wallpaper-play-field-clean-2560x1440.png")}
+@media (orientation:portrait){
+  .mk-wallpaper--shared-table{--mk-wallpaper:url("wallpapers/mobile/wallpaper-shared-table-clean-1440x3200.png")}
+  .mk-wallpaper--pigment-grid{--mk-wallpaper:url("wallpapers/mobile/wallpaper-pigment-grid-clean-1440x3200.png")}
+  .mk-wallpaper--play-field{--mk-wallpaper:url("wallpapers/mobile/wallpaper-play-field-clean-1440x3200.png")}
+}

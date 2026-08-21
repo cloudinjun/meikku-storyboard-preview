@@ -1,0 +1,647 @@
+{
+  "schema": "meikku-ui-art-manifest-v1",
+  "version": "1.0.0",
+  "generated": "2026-08-17",
+  "root": "ui/assets/brand/ui_art_v1",
+  "identity_authority": {
+    "logo": "../logo/meikku_logo_highfive_slate.svg",
+    "display_font": "../../storyboard/fonts/Bungee-Regular.ttf",
+    "body_font": "../../storyboard/fonts/SpaceGrotesk-wght.ttf",
+    "robot_rule": "Any photo or illustration that shows a robot must show the verified SO-101 morphology."
+  },
+  "icons": [
+    {
+      "id": "listen",
+      "svg": "icons/svg/icon-listen.svg",
+      "png64": "icons/png_64/icon-listen.png",
+      "png128": "icons/png_128/icon-listen.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "offer",
+      "svg": "icons/svg/icon-offer.svg",
+      "png64": "icons/png_64/icon-offer.png",
+      "png128": "icons/png_128/icon-offer.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "try-together",
+      "svg": "icons/svg/icon-try-together.svg",
+      "png64": "icons/png_64/icon-try-together.png",
+      "png128": "icons/png_128/icon-try-together.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "remember",
+      "svg": "icons/svg/icon-remember.svg",
+      "png64": "icons/png_64/icon-remember.png",
+      "png128": "icons/png_128/icon-remember.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "grow",
+      "svg": "icons/svg/icon-grow.svg",
+      "png64": "icons/png_64/icon-grow.png",
+      "png128": "icons/png_128/icon-grow.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "clay",
+      "svg": "icons/svg/icon-clay.svg",
+      "png64": "icons/png_64/icon-clay.png",
+      "png128": "icons/png_128/icon-clay.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "so101",
+      "svg": "icons/svg/icon-so101.svg",
+      "png64": "icons/png_64/icon-so101.png",
+      "png128": "icons/png_128/icon-so101.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "co-make",
+      "svg": "icons/svg/icon-co-make.svg",
+      "png64": "icons/png_64/icon-co-make.png",
+      "png128": "icons/png_128/icon-co-make.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "token",
+      "svg": "icons/svg/icon-token.svg",
+      "png64": "icons/png_64/icon-token.png",
+      "png128": "icons/png_128/icon-token.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "ticket",
+      "svg": "icons/svg/icon-ticket.svg",
+      "png64": "icons/png_64/icon-ticket.png",
+      "png128": "icons/png_128/icon-ticket.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "proposal",
+      "svg": "icons/svg/icon-proposal.svg",
+      "png64": "icons/png_64/icon-proposal.png",
+      "png128": "icons/png_128/icon-proposal.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "accept",
+      "svg": "icons/svg/icon-accept.svg",
+      "png64": "icons/png_64/icon-accept.png",
+      "png128": "icons/png_128/icon-accept.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "revise",
+      "svg": "icons/svg/icon-revise.svg",
+      "png64": "icons/png_64/icon-revise.png",
+      "png128": "icons/png_128/icon-revise.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "reject",
+      "svg": "icons/svg/icon-reject.svg",
+      "png64": "icons/png_64/icon-reject.png",
+      "png128": "icons/png_128/icon-reject.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "pause",
+      "svg": "icons/svg/icon-pause.svg",
+      "png64": "icons/png_64/icon-pause.png",
+      "png128": "icons/png_128/icon-pause.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "reset",
+      "svg": "icons/svg/icon-reset.svg",
+      "png64": "icons/png_64/icon-reset.png",
+      "png128": "icons/png_128/icon-reset.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "camera",
+      "svg": "icons/svg/icon-camera.svg",
+      "png64": "icons/png_64/icon-camera.png",
+      "png128": "icons/png_128/icon-camera.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "microphone",
+      "svg": "icons/svg/icon-microphone.svg",
+      "png64": "icons/png_64/icon-microphone.png",
+      "png128": "icons/png_128/icon-microphone.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "workspace",
+      "svg": "icons/svg/icon-workspace.svg",
+      "png64": "icons/png_64/icon-workspace.png",
+      "png128": "icons/png_128/icon-workspace.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "archive",
+      "svg": "icons/svg/icon-archive.svg",
+      "png64": "icons/png_64/icon-archive.png",
+      "png128": "icons/png_128/icon-archive.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "inspect",
+      "svg": "icons/svg/icon-inspect.svg",
+      "png64": "icons/png_64/icon-inspect.png",
+      "png128": "icons/png_128/icon-inspect.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "help",
+      "svg": "icons/svg/icon-help.svg",
+      "png64": "icons/png_64/icon-help.png",
+      "png128": "icons/png_128/icon-help.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "settings",
+      "svg": "icons/svg/icon-settings.svg",
+      "png64": "icons/png_64/icon-settings.png",
+      "png128": "icons/png_128/icon-settings.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "play-turn",
+      "svg": "icons/svg/icon-play-turn.svg",
+      "png64": "icons/png_64/icon-play-turn.png",
+      "png128": "icons/png_128/icon-play-turn.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "warning",
+      "svg": "icons/svg/icon-warning.svg",
+      "png64": "icons/png_64/icon-warning.png",
+      "png128": "icons/png_128/icon-warning.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "menu",
+      "svg": "icons/svg/icon-menu.svg",
+      "png64": "icons/png_64/icon-menu.png",
+      "png128": "icons/png_128/icon-menu.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "close",
+      "svg": "icons/svg/icon-close.svg",
+      "png64": "icons/png_64/icon-close.png",
+      "png128": "icons/png_128/icon-close.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "back",
+      "svg": "icons/svg/icon-back.svg",
+      "png64": "icons/png_64/icon-back.png",
+      "png128": "icons/png_128/icon-back.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "send",
+      "svg": "icons/svg/icon-send.svg",
+      "png64": "icons/png_64/icon-send.png",
+      "png128": "icons/png_128/icon-send.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "edit",
+      "svg": "icons/svg/icon-edit.svg",
+      "png64": "icons/png_64/icon-edit.png",
+      "png128": "icons/png_128/icon-edit.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "save",
+      "svg": "icons/svg/icon-save.svg",
+      "png64": "icons/png_64/icon-save.png",
+      "png128": "icons/png_128/icon-save.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "delete",
+      "svg": "icons/svg/icon-delete.svg",
+      "png64": "icons/png_64/icon-delete.png",
+      "png128": "icons/png_128/icon-delete.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "undo",
+      "svg": "icons/svg/icon-undo.svg",
+      "png64": "icons/png_64/icon-undo.png",
+      "png128": "icons/png_128/icon-undo.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "redo",
+      "svg": "icons/svg/icon-redo.svg",
+      "png64": "icons/png_64/icon-redo.png",
+      "png128": "icons/png_128/icon-redo.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "add",
+      "svg": "icons/svg/icon-add.svg",
+      "png64": "icons/png_64/icon-add.png",
+      "png128": "icons/png_128/icon-add.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "remove",
+      "svg": "icons/svg/icon-remove.svg",
+      "png64": "icons/png_64/icon-remove.png",
+      "png128": "icons/png_128/icon-remove.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "filter",
+      "svg": "icons/svg/icon-filter.svg",
+      "png64": "icons/png_64/icon-filter.png",
+      "png128": "icons/png_128/icon-filter.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "sound-on",
+      "svg": "icons/svg/icon-sound-on.svg",
+      "png64": "icons/png_64/icon-sound-on.png",
+      "png128": "icons/png_128/icon-sound-on.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "sound-off",
+      "svg": "icons/svg/icon-sound-off.svg",
+      "png64": "icons/png_64/icon-sound-off.png",
+      "png128": "icons/png_128/icon-sound-off.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "timer",
+      "svg": "icons/svg/icon-timer.svg",
+      "png64": "icons/png_64/icon-timer.png",
+      "png128": "icons/png_128/icon-timer.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "source-link",
+      "svg": "icons/svg/icon-source-link.svg",
+      "png64": "icons/png_64/icon-source-link.png",
+      "png128": "icons/png_128/icon-source-link.png",
+      "semantic_color": "none; inherits currentColor"
+    },
+    {
+      "id": "share",
+      "svg": "icons/svg/icon-share.svg",
+      "png64": "icons/png_64/icon-share.png",
+      "png128": "icons/png_128/icon-share.png",
+      "semantic_color": "none; inherits currentColor"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "pigment-dots",
+      "path": "patterns/pattern-pigment-dots.svg",
+      "tile": true
+    },
+    {
+      "id": "clay-speckles",
+      "path": "patterns/pattern-clay-speckles.svg",
+      "tile": true
+    },
+    {
+      "id": "candidate-path",
+      "path": "patterns/pattern-candidate-path.svg",
+      "tile": true
+    },
+    {
+      "id": "token-slots",
+      "path": "patterns/pattern-token-slots.svg",
+      "tile": true
+    },
+    {
+      "id": "grid-50",
+      "path": "patterns/pattern-grid-50.svg",
+      "tile": true
+    },
+    {
+      "id": "highfive-rays",
+      "path": "patterns/pattern-highfive-rays.svg",
+      "tile": true
+    }
+  ],
+  "dividers": [
+    {
+      "id": "pigment-blocks",
+      "path": "dividers/divider-pigment-blocks.svg"
+    },
+    {
+      "id": "candidate-dash",
+      "path": "dividers/divider-candidate-dash.svg"
+    },
+    {
+      "id": "highfive-ticks",
+      "path": "dividers/divider-highfive-ticks.svg"
+    },
+    {
+      "id": "clay-ridge",
+      "path": "dividers/divider-clay-ridge.svg"
+    }
+  ],
+  "cursors": [
+    {
+      "id": "pointer",
+      "path": "cursors/cursor-pointer.svg",
+      "web_only": true
+    },
+    {
+      "id": "press",
+      "path": "cursors/cursor-press.svg",
+      "web_only": true
+    }
+  ],
+  "empty_states": [
+    {
+      "id": "waiting",
+      "path": "empty_states/empty-waiting.svg",
+      "message": "MATERIAL IS READY; THE NEXT TURN HAS NOT STARTED"
+    },
+    {
+      "id": "proposal",
+      "path": "empty_states/empty-proposal.svg",
+      "message": "TWO BOUNDED OPTIONS CAN BE COMPARED"
+    },
+    {
+      "id": "memory",
+      "path": "empty_states/empty-memory.svg",
+      "message": "A SOURCE CAN BE KEPT AND CORRECTED"
+    },
+    {
+      "id": "offline",
+      "path": "empty_states/empty-offline.svg",
+      "message": "THE CONNECTION IS PAUSED; THE MATERIAL REMAINS"
+    }
+  ],
+  "loaders": [
+    {
+      "id": "token-turn",
+      "path": "loaders/loader-token-turn.svg",
+      "reduced_motion": "static first frame"
+    },
+    {
+      "id": "proposal-scan",
+      "path": "loaders/loader-proposal-scan.svg",
+      "reduced_motion": "static first frame"
+    }
+  ],
+  "wallpapers": [
+    {
+      "id": "shared-table-desktop-branded",
+      "path": "wallpapers/desktop/wallpaper-shared-table-branded-2560x1440.png",
+      "width": 2560,
+      "height": 1440,
+      "variant": "branded",
+      "safe_area_normalized": [
+        0.06,
+        0.08,
+        0.94,
+        0.88
+      ],
+      "claim": "CORE visual direction"
+    },
+    {
+      "id": "shared-table-desktop-clean",
+      "path": "wallpapers/desktop/wallpaper-shared-table-clean-2560x1440.png",
+      "width": 2560,
+      "height": 1440,
+      "variant": "clean",
+      "safe_area_normalized": [
+        0.06,
+        0.08,
+        0.94,
+        0.88
+      ],
+      "claim": "CORE visual direction"
+    },
+    {
+      "id": "shared-table-mobile-branded",
+      "path": "wallpapers/mobile/wallpaper-shared-table-branded-1440x3200.png",
+      "width": 1440,
+      "height": 3200,
+      "variant": "branded",
+      "safe_area_normalized": [
+        0.08,
+        0.08,
+        0.92,
+        0.78
+      ],
+      "claim": "CORE visual direction"
+    },
+    {
+      "id": "shared-table-mobile-clean",
+      "path": "wallpapers/mobile/wallpaper-shared-table-clean-1440x3200.png",
+      "width": 1440,
+      "height": 3200,
+      "variant": "clean",
+      "safe_area_normalized": [
+        0.08,
+        0.08,
+        0.92,
+        0.78
+      ],
+      "claim": "CORE visual direction"
+    },
+    {
+      "id": "pigment-grid-desktop-branded",
+      "path": "wallpapers/desktop/wallpaper-pigment-grid-branded-2560x1440.png",
+      "width": 2560,
+      "height": 1440,
+      "variant": "branded",
+      "safe_area_normalized": [
+        0.06,
+        0.08,
+        0.94,
+        0.88
+      ],
+      "claim": "brand surface"
+    },
+    {
+      "id": "pigment-grid-desktop-clean",
+      "path": "wallpapers/desktop/wallpaper-pigment-grid-clean-2560x1440.png",
+      "width": 2560,
+      "height": 1440,
+      "variant": "clean",
+      "safe_area_normalized": [
+        0.06,
+        0.08,
+        0.94,
+        0.88
+      ],
+      "claim": "brand surface"
+    },
+    {
+      "id": "pigment-grid-mobile-branded",
+      "path": "wallpapers/mobile/wallpaper-pigment-grid-branded-1440x3200.png",
+      "width": 1440,
+      "height": 3200,
+      "variant": "branded",
+      "safe_area_normalized": [
+        0.08,
+        0.08,
+        0.92,
+        0.78
+      ],
+      "claim": "brand surface"
+    },
+    {
+      "id": "pigment-grid-mobile-clean",
+      "path": "wallpapers/mobile/wallpaper-pigment-grid-clean-1440x3200.png",
+      "width": 1440,
+      "height": 3200,
+      "variant": "clean",
+      "safe_area_normalized": [
+        0.08,
+        0.08,
+        0.92,
+        0.78
+      ],
+      "claim": "brand surface"
+    },
+    {
+      "id": "play-field-desktop-branded",
+      "path": "wallpapers/desktop/wallpaper-play-field-branded-2560x1440.png",
+      "width": 2560,
+      "height": 1440,
+      "variant": "branded",
+      "safe_area_normalized": [
+        0.06,
+        0.08,
+        0.94,
+        0.88
+      ],
+      "claim": "brand surface"
+    },
+    {
+      "id": "play-field-desktop-clean",
+      "path": "wallpapers/desktop/wallpaper-play-field-clean-2560x1440.png",
+      "width": 2560,
+      "height": 1440,
+      "variant": "clean",
+      "safe_area_normalized": [
+        0.06,
+        0.08,
+        0.94,
+        0.88
+      ],
+      "claim": "brand surface"
+    },
+    {
+      "id": "play-field-mobile-branded",
+      "path": "wallpapers/mobile/wallpaper-play-field-branded-1440x3200.png",
+      "width": 1440,
+      "height": 3200,
+      "variant": "branded",
+      "safe_area_normalized": [
+        0.08,
+        0.08,
+        0.92,
+        0.78
+      ],
+      "claim": "brand surface"
+    },
+    {
+      "id": "play-field-mobile-clean",
+      "path": "wallpapers/mobile/wallpaper-play-field-clean-1440x3200.png",
+      "width": 1440,
+      "height": 3200,
+      "variant": "clean",
+      "safe_area_normalized": [
+        0.08,
+        0.08,
+        0.92,
+        0.78
+      ],
+      "claim": "brand surface"
+    }
+  ],
+  "app_icons": [
+    {
+      "size": 16,
+      "path": "app_icons/meikku-app-icon-16.png"
+    },
+    {
+      "size": 32,
+      "path": "app_icons/meikku-app-icon-32.png"
+    },
+    {
+      "size": 64,
+      "path": "app_icons/meikku-app-icon-64.png"
+    },
+    {
+      "size": 180,
+      "path": "app_icons/meikku-app-icon-180.png"
+    },
+    {
+      "size": 192,
+      "path": "app_icons/meikku-app-icon-192.png"
+    },
+    {
+      "size": 512,
+      "path": "app_icons/meikku-app-icon-512.png"
+    },
+    {
+      "size": 1024,
+      "path": "app_icons/meikku-app-icon-1024.png"
+    }
+  ],
+  "avatars": [
+    {
+      "id": "so101",
+      "path": "avatars/avatar-so101-512.png"
+    },
+    {
+      "id": "clay",
+      "path": "avatars/avatar-clay-512.png"
+    },
+    {
+      "id": "co-make",
+      "path": "avatars/avatar-co-make-512.png"
+    },
+    {
+      "id": "token",
+      "path": "avatars/avatar-token-512.png"
+    }
+  ],
+  "consumption": {
+    "web": [
+      "icons/svg",
+      "patterns",
+      "dividers",
+      "cursors",
+      "loaders"
+    ],
+    "unity": [
+      "icons/png_64",
+      "icons/png_128",
+      "wallpapers",
+      "empty_states"
+    ],
+    "mobile": [
+      "app_icons",
+      "avatars",
+      "wallpapers/mobile"
+    ],
+    "exhibition": [
+      "wallpapers/desktop clean",
+      "dividers",
+      "empty_states"
+    ]
+  }
+}

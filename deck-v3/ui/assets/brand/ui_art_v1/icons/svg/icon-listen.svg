@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku listen icon">
+  <title>Meikku listen icon</title>
+  <circle cx="20" cy="36" r="3" fill="currentColor" stroke="currentColor" stroke-width="4.5"/>
+  <polyline points="25.74,27.81 27.07,28.93 28.19,30.26 29.06,31.77 29.66,33.41 29.96,35.13 29.96,36.87 29.66,38.59 29.06,40.23 28.19,41.74 27.07,43.07 25.74,44.19" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="29.75,22.07 32.02,23.98 33.93,26.25 35.41,28.82 36.42,31.6 36.94,34.52 36.94,37.48 36.42,40.4 35.41,43.18 33.93,45.75 32.02,48.02 29.75,49.93" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="33.77,16.34 36.97,19.03 39.66,22.23 41.75,25.86 43.18,29.79 43.91,33.91 43.91,38.09 43.18,42.21 41.75,46.14 39.66,49.77 36.97,52.97 33.77,55.66" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

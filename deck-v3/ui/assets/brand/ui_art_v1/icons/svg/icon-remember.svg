@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Meikku remember icon">
+  <title>Meikku remember icon</title>
+  <polyline points="14,26 10,16 54,16 50,26" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <rect x="14" y="26" width="36" height="26" rx="0" fill="none" stroke="currentColor" stroke-width="5"/>
+  <polyline points="22.0,52.0 22.15,49.92 22.6,47.9 23.34,46.0 24.34,44.29 25.57,42.81 27.0,41.61 28.58,40.72 30.26,40.18 32.0,40.0 33.74,40.18 35.42,40.72 37.0,41.61 38.43,42.81 39.66,44.29 40.66,46.0 41.4,47.9 41.85,49.92 42.0,52.0" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

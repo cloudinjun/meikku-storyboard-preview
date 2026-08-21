@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-labelledby="title desc">
+  <title id="title">Meikku clay orbit</title>
+  <desc id="desc">An organic clay-colored field with contour lines, pigment tabs, and material speckles.</desc>
+  <path fill="#EBEBE7" stroke="#232322" stroke-width="10" d="M305 26c92-7 180 34 231 109 50 74 41 164 21 246-21 86-74 158-157 185-84 27-178 6-250-41C78 478 27 405 25 318c-2-89 44-177 117-229 48-34 105-58 163-63Z"/>
+  <path fill="none" stroke="#D8D8D3" stroke-width="9" d="M151 155c70-63 180-76 258-22 75 51 97 149 61 229-36 81-129 124-214 103-75-18-131-87-132-164-1-55 9-106 27-146Z"/>
+  <path fill="none" stroke="#5C5C58" stroke-width="7" stroke-dasharray="4 18" stroke-linecap="round" d="M206 212c50-38 126-39 174 5 45 42 52 112 18 163-34 51-104 70-160 43-53-26-82-90-66-147 7-25 18-47 34-64Z"/>
+  <g fill="#5C5C58" opacity=".55">
+    <circle cx="172" cy="119" r="7"/><circle cx="431" cy="122" r="5"/><circle cx="490" cy="240" r="8"/>
+    <circle cx="454" cy="447" r="6"/><circle cx="272" cy="506" r="8"/><circle cx="102" cy="378" r="5"/>
+    <circle cx="140" cy="283" r="4"/><circle cx="363" cy="79" r="4"/><circle cx="530" cy="337" r="4"/>
+  </g>
+  <path fill="#1052CC" stroke="#232322" stroke-width="8" d="M82 84h112l-28 62H55Z"/>
+  <path fill="#0E7A42" stroke="#232322" stroke-width="8" d="m442 71 87 38-47 48-78-54Z"/>
+  <path fill="#F7C600" stroke="#232322" stroke-width="8" d="m479 464 72-19 11 73-82 13Z"/>
+  <path fill="#D42718" stroke="#232322" stroke-width="8" d="m46 456 86 16-24 70-80-28Z"/>
+</svg>

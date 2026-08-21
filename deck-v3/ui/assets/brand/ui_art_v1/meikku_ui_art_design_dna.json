@@ -1,0 +1,421 @@
+{
+  "meta": {
+    "name": "Meikku UI Art Asset DNA v1",
+    "description": "Reusable visual assets for web, Unity, mobile, exhibition displays, and branded system surfaces.",
+    "source_references": [
+      "MEIKKU_DESIGN_DNA.md",
+      "ui/assets/brand/logo/",
+      "https://github.com/guokaigdg/animal-island-ui/tree/main"
+    ],
+    "created_at": "2026-08-17"
+  },
+  "design_system": {
+    "color": {
+      "palette_type": "inherited pigment field on two structural extremes",
+      "primary": {
+        "hex": "#232322",
+        "role": "slate keylines, type, dark field"
+      },
+      "secondary": {
+        "hex": "#FCFCFA",
+        "role": "paper field and negative space"
+      },
+      "accent": {
+        "hex": [
+          "#1052CC",
+          "#0E7A42",
+          "#F7C600",
+          "#D42718"
+        ],
+        "role": "shared expressive pigments with no permanent owners"
+      },
+      "neutral": {
+        "scale": [
+          "#FCFCFA",
+          "#EBEBE7",
+          "#D8D8D3",
+          "#5C5C58",
+          "#232322"
+        ],
+        "usage": "foundation, material, grid, caption, keyline"
+      },
+      "semantic": {
+        "success": "local legend only",
+        "warning": "shape plus local legend",
+        "error": "shape plus local legend",
+        "info": "shape plus local legend"
+      },
+      "surface": {
+        "background": "#FCFCFA",
+        "card": "#FCFCFA",
+        "elevated": "#EBEBE7"
+      },
+      "contrast_strategy": "dark-on-light dominant; paper on filled slate/blue/green/red; slate on yellow"
+    },
+    "typography": {
+      "type_scale": {
+        "display": {
+          "size": "80-96px",
+          "weight": "regular",
+          "line_height": 1.0,
+          "tracking": "0.04em"
+        },
+        "heading_1": {
+          "size": "48-56px",
+          "weight": "regular",
+          "line_height": 1.05,
+          "tracking": "0.03em"
+        },
+        "heading_2": {
+          "size": "36-42px",
+          "weight": "regular",
+          "line_height": 1.1,
+          "tracking": "0.03em"
+        },
+        "heading_3": {
+          "size": "22-28px",
+          "weight": "regular",
+          "line_height": 1.0,
+          "tracking": "0.05em"
+        },
+        "body": {
+          "size": "14-16px",
+          "weight": 500,
+          "line_height": 1.5,
+          "tracking": "0.01em"
+        },
+        "body_small": {
+          "size": "13-14px",
+          "weight": 500,
+          "line_height": 1.4,
+          "tracking": "0.01em"
+        },
+        "caption": {
+          "size": "11-12px",
+          "weight": 400,
+          "line_height": 1.4,
+          "tracking": "0.01em"
+        },
+        "overline": {
+          "size": "12-13px",
+          "weight": 700,
+          "line_height": 1.0,
+          "tracking": "0.08em"
+        }
+      },
+      "font_families": {
+        "heading": "Bungee",
+        "body": "Space Grotesk",
+        "mono": "Space Grotesk with tabular numerals"
+      },
+      "font_style_notes": "Bungee only for short display hooks; Space Grotesk for every readable and system role."
+    },
+    "spacing": {
+      "base_unit": "4px",
+      "scale": [
+        4,
+        8,
+        12,
+        16,
+        24,
+        32,
+        48,
+        64
+      ],
+      "content_density": "comfortable",
+      "section_rhythm": "large hard-separated bands"
+    },
+    "layout": {
+      "grid_system": "8px composition grid with hard alignment",
+      "max_content_width": "1440px",
+      "columns": 12,
+      "gutter": "24px",
+      "breakpoints": [
+        480,
+        768,
+        1080,
+        1440
+      ],
+      "alignment_tendency": "strict grid with poster-like asymmetry"
+    },
+    "shape": {
+      "border_radius": {
+        "small": "0px",
+        "medium": "0px",
+        "large": "0px",
+        "pill": "999px only for circular controls"
+      },
+      "border_usage": "4px slate keylines",
+      "divider_style": "thick rule, dashed path, or pigment block rhythm"
+    },
+    "elevation": {
+      "shadow_style": "hard block only",
+      "levels": {
+        "low": "4px 4px 0 #232322",
+        "medium": "6px 6px 0 #232322",
+        "high": "8px 8px 0 #232322"
+      },
+      "depth_cues": "overlap and block offset, never blur"
+    },
+    "iconography": {
+      "style": "unified bold outline with currentColor: one primary weight, one detail weight, one optional solid accent, no filled silhouettes",
+      "stroke_weight": "5 units primary / 3 units secondary on 64-unit viewBox",
+      "size_scale": [
+        16,
+        24,
+        32,
+        48,
+        64,
+        128
+      ],
+      "preferred_set": "Meikku UI Art v1.1"
+    },
+    "motion": {
+      "easing": "steps or short linear",
+      "duration_scale": {
+        "micro": "120ms",
+        "normal": "240ms",
+        "macro": "480ms"
+      },
+      "entrance_pattern": "hard reveal or short translate",
+      "exit_pattern": "short fade without blur",
+      "philosophy": "minimal functional; motion explains turn or path state"
+    },
+    "components": {
+      "button_style": "rectangular, 4px keyline, Bungee label",
+      "input_style": "paper field, slate rule, Space Grotesk",
+      "card_style": "hard rectangular slab without nested decoration",
+      "navigation_pattern": "persistent high-contrast rail or tab strip",
+      "modal_style": "centered hard panel with explicit close",
+      "list_style": "ruled rows with tabular alignment",
+      "component_notes": "Keep workspace imagery dominant; art supports rather than covers evidence."
+    }
+  },
+  "design_style": {
+    "aesthetic": {
+      "mood": [
+        "companionable",
+        "material",
+        "direct",
+        "playful"
+      ],
+      "visual_metaphor": "shared worktable plus arcade turn",
+      "era_influence": "oil pigment, Bauhaus, Mondrian, LEGO continuity",
+      "genre": "material modernism with zine/arcade utility",
+      "personality_traits": [
+        "warm",
+        "clear",
+        "curious",
+        "non-authoritarian"
+      ],
+      "adjectives": [
+        "flat",
+        "tactile",
+        "bold",
+        "inherited",
+        "cooperative"
+      ]
+    },
+    "visual_language": {
+      "complexity": "moderate",
+      "ornamentation": "functional marks only",
+      "whitespace_usage": "generous paper fields",
+      "visual_weight_distribution": "one dominant field with a few heavy anchors",
+      "focal_strategy": "single shared action",
+      "contrast_level": "high",
+      "texture_usage": "subtle print and clay grain"
+    },
+    "composition": {
+      "hierarchy_method": "scale, keyline, and field contrast",
+      "balance_type": "asymmetric but grid-locked",
+      "flow_direction": "toward the shared material",
+      "grouping_strategy": "hard containment and aligned bands",
+      "negative_space_role": "protects interaction and UI legibility"
+    },
+    "imagery": {
+      "photo_treatment": "warm studio, honest material, no sci-fi glow",
+      "illustration_style": "black/slate bold line, flat pigment fills",
+      "graphic_elements": [
+        "candidate paths",
+        "contact dots",
+        "high-five rays",
+        "token slots",
+        "clay ridges"
+      ],
+      "pattern_usage": "low-density support, never semantic by color alone",
+      "image_shape": "rectangular crops with hard keylines"
+    },
+    "interaction_feel": {
+      "feedback_style": "immediate material mark",
+      "hover_behavior": "hard color inversion or 4px offset",
+      "transition_personality": "snappy",
+      "loading_style": "token rotation or candidate path scan",
+      "microinteraction_density": "low"
+    },
+    "brand_voice_in_ui": {
+      "tone": "inviting and concrete",
+      "formality": "plainspoken",
+      "cta_style": "friendly invitation",
+      "empty_state_approach": "say what is waiting and what the person can do next",
+      "error_tone": "calm, specific, recoverable"
+    }
+  },
+  "visual_effects": {
+    "overview": {
+      "effect_intensity": "subtle-accent",
+      "performance_tier": "lightweight",
+      "fallback_strategy": "static SVG or PNG",
+      "primary_technology": "CSS and SVG"
+    },
+    "background_effects": {
+      "type": "pattern-fill",
+      "description": "static material and path patterns",
+      "technology": "SVG/CSS",
+      "params": {
+        "color_palette": [
+          "#FCFCFA",
+          "#232322",
+          "#1052CC",
+          "#0E7A42",
+          "#F7C600",
+          "#D42718"
+        ],
+        "speed": 0,
+        "density": "low",
+        "opacity": "0.08-1.0 by asset",
+        "blend_mode": "normal"
+      }
+    },
+    "particle_systems": {
+      "enabled": false,
+      "type": "none",
+      "description": "No generic AI particles",
+      "technology": "none",
+      "params": {
+        "count": 0,
+        "shape": "none",
+        "size_range": "none",
+        "movement_pattern": "none",
+        "color_behavior": "none",
+        "interaction": "none",
+        "spawn_area": "none"
+      }
+    },
+    "3d_elements": {
+      "enabled": false,
+      "type": "none",
+      "description": "Asset pack is 2D",
+      "technology": "none",
+      "params": {
+        "renderer": "none",
+        "lighting": "none",
+        "camera": "none",
+        "materials": "none",
+        "geometry": "none",
+        "post_processing": [],
+        "interaction_model": "none"
+      }
+    },
+    "shader_effects": {
+      "enabled": false,
+      "type": "none",
+      "description": "No shaders",
+      "technology": "none",
+      "params": {
+        "uniforms": {},
+        "vertex_manipulation": "none",
+        "fragment_output": "none",
+        "noise_type": "none",
+        "distortion": "none"
+      }
+    },
+    "scroll_effects": {
+      "parallax": {
+        "enabled": false,
+        "layers": 0,
+        "depth_range": 0,
+        "speed_curve": "none"
+      },
+      "scroll_triggered_animations": {
+        "enabled": false,
+        "trigger_points": [],
+        "animation_type": "none",
+        "scrub_behavior": "none"
+      },
+      "scroll_morphing": {
+        "enabled": false,
+        "description": "none"
+      }
+    },
+    "text_effects": {
+      "type": "none",
+      "description": "Typography remains structural",
+      "technology": "CSS",
+      "params": {
+        "split_strategy": "none",
+        "animation_per_unit": "none",
+        "stagger": 0,
+        "effect_style": "none"
+      }
+    },
+    "cursor_effects": {
+      "enabled": true,
+      "type": "custom-cursor optional",
+      "description": "Pointer and material press cursors for non-critical web surfaces",
+      "params": {
+        "shape": "bold flat",
+        "size": "32px",
+        "blend_mode": "normal",
+        "trail": "none",
+        "interaction_zone": "non-critical branded surfaces only"
+      }
+    },
+    "image_effects": {
+      "type": "none",
+      "description": "Hard crops and keylines",
+      "technology": "CSS",
+      "params": {
+        "filter_pipeline": "none",
+        "hover_transform": "translate 4px",
+        "reveal_animation": "hard reveal",
+        "distortion_type": "none"
+      }
+    },
+    "glassmorphism_neumorphism": {
+      "enabled": false,
+      "style": "none",
+      "params": {
+        "blur_radius": 0,
+        "transparency": 0,
+        "border_treatment": "4px slate",
+        "shadow_type": "hard block",
+        "light_source_angle": "none"
+      }
+    },
+    "canvas_drawings": {
+      "enabled": false,
+      "type": "none",
+      "description": "not required",
+      "technology": "none",
+      "params": {
+        "draw_method": "none",
+        "animation_loop": "none",
+        "color_scheme": "none",
+        "responsiveness": "static",
+        "interaction": "none"
+      }
+    },
+    "svg_animations": {
+      "enabled": true,
+      "type": "stroke-animation",
+      "description": "Two optional loaders only",
+      "params": {
+        "animation_method": "CSS keyframes",
+        "path_morphing": false,
+        "stroke_animation": true,
+        "filter_effects": "none"
+      }
+    },
+    "composite_notes": "Use animated SVG only to explain waiting or proposal scanning. Respect reduced motion and default to static art in Unity."
+  }
+}

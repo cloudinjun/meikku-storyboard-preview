@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="t d">
+  <title id="t">Waiting for player two</title>
+  <desc id="d">A person sits alone at a work table with an untouched lump of clay. The seat across from them is empty, and the shape of a Meikku arm appears only as a pale absent silhouette.</desc>
+
+  <defs>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="2" fill="#D8D8D3"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="700" fill="#FCFCFA"/>
+  <rect width="1200" height="700" fill="url(#dots)"/>
+
+  <!-- 缺席的玩伴：只剩一个没人的形状，不描边、不打光 -->
+  <g fill="#DEDCD5">
+    <path d="M 852 446 L 868 394 L 936 394 L 952 446 Z"/>
+    <polygon points="916.6,385.3 852.6,277.3 823.4,294.7 887.4,402.7"/>
+    <polygon points="846.2,298.6 714.2,384.6 697.8,359.4 829.8,273.4"/>
+    <circle cx="902" cy="394" r="24"/>
+    <circle cx="838" cy="286" r="27"/>
+    <circle cx="706" cy="372" r="17"/>
+    <polygon points="702,364 658,342 654,358 700,380"/>
+    <polygon points="700,364 656,392 664,408 708,380"/>
+  </g>
+
+  <g stroke="#232322" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+
+    <line x1="40" y1="670" x2="1160" y2="670"/>
+
+    <!-- 人：一个人坐在这里 -->
+    <line x1="272" y1="558" x2="258" y2="668" stroke-width="13"/>
+    <line x1="364" y1="558" x2="378" y2="668" stroke-width="13"/>
+    <rect x="252" y="534" width="132" height="24" fill="#EBEBE7"/>
+
+    <path d="M 352 528 L 452 548 L 458 648" fill="none" stroke-width="42"/>
+    <path d="M 352 528 L 452 548 L 458 648" fill="none" stroke="#EBEBE7" stroke-width="28"/>
+    <path d="M 458 648 L 512 652" fill="none" stroke-width="30"/>
+    <path d="M 458 648 L 508 652" fill="none" stroke="#EBEBE7" stroke-width="16"/>
+
+    <path d="M 300 540 L 306 420 Q 308 388 342 384 Q 380 382 386 416 L 398 540 Z" fill="#EBEBE7"/>
+
+    <rect x="330" y="352" width="34" height="42" fill="#EBEBE7"/>
+    <circle cx="347" cy="318" r="52" fill="#EBEBE7"/>
+    <path d="M 293 320 Q 291 260 347 260 Q 403 260 401 320 L 385 320 Q 385 288 347 288 Q 309 288 309 320 Z" fill="#232322"/>
+    <circle cx="379" cy="314" r="7" fill="#232322" stroke="none"/>
+    <path d="M 371 344 L 391 342" fill="none" stroke-width="5"/>
+
+    <path d="M 386 414 L 452 452 L 536 442" fill="none" stroke-width="36"/>
+    <path d="M 386 414 L 452 452 L 536 442" fill="none" stroke="#EBEBE7" stroke-width="22"/>
+    <circle cx="546" cy="440" r="20" fill="#EBEBE7"/>
+
+    <!-- 工作台 -->
+    <line x1="200" y1="474" x2="200" y2="668" stroke-width="16"/>
+    <line x1="1000" y1="474" x2="1000" y2="668" stroke-width="16"/>
+    <rect x="120" y="446" width="960" height="28" fill="#EBEBE7"/>
+
+    <!-- 泥：完整、没被动过 -->
+    <path d="M 556 446 Q 546 400 578 388 Q 602 376 628 388 Q 658 400 650 446 Z" fill="#D8D8D3"/>
+
+    <!-- 对面的空位 -->
+    <line x1="848" y1="558" x2="834" y2="668" stroke-width="13"/>
+    <line x1="940" y1="558" x2="954" y2="668" stroke-width="13"/>
+    <rect x="828" y="534" width="132" height="24" fill="#FCFCFA"/>
+  </g>
+</svg>
